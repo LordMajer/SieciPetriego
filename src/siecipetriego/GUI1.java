@@ -1,9 +1,14 @@
 package siecipetriego;
 
+import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.geom.Rectangle2D;
+import java.util.HashMap;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import org.jgraph.JGraph;
 import org.jgraph.graph.AttributeMap;
 import org.jgraph.graph.CellView;
@@ -145,9 +150,7 @@ public class GUI1 extends javax.swing.JFrame {
         startSimulationButton = new javax.swing.JButton();
         stepButton = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
-        editPlaceButton = new javax.swing.JButton();
-        editPassageButton = new javax.swing.JButton();
-        editEdgeButton = new javax.swing.JButton();
+        editButton = new javax.swing.JButton();
         tabbedPane = new javax.swing.JTabbedPane();
         resultsPanel = new javax.swing.JPanel();
 
@@ -380,24 +383,10 @@ public class GUI1 extends javax.swing.JFrame {
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Edycja:"));
 
-        editPlaceButton.setText("Edytuj miejsce");
-        editPlaceButton.addActionListener(new java.awt.event.ActionListener() {
+        editButton.setText("Edytuj");
+        editButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editPlaceButtonActionPerformed(evt);
-            }
-        });
-
-        editPassageButton.setText("Edytuj przejście");
-        editPassageButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editPassageButtonActionPerformed(evt);
-            }
-        });
-
-        editEdgeButton.setText("Edytuj krawędź");
-        editEdgeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editEdgeButtonActionPerformed(evt);
+                editButtonActionPerformed(evt);
             }
         });
 
@@ -405,18 +394,13 @@ public class GUI1 extends javax.swing.JFrame {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(editPlaceButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(editPassageButton, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
-            .addComponent(editEdgeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(editButton, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(editPlaceButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(editPassageButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(editEdgeButton)
+                .addContainerGap()
+                .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -553,11 +537,8 @@ public class GUI1 extends javax.swing.JFrame {
 
     private void option2ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_option2ButtonActionPerformed
         // TODO add your handling code here:
+        System.out.println("Drzewo pokrycia...");
     }//GEN-LAST:event_option2ButtonActionPerformed
-
-    private void editPassageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPassageButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_editPassageButtonActionPerformed
 
     private void removeEdgeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeEdgeButtonActionPerformed
         revalidateModelVertexPosition(jGraph);
@@ -585,38 +566,80 @@ public class GUI1 extends javax.swing.JFrame {
         createGraph(graphModel);
     }//GEN-LAST:event_removeEdgeButtonActionPerformed
 
-    private void editPlaceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPlaceButtonActionPerformed
-
-        EditPlacePanel editplacePanel = new EditPlacePanel(this, "Edycja miejsca");
-        tabbedPane.setSelectedIndex(0);         // przejście do zakładki wyniki
-    }//GEN-LAST:event_editPlaceButtonActionPerformed
-
-    private void editEdgeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editEdgeButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_editEdgeButtonActionPerformed
+    private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
+        
+        revalidateModelVertexPosition(jGraph);
+        Object[] cells = jGraph.getSelectionCells();
+        if(cells.length == 1){
+            // edycja miejsca
+            
+            Object obj = ((DefaultGraphCell)cells[0]).getUserObject();
+            if(obj instanceof Miejsce){
+                
+                HashMap<String, String> values = new HashMap<String, String>();
+                EditPlacePanel editPlacePanel = new EditPlacePanel(this, "Edycja miejsca", true, values);
+                System.out.println(values);
+                
+            }else if(obj instanceof Przejscie){
+                
+                System.out.println("Przejscie");
+                HashMap<String, String> values = new HashMap<String, String>();
+                EditPassagePanel editPassagePanel = new EditPassagePanel(this, "Edycja miejsca", true, values);
+                System.out.println(values);
+                
+            }else{
+                JOptionPane.showMessageDialog(this, "Wystąpił błąd podczas zaznaczania!", "Błąd", JOptionPane.ERROR_MESSAGE);
+            }
+        }else if(cells.length == 2){
+            // edycja krawędzi
+        }else{
+            JOptionPane.showMessageDialog(this, "Aby Edytowac należy zaznaczyć dokładnie jeden element lub dwa elementy w celu edycji krawędzi między nimi!", "Błąd", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_editButtonActionPerformed
 
     private void matrix1ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_matrix1ButtonActionPerformed
         // TODO add your handling code here:
+        System.out.println("Macierz wejść...");
     }//GEN-LAST:event_matrix1ButtonActionPerformed
 
     private void matrix2ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_matrix2ButtonActionPerformed
         // TODO add your handling code here:
+        System.out.println("Macierz wyjść...");
     }//GEN-LAST:event_matrix2ButtonActionPerformed
 
     private void matrix3ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_matrix3ButtonActionPerformed
         // TODO add your handling code here:
+        System.out.println("Macierz incydencji...");
     }//GEN-LAST:event_matrix3ButtonActionPerformed
 
     private void option1ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_option1ButtonActionPerformed
         // TODO add your handling code here:
+        System.out.println("Graf osiągalności...");
     }//GEN-LAST:event_option1ButtonActionPerformed
 
     private void option3ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_option3ButtonActionPerformed
         // TODO add your handling code here:
+        System.out.println("Graf pokrycia...");
     }//GEN-LAST:event_option3ButtonActionPerformed
 
     private void startSimulationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startSimulationButtonActionPerformed
         // TODO add your handling code here:
+        System.out.println("Start symulacji...");
+        // 1. sprawdzenie poprawności grafu- czy jest dobrze zbudowany:
+        String errors = graphModel.validateModel();
+        if(errors == null){
+            // zablokowanie możliwości edycji grafu
+            // przeprowadzenie pierwszego kroku symulacji.
+        }else{
+            // wystąpiły błędy przy sprawdzaniu poprawności.... wypisanie ich w zakładce wyniki:
+            JPanel errorPanel = new JPanel(new BorderLayout());
+            JTextArea errorTextArea = new JTextArea();
+            errorTextArea.setFont(new Font("monospaced", Font.PLAIN, 12));
+            errorTextArea.setText(errors);
+            errorPanel.add(errorTextArea, BorderLayout.CENTER);
+            tabbedPane.add(errorPanel);
+            tabbedPane.setSelectedIndex(0);
+        }
     }//GEN-LAST:event_startSimulationButtonActionPerformed
 
     private void stepButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stepButtonActionPerformed
@@ -687,9 +710,7 @@ public class GUI1 extends javax.swing.JFrame {
     private javax.swing.JPanel addPanel1;
     private javax.swing.JButton addPassageButton;
     private javax.swing.JButton addPlaceButton;
-    private javax.swing.JButton editEdgeButton;
-    private javax.swing.JButton editPassageButton;
-    private javax.swing.JButton editPlaceButton;
+    private javax.swing.JButton editButton;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;

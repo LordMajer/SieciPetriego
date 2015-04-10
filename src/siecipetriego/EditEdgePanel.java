@@ -4,17 +4,35 @@
  */
 package siecipetriego;
 
+import java.awt.Dimension;
+import java.awt.Point;
+import java.util.HashMap;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+
 /**
  *
  * @author Mateusz
  */
-public class EditEdgePanel extends javax.swing.JPanel {
+public class EditEdgePanel extends JDialog {
 
+    private HashMap<String, String> returnValues;
     /**
      * Creates new form EditEdgePanel
      */
-    public EditEdgePanel() {
+    public EditEdgePanel(JFrame parent, String title, boolean modal, HashMap<String, String> values) {
+        super(parent, title, modal);
         initComponents();
+        if(parent != null){
+            Dimension parentSize = parent.getSize();
+            Point parentLocation = parent.getLocation();
+            setLocation(parentLocation.x + parentSize.width / 4, parentLocation.y + parentSize.height / 4);
+        }
+        returnValues = values;
+        setPreferredSize(new Dimension(370,255));
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        pack();
+        setVisible(true);
     }
 
     /**
@@ -35,67 +53,32 @@ public class EditEdgePanel extends javax.swing.JPanel {
         submitButton = new javax.swing.JButton();
         nameTextField = new javax.swing.JTextField();
 
+        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
         tokenCountLabel.setText("Warunek:");
+        add(tokenCountLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 81, 130, 25));
 
         cancelButton.setBackground(new java.awt.Color(204, 51, 0));
         cancelButton.setText("Anuluj");
+        add(cancelButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(112, 117, 96, 34));
 
         titleLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         titleLabel.setText("Edycja krawędzi:");
+        add(titleLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 11, 122, -1));
+        add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 34, 259, 10));
 
         nameLabel.setText("Nazwa:");
+        add(nameLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 130, 25));
 
         tocenCountTextField.setText("jTextField1");
+        add(tocenCountTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(144, 81, 200, 25));
 
         submitButton.setBackground(new java.awt.Color(51, 204, 0));
         submitButton.setText("Zatwierdź");
+        add(submitButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 117, 96, 34));
 
         nameTextField.setText("jTextField1");
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(tokenCountLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(nameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                            .addComponent(tocenCountTextField)))
-                    .addComponent(titleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(submitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(titleLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tokenCountLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tocenCountTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(submitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        add(nameTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(144, 50, 200, 25));
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;

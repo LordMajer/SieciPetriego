@@ -4,17 +4,35 @@
  */
 package siecipetriego;
 
+import java.awt.Dimension;
+import java.awt.Point;
+import java.util.HashMap;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+
 /**
  *
  * @author Mateusz
  */
-public class EditPassagePanel extends javax.swing.JPanel {
+public class EditPassagePanel extends JDialog {
 
+    private HashMap<String, String> returnValues;
     /**
      * Creates new form EditPassagePanel
      */
-    public EditPassagePanel() {
+    public EditPassagePanel(JFrame parent, String title, boolean modal, HashMap<String, String> values) {
+        super(parent, title, modal);
         initComponents();
+        if(parent != null){
+            Dimension parentSize = parent.getSize();
+            Point parentLocation = parent.getLocation();
+            setLocation(parentLocation.x + parentSize.width / 4, parentLocation.y + parentSize.height / 4);
+        }
+        returnValues = values;
+        setPreferredSize(new Dimension(370,255));
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        pack();
+        setVisible(true);
     }
 
     /**
@@ -37,80 +55,38 @@ public class EditPassagePanel extends javax.swing.JPanel {
         submitButton = new javax.swing.JButton();
         tocenCountTextField = new javax.swing.JTextField();
 
+        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
         nameLabel.setText("Przepustowość:");
+        add(nameLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 130, 25));
+        add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 34, 259, 10));
 
         titleLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         titleLabel.setText("Edycja przejścia:");
+        add(titleLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 11, 122, -1));
 
         cancelButton.setBackground(new java.awt.Color(204, 51, 0));
         cancelButton.setText("Anuluj");
+        add(cancelButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(112, 148, 96, 34));
 
         tokenCountLabel.setText("Priorytet:");
+        add(tokenCountLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 81, 130, 25));
 
         capacityLabel.setText("Czas:");
+        add(capacityLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 112, 130, 25));
 
         nameTextField.setText("jTextField1");
+        add(nameTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(144, 50, 200, 25));
 
         capacityTextField.setText("jTextField1");
+        add(capacityTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(144, 112, 200, 25));
 
         submitButton.setBackground(new java.awt.Color(51, 204, 0));
         submitButton.setText("Zatwierdź");
+        add(submitButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 148, 96, 34));
 
         tocenCountTextField.setText("jTextField1");
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(capacityLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(capacityTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(tokenCountLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(nameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                                .addComponent(tocenCountTextField)))
-                        .addComponent(titleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(submitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(titleLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tokenCountLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tocenCountTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(capacityLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(capacityTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(submitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        add(tocenCountTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(144, 81, 200, 25));
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;

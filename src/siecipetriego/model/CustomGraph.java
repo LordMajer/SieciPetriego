@@ -132,22 +132,24 @@ public class CustomGraph{
         }
         
         // usuwanie wszystkich krawedzi dolączonych do wierzcholka
-        
-        for(int successor : temp.getSuccessors()){                      // usuwanie krawedzi wychodzacych 
+        ArrayList<Integer> tempSuccessors = new ArrayList<Integer>();
+        tempSuccessors.addAll(temp.getSuccessors());
+        for(int successor : tempSuccessors){                      // usuwanie krawedzi wychodzacych 
             System.out.println("usuwanie krawedzi wychodzacej: ");
             tempEdge = new Edge(temp.getID(),successor);
-            edges.remove(tempEdge.getKey());
+            removeEdge(tempEdge);
         }
         
         /*for(Vertex v : vertices.values()){                              // usuwanie krawędzi wchodzacych do wierzcholka
             tempEdge = new Edge(v.getID(),temp.getID());
             edges.remove(tempEdge.getKey());
         }*/
-        
-        for(int predecessor : temp.getPredecessors()){
+        ArrayList<Integer> tempPredecessors = new ArrayList<Integer>();
+        tempPredecessors.addAll(temp.getPredecessors());
+        for(int predecessor : tempPredecessors){
             System.out.println("Usuwanie krawedzi wchodzacej: ");
             tempEdge = new Edge(predecessor,temp.getID());
-            edges.remove(tempEdge.getKey());
+            removeEdge(tempEdge);
         }
         
         vertices.remove(vertex.getID());                                // usunięcie wierzchołka.
