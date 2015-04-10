@@ -1,0 +1,596 @@
+package siecipetriego;
+
+import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Random;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import org.jgraph.JGraph;
+import org.jgraph.graph.CellView;
+import org.jgraph.graph.DefaultCellViewFactory;
+import org.jgraph.graph.DefaultEdge;
+import org.jgraph.graph.DefaultGraphCell;
+import org.jgraph.graph.DefaultGraphModel;
+import org.jgraph.graph.DefaultPort;
+import org.jgraph.graph.GraphConstants;
+import org.jgraph.graph.GraphLayoutCache;
+import org.jgraph.graph.GraphModel;
+import org.jgraph.graph.VertexView;
+import org.jgrapht.ListenableGraph;
+import org.jgrapht.UndirectedGraph;
+import org.jgrapht.ext.JGraphModelAdapter;
+import org.jgrapht.graph.DirectedWeightedMultigraph;
+import org.jgrapht.graph.ListenableDirectedGraph;
+import org.jgrapht.graph.SimpleGraph;
+import siecipetriego.model.CustomGraph;
+import siecipetriego.model.Miejsce;
+import siecipetriego.model.Przejscie;
+import siecipetriego.model.Vertex;
+import siecipetriego.model.Edge;
+
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ *
+ * @author Mateusz
+ */
+public class GUI extends javax.swing.JFrame {
+    
+    JGraph jGraph;
+    CustomGraph graphModel;
+    JGraphModelAdapter graphAdapter;
+    JScrollPane scrollPane;
+
+    /**
+     * Creates new form GUI
+     */
+    public GUI() {
+        initComponents();                                                // inicjalizacja komponentów GUI
+        graphModel = new CustomGraph();
+        
+        createGraph(graphModel);                                         // stworzenie wizualizacji
+    }
+    
+    public void createGraph(CustomGraph customGraph){
+        
+        DirectedWeightedMultigraph<Vertex, DefaultEdge> g = new DirectedWeightedMultigraph<Vertex, DefaultEdge>(DefaultEdge.class);
+
+        for(Vertex vertex : customGraph.getVertices().values()){        // dodanie wierzchołków.
+            g.addVertex(vertex);
+        }
+        
+        for(Edge edge : customGraph.getEdges().values()){               // dodanie krawędzi.
+            g.addEdge(customGraph.getVertex(edge.getSourceId()), customGraph.getVertex(edge.getDestinationId()));
+        }
+        
+        JGraph old = jGraph;
+        
+        //for(old.getGraphLayoutCache().getCellViews())
+        
+        graphAdapter = new JGraphModelAdapter(g);
+        jGraph = new JGraph(graphAdapter);
+        revalidateGraphVertexPosition(jGraph);
+        jGraph.refresh();
+        adjustGraphDisplay();
+        refreshGraph(graphAdapter, null);
+    }
+    
+    public void adjustGraphDisplay(){
+        jGraph.setConnectable(false);                                    // zablokowanie niektórych możliwości edycji grafu
+        jGraph.setDisconnectable(false);
+        jGraph.setCloneable(false);
+    }
+    
+    public void revalidateModelVertexPosition(JGraph oldGraph){
+        
+        for(CellView view : oldGraph.getGraphLayoutCache().getCellViews()){
+            if(view instanceof VertexView){
+                Vertex oldVertex = (Vertex)((DefaultGraphCell)view.getCell()).getUserObject();
+                Vertex newVertex = graphModel.getVertex(oldVertex.getID());
+                Rectangle2D rectangle = (Rectangle2D)view.getAllAttributes().get("bounds");
+                newVertex.setX((int)rectangle.getX());
+                newVertex.setY((int)rectangle.getY());
+                newVertex.setWidth((int)rectangle.getWidth());
+                newVertex.setHeight((int)rectangle.getHeight());
+            }
+        }
+    }
+    
+    public void revalidateGraphVertexPosition(JGraph newGrah){
+        Map attributeMap;
+        Map nestedMap = new Hashtable();
+        
+        for(CellView view : newGrah.getGraphLayoutCache().getCellViews()){
+            if(view instanceof VertexView){
+                Vertex oldVertex = (Vertex)((DefaultGraphCell)view.getCell()).getUserObject();
+                Vertex newVertex = graphModel.getVertex(oldVertex.getID());
+                attributeMap = new Hashtable();
+                GraphConstants.setBounds(attributeMap, new Rectangle2D.Double(newVertex.getX(), newVertex.getY(), newVertex.getWidth(), newVertex.getHeight()));
+                nestedMap.put(view, attributeMap);
+                //GraphConstants.setBounds(view.getAllAttributes(), new Rectangle2D.Double(newVertex.getX(), newVertex.getY(), newVertex.getWidth(), newVertex.getHeight()));
+            }
+        }
+        jGraph.getGraphLayoutCache().edit(nestedMap);
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        tabbedPane = new javax.swing.JTabbedPane();
+        resultPanel = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jPanel2 = new javax.swing.JPanel();
+        addPanel1 = new javax.swing.JPanel();
+        addPlaceButton = new javax.swing.JButton();
+        addPassageButton = new javax.swing.JButton();
+        addConnectionButton = new javax.swing.JButton();
+        removePanel = new javax.swing.JPanel();
+        removePlaceButton = new javax.swing.JButton();
+        removePassageButton = new javax.swing.JButton();
+        removeConnectionButton = new javax.swing.JButton();
+        optionPanel = new javax.swing.JPanel();
+        option1Button = new javax.swing.JButton();
+        option2Button = new javax.swing.JButton();
+        option3Button = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        matrix1Button = new javax.swing.JButton();
+        matrix2Button = new javax.swing.JButton();
+        matrix3Button = new javax.swing.JButton();
+        simulationPanel = new javax.swing.JPanel();
+        stopSimulationButton = new javax.swing.JButton();
+        startSimulationButton = new javax.swing.JButton();
+        stepButton = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        javax.swing.GroupLayout resultPanelLayout = new javax.swing.GroupLayout(resultPanel);
+        resultPanel.setLayout(resultPanelLayout);
+        resultPanelLayout.setHorizontalGroup(
+            resultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 500, Short.MAX_VALUE)
+        );
+        resultPanelLayout.setVerticalGroup(
+            resultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 843, Short.MAX_VALUE)
+        );
+
+        tabbedPane.addTab("Wyniki", resultPanel);
+
+        addPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Dodawanie:"));
+
+        addPlaceButton.setText("dodaj miejsce");
+        addPlaceButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addPlaceButtonActionPerformed(evt);
+            }
+        });
+
+        addPassageButton.setText("dodaj przejście");
+        addPassageButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addPassageButtonActionPerformed(evt);
+            }
+        });
+
+        addConnectionButton.setText("dodaj połączenie");
+        addConnectionButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addConnectionButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout addPanel1Layout = new javax.swing.GroupLayout(addPanel1);
+        addPanel1.setLayout(addPanel1Layout);
+        addPanel1Layout.setHorizontalGroup(
+            addPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(addPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(addPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(addConnectionButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(addPassageButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(addPlaceButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        addPanel1Layout.setVerticalGroup(
+            addPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(addPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(addPlaceButton)
+                .addGap(18, 18, 18)
+                .addComponent(addPassageButton)
+                .addGap(18, 18, 18)
+                .addComponent(addConnectionButton)
+                .addContainerGap())
+        );
+
+        removePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Usuwanie:"));
+
+        removePlaceButton.setText("usuń miejsce");
+        removePlaceButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removePlaceButtonActionPerformed(evt);
+            }
+        });
+
+        removePassageButton.setText("usuń przejście");
+
+        removeConnectionButton.setText("usuń połączenie");
+
+        javax.swing.GroupLayout removePanelLayout = new javax.swing.GroupLayout(removePanel);
+        removePanel.setLayout(removePanelLayout);
+        removePanelLayout.setHorizontalGroup(
+            removePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(removePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(removePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(removeConnectionButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(removePassageButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(removePlaceButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        removePanelLayout.setVerticalGroup(
+            removePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(removePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(removePlaceButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(removePassageButton)
+                .addGap(18, 18, 18)
+                .addComponent(removeConnectionButton)
+                .addContainerGap())
+        );
+
+        optionPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Reprezentacja:"));
+
+        option1Button.setText("Graf osiągalności");
+
+        option2Button.setText("Drzewo pokrycia");
+        option2Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                option2ButtonActionPerformed(evt);
+            }
+        });
+
+        option3Button.setText("Graf pokrycia");
+
+        javax.swing.GroupLayout optionPanelLayout = new javax.swing.GroupLayout(optionPanel);
+        optionPanel.setLayout(optionPanelLayout);
+        optionPanelLayout.setHorizontalGroup(
+            optionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(optionPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(optionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(option3Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(option1Button, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(option2Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        optionPanelLayout.setVerticalGroup(
+            optionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(optionPanelLayout.createSequentialGroup()
+                .addComponent(option1Button, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(option2Button, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(option3Button, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Macierze:"));
+
+        matrix1Button.setText("Macierz wejść");
+
+        matrix2Button.setText("Macierz wyjść");
+
+        matrix3Button.setText("Macierz incydencji");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(matrix3Button, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(matrix2Button, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(matrix1Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(matrix1Button, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(matrix2Button, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(matrix3Button, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        simulationPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Symulacja"));
+
+        stopSimulationButton.setBackground(new java.awt.Color(204, 51, 0));
+        stopSimulationButton.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        stopSimulationButton.setText("Stop");
+
+        startSimulationButton.setBackground(new java.awt.Color(0, 204, 0));
+        startSimulationButton.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        startSimulationButton.setText("Start");
+
+        stepButton.setBackground(new java.awt.Color(204, 204, 0));
+        stepButton.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        stepButton.setText("Krok");
+
+        javax.swing.GroupLayout simulationPanelLayout = new javax.swing.GroupLayout(simulationPanel);
+        simulationPanel.setLayout(simulationPanelLayout);
+        simulationPanelLayout.setHorizontalGroup(
+            simulationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, simulationPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(startSimulationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(stepButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(stopSimulationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        simulationPanelLayout.setVerticalGroup(
+            simulationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(simulationPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(simulationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(stopSimulationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(stepButton, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(startSimulationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Edycja:"));
+
+        jButton1.setText("Edytuj przejście");
+
+        jButton2.setText("Edytuj miejsce");
+
+        jButton3.setText("Edytuj krawędź");
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton3))
+        );
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(simulationPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(addPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(optionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(removePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(89, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(removePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(addPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(optionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(simulationPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(310, Short.MAX_VALUE))
+        );
+
+        jScrollPane1.setViewportView(jPanel2);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(tabbedPane)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tabbedPane)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        tabbedPane.getAccessibleContext().setAccessibleName("Graph");
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void removePlaceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removePlaceButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_removePlaceButtonActionPerformed
+
+    private void addPlaceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPlaceButtonActionPerformed
+       
+        Miejsce miejsce = new Miejsce(graphModel.getNewID());
+        graphModel.addVertex(miejsce);
+        createGraph(graphModel);
+    }//GEN-LAST:event_addPlaceButtonActionPerformed
+
+    private void option2ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_option2ButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_option2ButtonActionPerformed
+
+    private void addPassageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPassageButtonActionPerformed
+        
+        Przejscie przejscie = new Przejscie(graphModel.getNewID());
+        graphModel.addVertex(przejscie);
+        createGraph(graphModel);
+    }//GEN-LAST:event_addPassageButtonActionPerformed
+
+    private void addConnectionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addConnectionButtonActionPerformed
+        // TODO add your handling code here:
+        
+        Object[] cells = jGraph.getSelectionCells();
+        if(cells.length != 2){
+            JOptionPane.showMessageDialog(this, "Aby dodać krawędź należy zaznaczyć dokładnie 2 wierzchołki!", "Błąd", JOptionPane.ERROR_MESSAGE);
+        }else{
+            
+            Vertex sourceVertex = (Vertex)((DefaultGraphCell)cells[0]).getUserObject();
+            Vertex destinationVertex = (Vertex)((DefaultGraphCell)cells[1]).getUserObject();
+            
+            
+            Edge edge = new Edge(sourceVertex.getID(), destinationVertex.getID());
+            graphModel.addEdge(edge);
+            createGraph(graphModel);
+        }
+    }//GEN-LAST:event_addConnectionButtonActionPerformed
+
+    
+    public void refreshGraph(GraphModel model, GraphLayoutCache view){
+        
+        if(tabbedPane.indexOfTab("Graf") != -1){
+            tabbedPane.remove(1);
+        }
+        //jGraph = new JGraph(model, view);
+        scrollPane = new JScrollPane(jGraph);
+        tabbedPane.addTab("Graf",scrollPane);
+        tabbedPane.revalidate();
+        tabbedPane.repaint();
+        tabbedPane.setSelectedIndex(1);
+    }
+    
+    
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new GUI().setVisible(true);
+            }
+        });
+    }
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addConnectionButton;
+    private javax.swing.JPanel addPanel1;
+    private javax.swing.JButton addPassageButton;
+    private javax.swing.JButton addPlaceButton;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton matrix1Button;
+    private javax.swing.JButton matrix2Button;
+    private javax.swing.JButton matrix3Button;
+    private javax.swing.JButton option1Button;
+    private javax.swing.JButton option2Button;
+    private javax.swing.JButton option3Button;
+    private javax.swing.JPanel optionPanel;
+    private javax.swing.JButton removeConnectionButton;
+    private javax.swing.JPanel removePanel;
+    private javax.swing.JButton removePassageButton;
+    private javax.swing.JButton removePlaceButton;
+    private javax.swing.JPanel resultPanel;
+    private javax.swing.JPanel simulationPanel;
+    private javax.swing.JButton startSimulationButton;
+    private javax.swing.JButton stepButton;
+    private javax.swing.JButton stopSimulationButton;
+    private javax.swing.JTabbedPane tabbedPane;
+    // End of variables declaration//GEN-END:variables
+}
