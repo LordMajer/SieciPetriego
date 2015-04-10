@@ -156,6 +156,11 @@ public class GUI1 extends javax.swing.JFrame {
         optionPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Reprezentacja:"));
 
         option1Button.setText("Graf osiągalności");
+        option1Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                option1ButtonActionPerformed(evt);
+            }
+        });
 
         option2Button.setText("Drzewo pokrycia");
         option2Button.addActionListener(new java.awt.event.ActionListener() {
@@ -165,6 +170,11 @@ public class GUI1 extends javax.swing.JFrame {
         });
 
         option3Button.setText("Graf pokrycia");
+        option3Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                option3ButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout optionPanelLayout = new javax.swing.GroupLayout(optionPanel);
         optionPanel.setLayout(optionPanelLayout);
@@ -192,10 +202,25 @@ public class GUI1 extends javax.swing.JFrame {
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Macierze:"));
 
         matrix1Button.setText("Macierz wejść");
+        matrix1Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                matrix1ButtonActionPerformed(evt);
+            }
+        });
 
         matrix2Button.setText("Macierz wyjść");
+        matrix2Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                matrix2ButtonActionPerformed(evt);
+            }
+        });
 
         matrix3Button.setText("Macierz incydencji");
+        matrix3Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                matrix3ButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -305,14 +330,29 @@ public class GUI1 extends javax.swing.JFrame {
         stopSimulationButton.setBackground(new java.awt.Color(204, 51, 0));
         stopSimulationButton.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         stopSimulationButton.setText("Stop");
+        stopSimulationButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stopSimulationButtonActionPerformed(evt);
+            }
+        });
 
         startSimulationButton.setBackground(new java.awt.Color(0, 204, 0));
         startSimulationButton.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         startSimulationButton.setText("Start");
+        startSimulationButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                startSimulationButtonActionPerformed(evt);
+            }
+        });
 
         stepButton.setBackground(new java.awt.Color(204, 204, 0));
         stepButton.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         stepButton.setText("Krok");
+        stepButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stepButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout simulationPanelLayout = new javax.swing.GroupLayout(simulationPanel);
         simulationPanel.setLayout(simulationPanelLayout);
@@ -355,6 +395,11 @@ public class GUI1 extends javax.swing.JFrame {
         });
 
         editEdgeButton.setText("Edytuj krawędź");
+        editEdgeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editEdgeButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -545,6 +590,42 @@ public class GUI1 extends javax.swing.JFrame {
         EditPlacePanel editplacePanel = new EditPlacePanel(this, "Edycja miejsca");
         tabbedPane.setSelectedIndex(0);         // przejście do zakładki wyniki
     }//GEN-LAST:event_editPlaceButtonActionPerformed
+
+    private void editEdgeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editEdgeButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_editEdgeButtonActionPerformed
+
+    private void matrix1ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_matrix1ButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_matrix1ButtonActionPerformed
+
+    private void matrix2ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_matrix2ButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_matrix2ButtonActionPerformed
+
+    private void matrix3ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_matrix3ButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_matrix3ButtonActionPerformed
+
+    private void option1ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_option1ButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_option1ButtonActionPerformed
+
+    private void option3ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_option3ButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_option3ButtonActionPerformed
+
+    private void startSimulationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startSimulationButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_startSimulationButtonActionPerformed
+
+    private void stepButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stepButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_stepButtonActionPerformed
+
+    private void stopSimulationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopSimulationButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_stopSimulationButtonActionPerformed
 
     
     public void refreshGraphTab(){

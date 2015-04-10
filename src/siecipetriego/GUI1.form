@@ -146,6 +146,9 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Graf osi&#x105;galno&#x15b;ci"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="option1ButtonActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JButton" name="option2Button">
                   <Properties>
@@ -159,6 +162,9 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Graf pokrycia"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="option3ButtonActionPerformed"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>
@@ -202,16 +208,25 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Macierz wej&#x15b;&#x107;"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="matrix1ButtonActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JButton" name="matrix2Button">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Macierz wyj&#x15b;&#x107;"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="matrix2ButtonActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JButton" name="matrix3Button">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Macierz incydencji"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="matrix3ButtonActionPerformed"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>
@@ -377,6 +392,9 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="Stop"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="stopSimulationButtonActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JButton" name="startSimulationButton">
                   <Properties>
@@ -388,6 +406,9 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="Start"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="startSimulationButtonActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JButton" name="stepButton">
                   <Properties>
@@ -399,6 +420,9 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="Krok"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="stepButtonActionPerformed"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>
@@ -453,6 +477,9 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Edytuj kraw&#x119;d&#x17a;"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editEdgeButtonActionPerformed"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>
