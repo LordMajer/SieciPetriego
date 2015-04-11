@@ -16,11 +16,11 @@ import javax.swing.JFrame;
  */
 public class EditEdgePanel extends JDialog {
 
-    private HashMap<String, String> returnValues;
+    private HashMap<String, Object> returnValues;
     /**
      * Creates new form EditEdgePanel
      */
-    public EditEdgePanel(JFrame parent, String title, boolean modal, HashMap<String, String> values) {
+    public EditEdgePanel(JFrame parent, String title, boolean modal, HashMap<String, Object> values) {
         super(parent, title, modal);
         initComponents();
         if(parent != null){

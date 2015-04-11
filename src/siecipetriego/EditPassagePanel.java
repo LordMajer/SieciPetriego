@@ -16,11 +16,11 @@ import javax.swing.JFrame;
  */
 public class EditPassagePanel extends JDialog {
 
-    private HashMap<String, String> returnValues;
+    private HashMap<String, Object> returnValues;
     /**
      * Creates new form EditPassagePanel
      */
-    public EditPassagePanel(JFrame parent, String title, boolean modal, HashMap<String, String> values) {
+    public EditPassagePanel(JFrame parent, String title, boolean modal, HashMap<String, Object> values) {
         super(parent, title, modal);
         initComponents();
         if(parent != null){

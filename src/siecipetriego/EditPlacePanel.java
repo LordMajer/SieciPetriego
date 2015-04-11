@@ -17,11 +17,11 @@ import javax.swing.JTabbedPane;
  */
 public class EditPlacePanel extends JDialog {
 
-    private HashMap<String, String> returnValues;
+    private HashMap<String, Object> returnValues;
     /**
      * Creates new form EditPlacePanel
      */
-    public EditPlacePanel(JFrame parent, String title, boolean modal, HashMap<String, String> values) {
+    public EditPlacePanel(JFrame parent, String title, boolean modal, HashMap<String, Object> values) {
         super(parent, title, modal);
         initComponents();
         if(parent != null){
@@ -43,7 +43,7 @@ public class EditPlacePanel extends JDialog {
      */
     
     public static void main(String[] args){
-        EditPlacePanel editPlacePanel = new EditPlacePanel(null, "Edycja miejsca", true, new HashMap<String, String>());
+        EditPlacePanel editPlacePanel = new EditPlacePanel(null, "Edycja miejsca", true, new HashMap<String, Object>());
         
     }
     

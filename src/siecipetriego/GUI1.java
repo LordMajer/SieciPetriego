@@ -399,8 +399,8 @@ public class GUI1 extends javax.swing.JFrame {
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
+                .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -571,20 +571,35 @@ public class GUI1 extends javax.swing.JFrame {
         revalidateModelVertexPosition(jGraph);
         Object[] cells = jGraph.getSelectionCells();
         if(cells.length == 1){
-            // edycja miejsca
+            // edycja miejsca lub przejścia
             
             Object obj = ((DefaultGraphCell)cells[0]).getUserObject();
             if(obj instanceof Miejsce){
                 
-                HashMap<String, String> values = new HashMap<String, String>();
+                HashMap<String, Object> values = new HashMap<String, Object>();
+                values.put("Object",obj);
                 EditPlacePanel editPlacePanel = new EditPlacePanel(this, "Edycja miejsca", true, values);
+                // sprawdzenie czy należy edytować zawartość miejsca: Edycja jeśli status ok
+                if(values.get("Status") != null && values.get("Status").equals("Ok") ){
+                    
+                }
                 System.out.println(values);
                 
             }else if(obj instanceof Przejscie){
                 
                 System.out.println("Przejscie");
-                HashMap<String, String> values = new HashMap<String, String>();
+                HashMap<String, Object> values = new HashMap<String, Object>();
+                values.put("Object", obj);
                 EditPassagePanel editPassagePanel = new EditPassagePanel(this, "Edycja miejsca", true, values);
+                // sprawdzenie czy należy edytować zawartość przejścia: Edycja jeśli status ok
+                if(values.get("Status") != null && values.get("Status").equals("Ok") ){
+                    Miejsce modelVertex = (Miejsce)graphModel.getVertex(((Miejsce)values.get("Object")).getID());
+                    Miejsce changedVertex = (Miejsce)values.get("Object");
+                    // update:
+                    modelVertex.setName(changedVertex.getName());
+                    modelVertex.setTokenCount(changedVertex.getTokenCount());
+                    modelVertex.setCapacity(changedVertex.getCapacity());
+                }
                 System.out.println(values);
                 
             }else{
@@ -593,7 +608,7 @@ public class GUI1 extends javax.swing.JFrame {
         }else if(cells.length == 2){
             // edycja krawędzi
         }else{
-            JOptionPane.showMessageDialog(this, "Aby Edytowac należy zaznaczyć dokładnie jeden element lub dwa elementy w celu edycji krawędzi między nimi!", "Błąd", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Aby Edytowac należy zaznaczyć dokładnie jeden element lub dwa elementy w celu edycji krawędzi pomiędzy nimi!", "Błąd", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_editButtonActionPerformed
 
