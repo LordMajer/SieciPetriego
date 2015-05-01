@@ -1,14 +1,19 @@
 package siecipetriego;
 
+import com.sun.media.sound.ModelAbstractChannelMixer;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
+import java.util.TreeMap;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import org.jgraph.JGraph;
 import org.jgraph.graph.AttributeMap;
 import org.jgraph.graph.CellView;
@@ -446,17 +451,7 @@ public class GUI1 extends javax.swing.JFrame {
 
         jScrollPane2.setViewportView(jPanel5);
 
-        javax.swing.GroupLayout resultsPanelLayout = new javax.swing.GroupLayout(resultsPanel);
-        resultsPanel.setLayout(resultsPanelLayout);
-        resultsPanelLayout.setHorizontalGroup(
-            resultsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1079, Short.MAX_VALUE)
-        );
-        resultsPanelLayout.setVerticalGroup(
-            resultsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 519, Short.MAX_VALUE)
-        );
-
+        resultsPanel.setLayout(new java.awt.BorderLayout());
         tabbedPane.addTab("Wyniki", resultsPanel);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -465,7 +460,7 @@ public class GUI1 extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(tabbedPane)
+                .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 1084, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -537,6 +532,7 @@ public class GUI1 extends javax.swing.JFrame {
 
     private void option2ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_option2ButtonActionPerformed
         // TODO add your handling code here:
+        tabbedPane.setSelectedIndex(0);
         System.out.println("Drzewo pokrycia...");
     }//GEN-LAST:event_option2ButtonActionPerformed
 
@@ -581,32 +577,61 @@ public class GUI1 extends javax.swing.JFrame {
                 EditPlacePanel editPlacePanel = new EditPlacePanel(this, "Edycja miejsca", true, values);
                 // sprawdzenie czy należy edytować zawartość miejsca: Edycja jeśli status ok
                 if(values.get("Status") != null && values.get("Status").equals("Ok") ){
-                    
+                    System.out.println("Następuje zmiana danych miejsca.");
+                    Miejsce modelVertex = (Miejsce)graphModel.getVertex(((Miejsce)values.get("Object")).getID());
+                    Miejsce changedVertex = (Miejsce)values.get("ReturnObject");
+                    // update:
+                    modelVertex.setName(changedVertex.getName());
+                    modelVertex.setTokenCount(changedVertex.getTokenCount());
+                    modelVertex.setType(changedVertex.getType());
+                    modelVertex.setCapacity(changedVertex.getCapacity());
                 }
                 System.out.println(values);
-                
+                createGraph(graphModel);
             }else if(obj instanceof Przejscie){
                 
                 System.out.println("Przejscie");
                 HashMap<String, Object> values = new HashMap<String, Object>();
                 values.put("Object", obj);
-                EditPassagePanel editPassagePanel = new EditPassagePanel(this, "Edycja miejsca", true, values);
+                EditPassagePanel editPassagePanel = new EditPassagePanel(this, "Edycja przejscia", true, values);
+                
                 // sprawdzenie czy należy edytować zawartość przejścia: Edycja jeśli status ok
                 if(values.get("Status") != null && values.get("Status").equals("Ok") ){
-                    Miejsce modelVertex = (Miejsce)graphModel.getVertex(((Miejsce)values.get("Object")).getID());
-                    Miejsce changedVertex = (Miejsce)values.get("Object");
+                    Przejscie modelVertex = (Przejscie)graphModel.getVertex(((Przejscie)values.get("Object")).getID());
+                    Przejscie changedVertex = (Przejscie)values.get("ReturnObject");
                     // update:
                     modelVertex.setName(changedVertex.getName());
-                    modelVertex.setTokenCount(changedVertex.getTokenCount());
-                    modelVertex.setCapacity(changedVertex.getCapacity());
+                    modelVertex.setPriority(changedVertex.getPriority());
                 }
                 System.out.println(values);
-                
+                createGraph(graphModel);
             }else{
                 JOptionPane.showMessageDialog(this, "Wystąpił błąd podczas zaznaczania!", "Błąd", JOptionPane.ERROR_MESSAGE);
             }
         }else if(cells.length == 2){
             // edycja krawędzi
+            // pozyskanie krawędzi:
+            System.out.println("Edycja krawędzi");
+            HashMap<String, Object> values = new HashMap<String, Object>();
+            Vertex sourceObject = (Vertex)((DefaultGraphCell)cells[0]).getUserObject();
+            Vertex destinationObject = (Vertex)((DefaultGraphCell)cells[1]).getUserObject();
+            Edge chosenEdge = new Edge(sourceObject.getID(), destinationObject.getID());
+            System.out.println(chosenEdge);
+            Edge foundEdge = graphModel.getEdge(chosenEdge.getKey());
+            
+            if(foundEdge != null){
+                values.put("Object", foundEdge);
+                EditEdgePanel editEdgePanel = new EditEdgePanel(this, "Edycja krawędzi", true, values);
+                if(values.get("Status") != null && values.get("Status").equals("Ok") ){
+                    Edge modelEdge = (Edge)graphModel.getEdge(((Edge)values.get("Object")).getKey());
+                    Edge changedVertex = (Edge)values.get("ReturnObject");
+                    // update:
+                    modelEdge.setCapacity(changedVertex.getCapacity());
+                }
+                createGraph(graphModel);
+            }else{
+                JOptionPane.showMessageDialog(this, "Brak takiej krawedzi!", "Błąd", JOptionPane.ERROR_MESSAGE);
+            }
         }else{
             JOptionPane.showMessageDialog(this, "Aby Edytowac należy zaznaczyć dokładnie jeden element lub dwa elementy w celu edycji krawędzi pomiędzy nimi!", "Błąd", JOptionPane.ERROR_MESSAGE);
         }
@@ -614,26 +639,100 @@ public class GUI1 extends javax.swing.JFrame {
 
     private void matrix1ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_matrix1ButtonActionPerformed
         // TODO add your handling code here:
+        resultsPanel.removeAll();
+        resultsPanel.revalidate();
+        int[][] tab = graphModel.macierzWejsc();
+        TreeMap<Integer, Miejsce> places;            // treemap zachowuje kolejnosc kluczy
+        TreeMap<Integer, Przejscie> passages;
+        
+        JTextArea textArea = new JTextArea();
+        textArea.setFont(new Font("monospaced", Font.PLAIN, 12));
+        places = graphModel.getPlaces();
+        passages = graphModel.getPassages();
+        for(int i = 0; i < tab.length; i++){
+            for(int j = 0; j <tab[i].length; j++){
+                System.out.print(tab[i][j] + " ");
+                textArea.append(tab[i][j] + " ");
+            }
+            System.out.println();
+            textArea.append("\n");
+        }
+        
+        // dodanie JTable do okna wynikowego:
+        tabbedPane.addTab("Graf",scrollPane);
+        tabbedPane.revalidate();
+        tabbedPane.repaint();
+        
+        resultsPanel.add(textArea);
+        tabbedPane.setSelectedIndex(0);
         System.out.println("Macierz wejść...");
     }//GEN-LAST:event_matrix1ButtonActionPerformed
 
     private void matrix2ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_matrix2ButtonActionPerformed
         // TODO add your handling code here:
-        System.out.println("Macierz wyjść...");
+        resultsPanel.removeAll();
+        resultsPanel.revalidate();
+        int[][] tab = graphModel.macierzWyjsc();
+        TreeMap<Integer, Miejsce> places;            // treemap zachowuje kolejnosc kluczy
+        TreeMap<Integer, Przejscie> passages;
+        
+        JTextArea textArea = new JTextArea();
+        textArea.setFont(new Font("monospaced", Font.PLAIN, 12));
+        places = graphModel.getPlaces();
+        passages = graphModel.getPassages();
+        
+        
+        
+        for(int i = 0; i < tab.length; i++){
+            for(int j = 0; j <tab[i].length; j++){
+                System.out.print(tab[i][j] + " ");
+                textArea.append(tab[i][j] + " ");
+            }
+            System.out.println();
+            textArea.append("\n");
+        }
+        
+        
+        resultsPanel.add(textArea);
+        tabbedPane.setSelectedIndex(0);
+        System.out.println("MacierztabbedPane.setSelectedIndex(0); wyjść...");
     }//GEN-LAST:event_matrix2ButtonActionPerformed
 
     private void matrix3ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_matrix3ButtonActionPerformed
         // TODO add your handling code here:
+        resultsPanel.removeAll();
+        resultsPanel.revalidate();
+        int[][] macierzIncydencji = graphModel.macierzIncydencji();
+        TreeMap<Integer, Miejsce> places;            // treemap zachowuje kolejnosc kluczy
+        TreeMap<Integer, Przejscie> passages;
+        
+        JTextArea textArea = new JTextArea();
+        textArea.setFont(new Font("monospaced", Font.PLAIN, 12));
+        places = graphModel.getPlaces();
+        passages = graphModel.getPassages();
+        for(int i = 0; i < macierzIncydencji.length; i++){
+            for(int j = 0; j < macierzIncydencji[i].length; j++){
+                System.out.print(macierzIncydencji[i][j] + " ");
+                textArea.append(macierzIncydencji[i][j] + " ");
+            }
+            System.out.println();
+            textArea.append("\n");
+        }
+        
+         resultsPanel.add(textArea);
+        tabbedPane.setSelectedIndex(0);
         System.out.println("Macierz incydencji...");
     }//GEN-LAST:event_matrix3ButtonActionPerformed
 
     private void option1ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_option1ButtonActionPerformed
         // TODO add your handling code here:
+        tabbedPane.setSelectedIndex(0);
         System.out.println("Graf osiągalności...");
     }//GEN-LAST:event_option1ButtonActionPerformed
 
     private void option3ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_option3ButtonActionPerformed
         // TODO add your handling code here:
+        tabbedPane.setSelectedIndex(0);
         System.out.println("Graf pokrycia...");
     }//GEN-LAST:event_option3ButtonActionPerformed
 
@@ -658,11 +757,11 @@ public class GUI1 extends javax.swing.JFrame {
     }//GEN-LAST:event_startSimulationButtonActionPerformed
 
     private void stepButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stepButtonActionPerformed
-        // TODO add your handling code here:
+        System.out.println("Krok symulacji..");
     }//GEN-LAST:event_stepButtonActionPerformed
 
     private void stopSimulationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopSimulationButtonActionPerformed
-        // TODO add your handling code here:
+        System.out.println("Stop symulacji..");
     }//GEN-LAST:event_stopSimulationButtonActionPerformed
 
     

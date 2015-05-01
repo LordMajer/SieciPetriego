@@ -9,6 +9,7 @@ import java.awt.Point;
 import java.util.HashMap;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import siecipetriego.model.Edge;
 
 /**
  *
@@ -21,7 +22,8 @@ public class EditEdgePanel extends JDialog {
      * Creates new form EditEdgePanel
      */
     public EditEdgePanel(JFrame parent, String title, boolean modal, HashMap<String, Object> values) {
-        super(parent, title, modal);
+        
+        super(parent, title, modal);                                                                                // inicjalizacja okna dialogowego
         initComponents();
         if(parent != null){
             Dimension parentSize = parent.getSize();
@@ -29,7 +31,10 @@ public class EditEdgePanel extends JDialog {
             setLocation(parentLocation.x + parentSize.width / 4, parentLocation.y + parentSize.height / 4);
         }
         returnValues = values;
-        setPreferredSize(new Dimension(370,255));
+        
+        Edge edge = (Edge)returnValues.get("Object");                                                               // pobranie danych modyfikowanej krawędzi
+        capacityTextField.setText(new Integer(edge.getCapacity()).toString());                                      // wypełnienie pól formularza
+        setPreferredSize(new Dimension(370,200));
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         pack();
         setVisible(true);
@@ -44,50 +49,65 @@ public class EditEdgePanel extends JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        tokenCountLabel = new javax.swing.JLabel();
+        conditionLabel = new javax.swing.JLabel();
         cancelButton = new javax.swing.JButton();
         titleLabel = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        nameLabel = new javax.swing.JLabel();
-        tocenCountTextField = new javax.swing.JTextField();
+        capacityTextField = new javax.swing.JTextField();
         submitButton = new javax.swing.JButton();
-        nameTextField = new javax.swing.JTextField();
 
-        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        tokenCountLabel.setText("Warunek:");
-        add(tokenCountLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 81, 130, 25));
+        conditionLabel.setText("Pojemność:");
+        getContentPane().add(conditionLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 130, 25));
 
         cancelButton.setBackground(new java.awt.Color(204, 51, 0));
         cancelButton.setText("Anuluj");
-        add(cancelButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(112, 117, 96, 34));
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
+        getContentPane().add(cancelButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 90, 96, 34));
 
         titleLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         titleLabel.setText("Edycja krawędzi:");
-        add(titleLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 11, 122, -1));
-        add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 34, 259, 10));
-
-        nameLabel.setText("Nazwa:");
-        add(nameLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 130, 25));
-
-        tocenCountTextField.setText("jTextField1");
-        add(tocenCountTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(144, 81, 200, 25));
+        getContentPane().add(titleLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 11, 122, -1));
+        getContentPane().add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 34, 259, 10));
+        getContentPane().add(capacityTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 50, 200, 25));
 
         submitButton.setBackground(new java.awt.Color(51, 204, 0));
         submitButton.setText("Zatwierdź");
-        add(submitButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 117, 96, 34));
-
-        nameTextField.setText("jTextField1");
-        add(nameTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(144, 50, 200, 25));
+        submitButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                submitButtonActionPerformed(evt);
+            }
+        });
+        getContentPane().add(submitButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, 96, 34));
     }// </editor-fold>//GEN-END:initComponents
+
+    private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
+        returnValues.put("Status", "Ok");                                               // aktualizacja statusu 
+        Edge edge = new Edge((Edge)returnValues.get("Object"));                         // stworzenie nowej krawędzi
+        
+        edge.setCapacity(Integer.parseInt(capacityTextField.getText()));                // pobranie danych z pól formularza i zapisanie do nowego obiektu
+        returnValues.put("ReturnObject", edge);                                         // zapisanie nowego obiektu do wartości zwracanych
+        setVisible(false);                                                              // usunięcie okna dialogowego
+        dispose();
+    }//GEN-LAST:event_submitButtonActionPerformed
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        returnValues.put("Status", "Cancel");                                               // aktualizacja statusu
+        setVisible(false);                                                                  // usunięcie okna dialogowego
+        dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
+    private javax.swing.JTextField capacityTextField;
+    private javax.swing.JLabel conditionLabel;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JLabel nameLabel;
-    private javax.swing.JTextField nameTextField;
     private javax.swing.JButton submitButton;
     private javax.swing.JLabel titleLabel;
-    private javax.swing.JTextField tocenCountTextField;
-    private javax.swing.JLabel tokenCountLabel;
     // End of variables declaration//GEN-END:variables
 }

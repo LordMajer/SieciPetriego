@@ -12,30 +12,38 @@ public class Przejscie extends Vertex{
     
     
     private int priority;       // priorytet przejścia -1 oznaczać bedzie brak priorytetu
-    private int time;           // czas przejścia -1 oznaczać będzie brak czasu
+    //private int time;           // czas przejścia -1 oznaczać będzie brak czasu
     
     public Przejscie(int id){
         super(id);
         name = "T" + id;
         priority = -1;
-        time = -1;
+        //time = -1;
+    }
+    
+    public Przejscie(Przejscie obj){
+        super(obj.getID());
+        name = obj.getName();
+        priority = obj.getPriority();
     }
     
     public void setPriority(int priority){
         this.priority = priority;
     }
     
-    public void setTime(int time){
+    /*public void setTime(int time){
         this.time = time;
     }
+    */
     
     public int getPriority(){
         return priority;
     }
     
-    public int getTime(){
+    /*public int getTime(){
         return time;
     }
+    */
     
     @Override
     public String toString(){
@@ -52,6 +60,6 @@ public class Przejscie extends Vertex{
             buffer.append(predecessor + " ");
         }
         buffer.append("\n");
-        return "Przejście: " + name + "\n ID: " + id + "\nPriorytet: " + priority + "\nCzas: " + time + "\n" + buffer.toString();
+        return "Przejście: " + name + "\n ID: " + id + "\nPriorytet: " + priority + "\n" + buffer.toString();
     }
 }

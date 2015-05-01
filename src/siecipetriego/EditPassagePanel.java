@@ -9,6 +9,7 @@ import java.awt.Point;
 import java.util.HashMap;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import siecipetriego.model.Przejscie;
 
 /**
  *
@@ -21,7 +22,8 @@ public class EditPassagePanel extends JDialog {
      * Creates new form EditPassagePanel
      */
     public EditPassagePanel(JFrame parent, String title, boolean modal, HashMap<String, Object> values) {
-        super(parent, title, modal);
+        
+        super(parent, title, modal);                                                                            // inicjalizacja okna dialogowego
         initComponents();
         if(parent != null){
             Dimension parentSize = parent.getSize();
@@ -29,6 +31,11 @@ public class EditPassagePanel extends JDialog {
             setLocation(parentLocation.x + parentSize.width / 4, parentLocation.y + parentSize.height / 4);
         }
         returnValues = values;
+        
+        Przejscie vertex = (Przejscie)values.get("Object");                                                     // pobranie dantych modyfikowanego przejścia                                            
+        nameTextField.setText(vertex.getName());                                                                // wypełnienie pól formularza:
+        priorityTextField.setText(new Integer(vertex.getPriority()).toString());
+        
         setPreferredSize(new Dimension(370,255));
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         pack();
@@ -49,55 +56,71 @@ public class EditPassagePanel extends JDialog {
         titleLabel = new javax.swing.JLabel();
         cancelButton = new javax.swing.JButton();
         tokenCountLabel = new javax.swing.JLabel();
-        capacityLabel = new javax.swing.JLabel();
         nameTextField = new javax.swing.JTextField();
-        capacityTextField = new javax.swing.JTextField();
         submitButton = new javax.swing.JButton();
-        tocenCountTextField = new javax.swing.JTextField();
+        priorityTextField = new javax.swing.JTextField();
 
-        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         nameLabel.setText("Przepustowość:");
-        add(nameLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 130, 25));
-        add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 34, 259, 10));
+        getContentPane().add(nameLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 130, 25));
+        getContentPane().add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 34, 259, 10));
 
         titleLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         titleLabel.setText("Edycja przejścia:");
-        add(titleLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 11, 122, -1));
+        getContentPane().add(titleLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 11, 122, -1));
 
         cancelButton.setBackground(new java.awt.Color(204, 51, 0));
         cancelButton.setText("Anuluj");
-        add(cancelButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(112, 148, 96, 34));
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
+        getContentPane().add(cancelButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 120, 96, 34));
 
         tokenCountLabel.setText("Priorytet:");
-        add(tokenCountLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 81, 130, 25));
-
-        capacityLabel.setText("Czas:");
-        add(capacityLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 112, 130, 25));
-
-        nameTextField.setText("jTextField1");
-        add(nameTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(144, 50, 200, 25));
-
-        capacityTextField.setText("jTextField1");
-        add(capacityTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(144, 112, 200, 25));
+        getContentPane().add(tokenCountLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 81, 130, 25));
+        getContentPane().add(nameTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(144, 50, 200, 25));
 
         submitButton.setBackground(new java.awt.Color(51, 204, 0));
         submitButton.setText("Zatwierdź");
-        add(submitButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 148, 96, 34));
-
-        tocenCountTextField.setText("jTextField1");
-        add(tocenCountTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(144, 81, 200, 25));
+        submitButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                submitButtonActionPerformed(evt);
+            }
+        });
+        getContentPane().add(submitButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 96, 34));
+        getContentPane().add(priorityTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(144, 81, 200, 25));
     }// </editor-fold>//GEN-END:initComponents
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+
+        returnValues.put("Status", "Cancel");                                           // aktualizacja statusu w zwracanych wartościach
+        setVisible(false);                                                              // usunięcie okna dialogowego
+        dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
+
+        returnValues.put("Status", "Ok");                                               // akatualizacja statusu w zwracanych wartościach
+        Przejscie przejscie = new Przejscie((Przejscie)returnValues.get("Object"));     // tworzenie nowego przejścia
+        
+        przejscie.setName(nameTextField.getText());                                     // pobranie danych z pól i zapisanie do nowego przejścia
+        przejscie.setPriority(Integer.parseInt(priorityTextField.getText()));
+        returnValues.put("ReturnObject", przejscie);                                    // dodanie nowego przejścia do wartości zwracanych
+        setVisible(false);                                                              // usunięcie okna dialogowego
+        dispose();
+    }//GEN-LAST:event_submitButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
-    private javax.swing.JLabel capacityLabel;
-    private javax.swing.JTextField capacityTextField;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JTextField nameTextField;
+    private javax.swing.JTextField priorityTextField;
     private javax.swing.JButton submitButton;
     private javax.swing.JLabel titleLabel;
-    private javax.swing.JTextField tocenCountTextField;
     private javax.swing.JLabel tokenCountLabel;
     // End of variables declaration//GEN-END:variables
 }

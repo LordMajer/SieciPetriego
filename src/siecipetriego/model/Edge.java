@@ -10,16 +10,20 @@ package siecipetriego.model;
  */
 public class Edge {
     
-    String condition;
-    int capacity;
-    int sourceId;
-    int destinationId;
+    String condition;           // warunek przypisany do krawędzi
+    int capacity;               // pojemność krawędzi- ilość tokenów które przechodza przez krawędź
+    int sourceId;               // id wierzchołka źródła
+    int destinationId;          // id wierzchołka docelowego
     
     public Edge(int source, int destination){
-        condition = null;                                           // warunek który może być przypisany krawędzi
-        capacity = 1;                                               // ilość tokenów które przechodza przez krawędź 
+        condition = null;                                           
+        capacity = 1;                                               
         sourceId = source;
         destinationId = destination;
+    }
+    
+    public Edge(Edge edge){
+        
     }
     
     public String getKey(){
@@ -36,5 +40,21 @@ public class Edge {
     
     public int getCapacity(){
         return capacity;
+    }
+    
+    public String getCondition(){
+        return condition;
+    }
+    
+    public void setCondition(String condition){
+        this.condition = condition;
+    }
+    
+    public void setCapacity(int capacity){
+        this.capacity = capacity;
+    }
+    
+    public String toString(){
+        return "Edge: " + this.getKey();
     }
 }

@@ -22,6 +22,14 @@ public class Miejsce extends Vertex{
         capacity = -1;
         type = null;
     }
+    
+    public Miejsce(Miejsce m){
+        super(m.getID());
+        name = m.getName();
+        tokenCount = m.getTokenCount();
+        capacity = m.getCapacity();
+        type = m.getType();
+    }
  
 // gettery
     

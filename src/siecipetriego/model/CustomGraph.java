@@ -251,7 +251,7 @@ public class CustomGraph{
         TreeMap<Integer, Przejscie> passages;
         int placeLicznik = 0;
         int passageLicznik = 0;
-        int[][] tab = new int[miejscaCount][przejsciaCount];
+        int[][] tab = new int[getPlaces().size()][getPassages().size()];
         ArrayList<Integer> idList;
         Edge edge;
         
@@ -269,8 +269,11 @@ public class CustomGraph{
                         tab[placeLicznik][passageLicznik] = edge.getCapacity();
                     }
                 }
+                System.out.println("licznik przejść: " + passageLicznik);
                 passageLicznik++;
             }
+            passageLicznik = 0;
+            System.out.println("licznik miejsc: " + passageLicznik);
             placeLicznik++;
         }
         
@@ -282,23 +285,82 @@ public class CustomGraph{
         TreeMap<Integer, Przejscie> passages;
         int placeLicznik = 0;
         int passageLicznik = 0;
-        int[][] tab = new int[miejscaCount][przejsciaCount];
+        int[][] tab = new int[getPlaces().size()][getPassages().size()];
         ArrayList<Integer> idList;
         Edge edge;
+        
+        places = getPlaces();
+        passages = getPassages();
+        
+        for(Miejsce miejsce : places.values()){
+            System.out.println(miejsce);
+            for(Przejscie przejscie : passages.values()){
+                System.out.println(przejscie);
+                idList = przejscie.getPredecessors();
+                for(int i = 0; i < przejscie.getPredecessors().size(); i++){
+                    if(idList.get(i) == miejsce.getID()){
+                        edge = edges.get(new Edge(miejsce.getID(), przejscie.getID()).getKey());
+                        tab[placeLicznik][passageLicznik] = edge.getCapacity();
+                    }
+                }
+                System.out.println("licznik przejść: " + passageLicznik);
+                passageLicznik++;
+            }
+            passageLicznik = 0;
+            System.out.println("licznik miejsc: " + passageLicznik);
+            placeLicznik++;
+        }
+        
         
         return tab;
     }
     
     public int[][] macierzIncydencji(){
-        TreeMap<Integer, Miejsce> places;            // treemap zachowuje kolejnosc kluczy
-        TreeMap<Integer, Przejscie> passages;
-        int placeLicznik = 0;
-        int passageLicznik = 0;
-        int[][] tab = new int[miejscaCount][przejsciaCount];
-        ArrayList<Integer> idList;
-        Edge edge;
         
-        return tab;
+        int[][] macierzWejsc = macierzWejsc();
+        int[][] macierzWyjsc = macierzWyjsc();
+        
+        int[][] macierzIncydencji = new int[macierzWejsc.length][macierzWejsc[0].length];
+        
+        for(int i = 0; i < macierzWejsc.length; i++){
+            for(int j = 0; j < macierzWejsc[i].length; j++){
+                macierzIncydencji[i][j] = (int)macierzWejsc[i][j] - (int)macierzWyjsc[i][j];
+            }
+        }
+        
+        return macierzIncydencji;
+    }
+    
+    public int getPassageCount(){
+        return przejsciaCount;
+    }
+    
+    public int getPlacesCount(){
+        return miejscaCount;
+    }
+    
+    public Object[] getPlacesIDs(){
+        TreeMap<Integer, Miejsce> places = getPlaces();
+        Object[] ids = new Object[places.size()];
+        int i =0;
+        for(Miejsce miejsce : places.values()){
+            ids[i] = miejsce.getName();
+            i++;
+        }
+        
+        return ids;
+    }
+    
+    public Object[] getPassageIDs(){
+        TreeMap<Integer, Przejscie> passages = getPassages();
+        Object[] ids = new Object[passages.size()];
+        int i =0;
+        for(Przejscie przejscie : passages.values()){
+            ids[i] = przejscie.getName();
+            i++;
+        }
+        
+        return ids;
     }
     
     public static void main(String[] args){

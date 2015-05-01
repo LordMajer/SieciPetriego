@@ -87,6 +87,10 @@ public class Vertex {
         position.setY(y);
     }
     
+    public void setPosition(Position position){
+        this.position = position;
+    }
+    
     public void addSuccessor(int successorId){
         successors.add(successorId);
     }
