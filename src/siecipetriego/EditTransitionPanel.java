@@ -6,37 +6,38 @@ package siecipetriego;
 
 import java.awt.Dimension;
 import java.awt.Point;
-import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import siecipetriego.model.Przejscie;
+import siecipetriego.model.Transition;
 
 /**
  *
  * @author Mateusz
  */
-public class EditPassagePanel extends JDialog {
+public class EditTransitionPanel extends JDialog {
 
-    private HashMap<String, Object> returnValues;
+    private Map<String, Object> returnValues;
+
     /**
      * Creates new form EditPassagePanel
      */
-    public EditPassagePanel(JFrame parent, String title, boolean modal, HashMap<String, Object> values) {
-        
+    public EditTransitionPanel(JFrame parent, String title, boolean modal, Map<String, Object> values) {
+
         super(parent, title, modal);                                                                            // inicjalizacja okna dialogowego
         initComponents();
-        if(parent != null){
+        if (parent != null) {
             Dimension parentSize = parent.getSize();
             Point parentLocation = parent.getLocation();
             setLocation(parentLocation.x + parentSize.width / 4, parentLocation.y + parentSize.height / 4);
         }
         returnValues = values;
-        
-        Przejscie vertex = (Przejscie)values.get("Object");                                                     // pobranie dantych modyfikowanego przejścia                                            
+
+        Transition vertex = (Transition) values.get("Object");                                                     // pobranie dantych modyfikowanego przejścia                                            
         nameTextField.setText(vertex.getName());                                                                // wypełnienie pól formularza:
-        priorityTextField.setText(new Integer(vertex.getPriority()).toString());
-        
-        setPreferredSize(new Dimension(370,255));
+        priorityTextField.setText(Integer.toString(vertex.getPriority()));
+
+        setPreferredSize(new Dimension(370, 255));
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         pack();
         setVisible(true);
@@ -104,11 +105,11 @@ public class EditPassagePanel extends JDialog {
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
 
         returnValues.put("Status", "Ok");                                               // akatualizacja statusu w zwracanych wartościach
-        Przejscie przejscie = new Przejscie((Przejscie)returnValues.get("Object"));     // tworzenie nowego przejścia
-        
-        przejscie.setName(nameTextField.getText());                                     // pobranie danych z pól i zapisanie do nowego przejścia
-        przejscie.setPriority(Integer.parseInt(priorityTextField.getText()));
-        returnValues.put("ReturnObject", przejscie);                                    // dodanie nowego przejścia do wartości zwracanych
+        Transition transition = new Transition((Transition) returnValues.get("Object"));     // tworzenie nowego przejścia
+
+        transition.setName(nameTextField.getText());                                     // pobranie danych z pól i zapisanie do nowego przejścia
+        transition.setPriority(Integer.parseInt(priorityTextField.getText()));
+        returnValues.put("ReturnObject", transition);                                    // dodanie nowego przejścia do wartości zwracanych
         setVisible(false);                                                              // usunięcie okna dialogowego
         dispose();
     }//GEN-LAST:event_submitButtonActionPerformed

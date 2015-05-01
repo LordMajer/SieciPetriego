@@ -6,7 +6,7 @@ package siecipetriego;
 
 import java.awt.Dimension;
 import java.awt.Point;
-import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import siecipetriego.model.Edge;
@@ -17,24 +17,25 @@ import siecipetriego.model.Edge;
  */
 public class EditEdgePanel extends JDialog {
 
-    private HashMap<String, Object> returnValues;
+    private Map<String, Object> returnValues;
+
     /**
      * Creates new form EditEdgePanel
      */
-    public EditEdgePanel(JFrame parent, String title, boolean modal, HashMap<String, Object> values) {
-        
+    public EditEdgePanel(JFrame parent, String title, boolean modal, Map<String, Object> values) {
+
         super(parent, title, modal);                                                                                // inicjalizacja okna dialogowego
         initComponents();
-        if(parent != null){
+        if (parent != null) {
             Dimension parentSize = parent.getSize();
             Point parentLocation = parent.getLocation();
             setLocation(parentLocation.x + parentSize.width / 4, parentLocation.y + parentSize.height / 4);
         }
         returnValues = values;
-        
-        Edge edge = (Edge)returnValues.get("Object");                                                               // pobranie danych modyfikowanej krawędzi
-        capacityTextField.setText(new Integer(edge.getCapacity()).toString());                                      // wypełnienie pól formularza
-        setPreferredSize(new Dimension(370,200));
+
+        Edge edge = (Edge) returnValues.get("Object");                                                               // pobranie danych modyfikowanej krawędzi
+        capacityTextField.setText(Integer.toString(edge.getCapacity()));                                            // wypełnienie pól formularza
+        setPreferredSize(new Dimension(370, 200));
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         pack();
         setVisible(true);
@@ -88,8 +89,8 @@ public class EditEdgePanel extends JDialog {
 
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
         returnValues.put("Status", "Ok");                                               // aktualizacja statusu 
-        Edge edge = new Edge((Edge)returnValues.get("Object"));                         // stworzenie nowej krawędzi
-        
+        Edge edge = new Edge((Edge) returnValues.get("Object"));                         // stworzenie nowej krawędzi
+
         edge.setCapacity(Integer.parseInt(capacityTextField.getText()));                // pobranie danych z pól formularza i zapisanie do nowego obiektu
         returnValues.put("ReturnObject", edge);                                         // zapisanie nowego obiektu do wartości zwracanych
         setVisible(false);                                                              // usunięcie okna dialogowego

@@ -1,37 +1,24 @@
 package siecipetriego;
 
-import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
-import java.util.Random;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import org.jgraph.JGraph;
 import org.jgraph.graph.CellView;
-import org.jgraph.graph.DefaultCellViewFactory;
 import org.jgraph.graph.DefaultEdge;
 import org.jgraph.graph.DefaultGraphCell;
-import org.jgraph.graph.DefaultGraphModel;
-import org.jgraph.graph.DefaultPort;
 import org.jgraph.graph.GraphConstants;
 import org.jgraph.graph.GraphLayoutCache;
 import org.jgraph.graph.GraphModel;
 import org.jgraph.graph.VertexView;
-import org.jgrapht.ListenableGraph;
-import org.jgrapht.UndirectedGraph;
 import org.jgrapht.ext.JGraphModelAdapter;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
-import org.jgrapht.graph.ListenableDirectedGraph;
-import org.jgrapht.graph.SimpleGraph;
 import siecipetriego.model.CustomGraph;
-import siecipetriego.model.Miejsce;
-import siecipetriego.model.Przejscie;
+import siecipetriego.model.Place;
+import siecipetriego.model.Transition;
 import siecipetriego.model.Vertex;
 import siecipetriego.model.Edge;
 
@@ -39,13 +26,12 @@ import siecipetriego.model.Edge;
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author Mateusz
  */
-public class GUI extends javax.swing.JFrame {
-    
+public class GUI extends JFrame {
+
     JGraph jGraph;
     CustomGraph graphModel;
     JGraphModelAdapter graphAdapter;
@@ -57,26 +43,25 @@ public class GUI extends javax.swing.JFrame {
     public GUI() {
         initComponents();                                                // inicjalizacja komponentów GUI
         graphModel = new CustomGraph();
-        
+
         createGraph(graphModel);                                         // stworzenie wizualizacji
     }
-    
-    public void createGraph(CustomGraph customGraph){
-        
-        DirectedWeightedMultigraph<Vertex, DefaultEdge> g = new DirectedWeightedMultigraph<Vertex, DefaultEdge>(DefaultEdge.class);
 
-        for(Vertex vertex : customGraph.getVertices().values()){        // dodanie wierzchołków.
+    public void createGraph(CustomGraph customGraph) {
+
+        DirectedWeightedMultigraph<Vertex, DefaultEdge> g = new DirectedWeightedMultigraph<>(DefaultEdge.class);
+
+        for (Vertex vertex : customGraph.getVertices().values()) {        // dodanie wierzchołków.
             g.addVertex(vertex);
         }
-        
-        for(Edge edge : customGraph.getEdges().values()){               // dodanie krawędzi.
+
+        for (Edge edge : customGraph.getEdges().values()) {               // dodanie krawędzi.
             g.addEdge(customGraph.getVertex(edge.getSourceId()), customGraph.getVertex(edge.getDestinationId()));
         }
-        
+
         JGraph old = jGraph;
-        
+
         //for(old.getGraphLayoutCache().getCellViews())
-        
         graphAdapter = new JGraphModelAdapter(g);
         jGraph = new JGraph(graphAdapter);
         revalidateGraphVertexPosition(jGraph);
@@ -84,37 +69,37 @@ public class GUI extends javax.swing.JFrame {
         adjustGraphDisplay();
         refreshGraph(graphAdapter, null);
     }
-    
-    public void adjustGraphDisplay(){
+
+    public void adjustGraphDisplay() {
         jGraph.setConnectable(false);                                    // zablokowanie niektórych możliwości edycji grafu
         jGraph.setDisconnectable(false);
         jGraph.setCloneable(false);
     }
-    
-    public void revalidateModelVertexPosition(JGraph oldGraph){
-        
-        for(CellView view : oldGraph.getGraphLayoutCache().getCellViews()){
-            if(view instanceof VertexView){
-                Vertex oldVertex = (Vertex)((DefaultGraphCell)view.getCell()).getUserObject();
+
+    public void revalidateModelVertexPosition(JGraph oldGraph) {
+
+        for (CellView view : oldGraph.getGraphLayoutCache().getCellViews()) {
+            if (view instanceof VertexView) {
+                Vertex oldVertex = (Vertex) ((DefaultGraphCell) view.getCell()).getUserObject();
                 Vertex newVertex = graphModel.getVertex(oldVertex.getID());
-                Rectangle2D rectangle = (Rectangle2D)view.getAllAttributes().get("bounds");
-                newVertex.setX((int)rectangle.getX());
-                newVertex.setY((int)rectangle.getY());
-                newVertex.setWidth((int)rectangle.getWidth());
-                newVertex.setHeight((int)rectangle.getHeight());
+                Rectangle2D rectangle = (Rectangle2D) view.getAllAttributes().get("bounds");
+                newVertex.setX((int) rectangle.getX());
+                newVertex.setY((int) rectangle.getY());
+                newVertex.setWidth((int) rectangle.getWidth());
+                newVertex.setHeight((int) rectangle.getHeight());
             }
         }
     }
-    
-    public void revalidateGraphVertexPosition(JGraph newGrah){
+
+    public void revalidateGraphVertexPosition(JGraph newGrah) {
         Map attributeMap;
-        Map nestedMap = new Hashtable();
-        
-        for(CellView view : newGrah.getGraphLayoutCache().getCellViews()){
-            if(view instanceof VertexView){
-                Vertex oldVertex = (Vertex)((DefaultGraphCell)view.getCell()).getUserObject();
+        Map nestedMap = new HashMap();
+
+        for (CellView view : newGrah.getGraphLayoutCache().getCellViews()) {
+            if (view instanceof VertexView) {
+                Vertex oldVertex = (Vertex) ((DefaultGraphCell) view.getCell()).getUserObject();
                 Vertex newVertex = graphModel.getVertex(oldVertex.getID());
-                attributeMap = new Hashtable();
+                attributeMap = new HashMap();
                 GraphConstants.setBounds(attributeMap, new Rectangle2D.Double(newVertex.getX(), newVertex.getY(), newVertex.getWidth(), newVertex.getHeight()));
                 nestedMap.put(view, attributeMap);
                 //GraphConstants.setBounds(view.getAllAttributes(), new Rectangle2D.Double(newVertex.getX(), newVertex.getY(), newVertex.getWidth(), newVertex.getHeight()));
@@ -478,8 +463,8 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_removePlaceButtonActionPerformed
 
     private void addPlaceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPlaceButtonActionPerformed
-       
-        Miejsce miejsce = new Miejsce(graphModel.getNewID());
+
+        Place miejsce = new Place(graphModel.getNewID());
         graphModel.addVertex(miejsce);
         createGraph(graphModel);
     }//GEN-LAST:event_addPlaceButtonActionPerformed
@@ -489,45 +474,42 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_option2ButtonActionPerformed
 
     private void addPassageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPassageButtonActionPerformed
-        
-        Przejscie przejscie = new Przejscie(graphModel.getNewID());
+
+        Transition przejscie = new Transition(graphModel.getNewID());
         graphModel.addVertex(przejscie);
         createGraph(graphModel);
     }//GEN-LAST:event_addPassageButtonActionPerformed
 
     private void addConnectionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addConnectionButtonActionPerformed
         // TODO add your handling code here:
-        
+
         Object[] cells = jGraph.getSelectionCells();
-        if(cells.length != 2){
+        if (cells.length != 2) {
             JOptionPane.showMessageDialog(this, "Aby dodać krawędź należy zaznaczyć dokładnie 2 wierzchołki!", "Błąd", JOptionPane.ERROR_MESSAGE);
-        }else{
-            
-            Vertex sourceVertex = (Vertex)((DefaultGraphCell)cells[0]).getUserObject();
-            Vertex destinationVertex = (Vertex)((DefaultGraphCell)cells[1]).getUserObject();
-            
-            
+        } else {
+
+            Vertex sourceVertex = (Vertex) ((DefaultGraphCell) cells[0]).getUserObject();
+            Vertex destinationVertex = (Vertex) ((DefaultGraphCell) cells[1]).getUserObject();
+
             Edge edge = new Edge(sourceVertex.getID(), destinationVertex.getID());
             graphModel.addEdge(edge);
             createGraph(graphModel);
         }
     }//GEN-LAST:event_addConnectionButtonActionPerformed
 
-    
-    public void refreshGraph(GraphModel model, GraphLayoutCache view){
-        
-        if(tabbedPane.indexOfTab("Graf") != -1){
+    public void refreshGraph(GraphModel model, GraphLayoutCache view) {
+
+        if (tabbedPane.indexOfTab("Graf") != -1) {
             tabbedPane.remove(1);
         }
         //jGraph = new JGraph(model, view);
         scrollPane = new JScrollPane(jGraph);
-        tabbedPane.addTab("Graf",scrollPane);
+        tabbedPane.addTab("Graf", scrollPane);
         tabbedPane.revalidate();
         tabbedPane.repaint();
         tabbedPane.setSelectedIndex(1);
     }
-    
-    
+
     /**
      * @param args the command line arguments
      */
@@ -557,6 +539,7 @@ public class GUI extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new GUI().setVisible(true);
             }

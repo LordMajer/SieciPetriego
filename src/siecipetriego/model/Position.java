@@ -14,8 +14,8 @@ public class Position {
     private double y;
     
     public Position(){
-        x = 10;
-        y = 10;
+        this.x = 10;
+        this.y = 10;
     }
     
     public Position(double x, double y){
@@ -44,7 +44,8 @@ public class Position {
         this.y = y;
     }
     
+    @Override
     public String toString(){
-        return "Position: " + x + "," + y + "\n";
+        return "Pozycja: " + x + "," + y + "\n";
     }
 }

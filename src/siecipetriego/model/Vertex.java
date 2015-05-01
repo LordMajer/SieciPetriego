@@ -5,6 +5,7 @@
 package siecipetriego.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -14,8 +15,8 @@ public class Vertex {
     
     protected String name;
     protected int id;
-    protected ArrayList<Integer> successors;              // przechowuje listę id podłączonych do węzła następników
-    protected ArrayList<Integer> predecessors;            // przechowuje listę id podłączonych do wezła poprzedników
+    protected List<Integer> successors;              // przechowuje listę id podłączonych do węzła następników
+    protected List<Integer> predecessors;            // przechowuje listę id podłączonych do wezła poprzedników
     
     protected Position position;
     protected double width;
@@ -23,12 +24,12 @@ public class Vertex {
     
     public Vertex(int id){
         this.id = id;
-        name = "V" + id;
-        successors = new ArrayList<Integer>();
-        predecessors = new ArrayList<Integer>();
-        position = new Position();
-        width = 120;
-        height = 30;
+        this.name = "V" + id;
+        this.successors = new ArrayList<>();
+        this.predecessors = new ArrayList<>();
+        this.position = new Position();
+        this.width = 120;
+        this.height = 30;
     }
     
     public String getName(){
@@ -55,11 +56,11 @@ public class Vertex {
         return position.getY();
     }
     
-    public ArrayList<Integer> getSuccessors(){
+    public List<Integer> getSuccessors(){
         return successors;
     }
     
-    public ArrayList<Integer> getPredecessors(){
+    public List<Integer> getPredecessors(){
         return predecessors;
     }
     

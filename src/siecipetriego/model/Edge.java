@@ -11,17 +11,18 @@ package siecipetriego.model;
 public class Edge {
     
     String condition;           // warunek przypisany do krawędzi
-    int capacity;               // pojemność krawędzi- ilość tokenów które przechodza przez krawędź
+    int capacity;               // pojemność krawędzi - ilość tokenów które przechodza przez krawędź
     int sourceId;               // id wierzchołka źródła
     int destinationId;          // id wierzchołka docelowego
     
-    public Edge(int source, int destination){
-        condition = null;                                           
-        capacity = 1;                                               
-        sourceId = source;
-        destinationId = destination;
+    public Edge(int sourceId, int destinationId){
+        this.condition = null;                                           
+        this.capacity = 1;                                               
+        this.sourceId = sourceId;
+        this.destinationId = destinationId;
     }
     
+    // Pytanie: Za co to jest odpowiedzialne? 
     public Edge(Edge edge){
         
     }
@@ -54,6 +55,7 @@ public class Edge {
         this.capacity = capacity;
     }
     
+    @Override
     public String toString(){
         return "Edge: " + this.getKey();
     }
