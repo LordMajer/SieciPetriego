@@ -9,8 +9,6 @@ public class Place extends Vertex {
     private static final int DEFAULT_CAPACITY = -1;
 
     private int tokenCount = DEFAULT_TOKEN_COUNT;             // określa ile aktualnie znajduje się w tym miejscu tokenów
-    @Deprecated // TODO usunąć pole type
-    private String type;                                      // określa typ miejsca          null bęzie oznaczał brak konkretnego typu
     private int capacity = DEFAULT_CAPACITY;                  // określa pojemność miejsca    (-1) będzie oznaczało nieskonczoność
 
     public Place(int id) {
@@ -28,7 +26,6 @@ public class Place extends Vertex {
         this.name = place.getName();
         this.tokenCount = place.getTokenCount();
         this.capacity = place.getCapacity();
-        this.type = place.getType();
     }
 
     public int getTokenCount() {
@@ -37,14 +34,6 @@ public class Place extends Vertex {
 
     public void setTokenCount(int tokenCount) {
         this.tokenCount = tokenCount;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public int getCapacity() {
@@ -71,6 +60,6 @@ public class Place extends Vertex {
                     .append(" ");
         }
         builder.append("\n");
-        return "Miejsce: " + name + " tokenów: " + tokenCount + "\ntyp: " + type + "\npojemność: " + capacity + "\n" + builder.toString();
+        return "Miejsce: " + name + " tokenów: " + tokenCount + "\npojemność: " + capacity + "\n" + builder.toString();
     }
 }

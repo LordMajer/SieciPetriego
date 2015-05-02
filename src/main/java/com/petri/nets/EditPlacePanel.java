@@ -33,7 +33,6 @@ public class EditPlacePanel extends JDialog {
         Place vertex = (Place) values.get("Object");                                                     // pobranie danych modyfikowanego miejsca
         tocenCountTextField.setText(Integer.toString(vertex.getTokenCount()));                              // wypełnienie pól formularza:
         nameTextField.setText(vertex.getName());
-        typeTextField.setText(vertex.getType());
         capacityTextField.setText(Integer.toString(vertex.getCapacity()));
 
         setPreferredSize(new Dimension(370, 255));
@@ -57,10 +56,8 @@ public class EditPlacePanel extends JDialog {
         nameTextField = new javax.swing.JTextField();
         tokenCountLabel = new javax.swing.JLabel();
         capacityLabel = new javax.swing.JLabel();
-        typeLabel = new javax.swing.JLabel();
         tocenCountTextField = new javax.swing.JTextField();
         capacityTextField = new javax.swing.JTextField();
-        typeTextField = new javax.swing.JTextField();
         submitButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
 
@@ -86,17 +83,11 @@ public class EditPlacePanel extends JDialog {
         capacityLabel.setText("Pojemność:");
         getContentPane().add(capacityLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 112, 130, 25));
 
-        typeLabel.setText("Typ:");
-        getContentPane().add(typeLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 143, 130, 25));
-
         tocenCountTextField.setText("jTextField1");
         getContentPane().add(tocenCountTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(144, 81, 200, 25));
 
         capacityTextField.setText("jTextField1");
         getContentPane().add(capacityTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(144, 112, 200, 25));
-
-        typeTextField.setText("jTextField1");
-        getContentPane().add(typeTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(144, 143, 200, 25));
 
         submitButton.setBackground(new java.awt.Color(51, 204, 0));
         submitButton.setText("Zatwierdź");
@@ -105,7 +96,7 @@ public class EditPlacePanel extends JDialog {
                 submitButtonActionPerformed(evt);
             }
         });
-        getContentPane().add(submitButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 179, 96, 34));
+        getContentPane().add(submitButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 96, 34));
 
         cancelButton.setBackground(new java.awt.Color(204, 51, 0));
         cancelButton.setText("Anuluj");
@@ -114,7 +105,7 @@ public class EditPlacePanel extends JDialog {
                 cancelButtonActionPerformed(evt);
             }
         });
-        getContentPane().add(cancelButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(108, 179, 96, 34));
+        getContentPane().add(cancelButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 150, 96, 34));
     }// </editor-fold>//GEN-END:initComponents
 
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
@@ -125,7 +116,6 @@ public class EditPlacePanel extends JDialog {
         place.setName(nameTextField.getText());                                       // pobranie danych z pól formularza i zapisanie do nowego obiektu
         place.setTokenCount(Integer.parseInt(tocenCountTextField.getText()));
         place.setCapacity(Integer.parseInt(capacityTextField.getText()));
-        place.setType(typeTextField.getText());
         returnValues.put("ReturnObject", place);                                      // zapisanie nowego obiektu do wartości zwracanych
         setVisible(false);                                                              // usunięcie okna dialogowego
         dispose();
@@ -149,7 +139,5 @@ public class EditPlacePanel extends JDialog {
     private javax.swing.JLabel titleLabel;
     private javax.swing.JTextField tocenCountTextField;
     private javax.swing.JLabel tokenCountLabel;
-    private javax.swing.JLabel typeLabel;
-    private javax.swing.JTextField typeTextField;
     // End of variables declaration//GEN-END:variables
 }

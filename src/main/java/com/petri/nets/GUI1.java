@@ -566,7 +566,6 @@ public class GUI1 extends javax.swing.JFrame {
                     // update:
                     modelVertex.setName(changedVertex.getName());
                     modelVertex.setTokenCount(changedVertex.getTokenCount());
-                    modelVertex.setType(changedVertex.getType());
                     modelVertex.setCapacity(changedVertex.getCapacity());
                 }
                 System.out.println(values);
@@ -595,7 +594,7 @@ public class GUI1 extends javax.swing.JFrame {
             // edycja krawędzi
             // pozyskanie krawędzi:
             System.out.println("Edycja krawędzi");
-            HashMap<String, Object> values = new HashMap<String, Object>();
+            Map<String, Object> values = new HashMap<>();
             Vertex sourceObject = (Vertex) ((DefaultGraphCell) cells[0]).getUserObject();
             Vertex destinationObject = (Vertex) ((DefaultGraphCell) cells[1]).getUserObject();
             Edge chosenEdge = new Edge(sourceObject.getID(), destinationObject.getID());
@@ -657,12 +656,12 @@ public class GUI1 extends javax.swing.JFrame {
         resultsPanel.revalidate();
         int[][] tab = graphModel.outputMatrix();
         Map<Integer, Place> places;            // treemap zachowuje kolejnosc kluczy
-        Map<Integer, Transition> passages;
+        Map<Integer, Transition> transitions;
 
         JTextArea textArea = new JTextArea();
         textArea.setFont(new Font("monospaced", Font.PLAIN, 12));
         places = graphModel.getPlaces();
-        passages = graphModel.getTransitions();
+        transitions = graphModel.getTransitions();
 
         for (int i = 0; i < tab.length; i++) {
             for (int j = 0; j < tab[i].length; j++) {
@@ -682,18 +681,18 @@ public class GUI1 extends javax.swing.JFrame {
         // TODO add your handling code here:
         resultsPanel.removeAll();
         resultsPanel.revalidate();
-        int[][] macierzIncydencji = graphModel.incidenceMatrix();
+        int[][] incidenceMatrix = graphModel.incidenceMatrix();
         Map<Integer, Place> places;            // treemap zachowuje kolejnosc kluczy
-        Map<Integer, Transition> passages;
+        Map<Integer, Transition> transitions;
 
         JTextArea textArea = new JTextArea();
         textArea.setFont(new Font("monospaced", Font.PLAIN, 12));
         places = graphModel.getPlaces();
-        passages = graphModel.getTransitions();
-        for (int i = 0; i < macierzIncydencji.length; i++) {
-            for (int j = 0; j < macierzIncydencji[i].length; j++) {
-                System.out.print(macierzIncydencji[i][j] + " ");
-                textArea.append(macierzIncydencji[i][j] + " ");
+        transitions = graphModel.getTransitions();
+        for (int i = 0; i < incidenceMatrix.length; i++) {
+            for (int j = 0; j < incidenceMatrix[i].length; j++) {
+                System.out.print(incidenceMatrix[i][j] + " ");
+                textArea.append(incidenceMatrix[i][j] + " ");
             }
             System.out.println();
             textArea.append("\n");
