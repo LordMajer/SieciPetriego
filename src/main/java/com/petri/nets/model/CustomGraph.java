@@ -12,18 +12,14 @@ import java.util.TreeMap;
  */
 public class CustomGraph {
 
-    Map<Integer, Vertex> vertices;
-    Map<String, Edge> edges;
-    int counter;                                    // unikatowe id dla wierzchołków
-    int placeCount;
-    int transitionCount;
+    private Map<Integer, Vertex> vertices;
+    private Map<String, Edge> edges;
+    private int counter;                                    // unikatowe id dla wierzchołków
 
     public CustomGraph() {
         this.vertices = new HashMap<>();
         this.edges = new HashMap<>();
         this.counter = 3;
-        this.placeCount = 0;
-        this.transitionCount = 0;
         initialize();
     }
 
@@ -100,11 +96,6 @@ public class CustomGraph {
      * @param vertex
      */
     public void addVertex(Vertex vertex) {
-        if (vertex instanceof Place) {                                          // aktualizacja ilości miejsc i przejść
-            placeCount++;
-        } else {
-            transitionCount++;
-        }
         vertices.put(vertex.getID(), vertex);
     }
 
@@ -130,12 +121,6 @@ public class CustomGraph {
 
         Edge tempEdge;
         Vertex temp = vertices.get(vertex.getID());
-
-        if (vertex instanceof Place) {                                  // aktualizacja ilości miejsc i przejść
-            placeCount--;
-        } else {
-            transitionCount--;
-        }
 
         // usuwanie wszystkich krawedzi dolączonych do wierzcholka
         List<Integer> tempSuccessors = new ArrayList<>();
@@ -268,33 +253,33 @@ public class CustomGraph {
     public int[][] inputMatrix() {
 
         Map<Integer, Place> places;            // treemap zachowuje kolejnosc kluczy
-        Map<Integer, Transition> passages;
-        int placeLicznik = 0;
-        int passageLicznik = 0;
+        Map<Integer, Transition> transitions;
+        int placeCounter = 0;
+        int transitionCounter = 0;
         int[][] tab = new int[getPlaces().size()][getTransitions().size()];
         List<Integer> idList;
         Edge edge;
 
         places = getPlaces();
-        passages = getTransitions();
+        transitions = getTransitions();
 
         for (Place miejsce : places.values()) {
             System.out.println(miejsce);
-            for (Transition przejscie : passages.values()) {
+            for (Transition przejscie : transitions.values()) {
                 System.out.println(przejscie);
                 idList = przejscie.getSuccessors();
                 for (int i = 0; i < przejscie.getSuccessors().size(); i++) {
                     if (idList.get(i) == miejsce.getID()) {
                         edge = edges.get(new Edge(przejscie.getID(), miejsce.getID()).getKey());
-                        tab[placeLicznik][passageLicznik] = edge.getCapacity();
+                        tab[placeCounter][transitionCounter] = edge.getCapacity();
                     }
                 }
-                System.out.println("licznik przejść: " + passageLicznik);
-                passageLicznik++;
+                System.out.println("licznik przejść: " + transitionCounter);
+                transitionCounter++;
             }
-            passageLicznik = 0;
-            System.out.println("licznik miejsc: " + passageLicznik);
-            placeLicznik++;
+            transitionCounter = 0;
+            System.out.println("licznik miejsc: " + transitionCounter);
+            placeCounter++;
         }
 
         return tab;
@@ -343,19 +328,11 @@ public class CustomGraph {
 
         for (int i = 0; i < inputMatrix.length; i++) {
             for (int j = 0; j < inputMatrix[i].length; j++) {
-                incidenceMatrix[i][j] = (int) inputMatrix[i][j] - (int) outputMatrix[i][j];
+                incidenceMatrix[i][j] = inputMatrix[i][j] - outputMatrix[i][j];
             }
         }
 
         return incidenceMatrix;
-    }
-
-    public int getPassageCount() {
-        return transitionCount;
-    }
-
-    public int getPlacesCount() {
-        return placeCount;
     }
 
     public Object[] getPlacesIDs() {
@@ -370,7 +347,7 @@ public class CustomGraph {
         return ids;
     }
 
-    public Object[] getTransitionIDs() {
+    public Object[] getTransitionsIDs() {
         Map<Integer, Transition> transitions = getTransitions();
         Object[] ids = new Object[transitions.size()];
         int i = 0;

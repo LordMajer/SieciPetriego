@@ -33,7 +33,7 @@ public class Transition extends Vertex {
         return priority;
     }
 
-    @Override
+    @Override // TODO Zmiana na zwracanie nazwy wierzchołka (na razie może zostać, bo łatwiej weryfikować poprawność działania aplikacji)
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Nastepniki: ");

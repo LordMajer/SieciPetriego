@@ -8,9 +8,9 @@ public class Edge {
 
     private static final int DEFAULT_CAPACITY = 1;
 
-    int capacity = DEFAULT_CAPACITY;               // pojemność krawędzi - ilość tokenów które przechodza przez krawędź
-    int sourceId;                                  // id wierzchołka źródła
-    int destinationId;                             // id wierzchołka docelowego
+    private int capacity = DEFAULT_CAPACITY;               // pojemność krawędzi - ilość tokenów które przechodza przez krawędź
+    private int sourceId;                                  // id wierzchołka źródła
+    private int destinationId;                             // id wierzchołka docelowego
 
     public Edge(int sourceId, int destinationId) {
         this.sourceId = sourceId;
