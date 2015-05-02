@@ -1,21 +1,22 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.petri.nets.model;
 
 /**
- *
  * @author Mateusz
  */
 public class Transition extends Vertex {
 
-    private int priority;       // priorytet przejścia -1 oznacza brak priorytetu
+    private static final int DEFAULT_PRIORITY = -1;
+
+    private int priority = DEFAULT_PRIORITY;       // priorytet przejścia -1 oznacza brak priorytetu
 
     public Transition(int id) {
         super(id);
         this.name = "T" + id;
-        this.priority = -1;
+    }
+
+    public Transition(int id, Position position) {
+        super(id, position);
+        this.name = "T" + id;
     }
 
     public Transition(Transition transition) {

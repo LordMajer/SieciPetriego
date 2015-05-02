@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.petri.nets.model;
 
 /**
@@ -9,54 +5,53 @@ package com.petri.nets.model;
  * @author Mateusz
  */
 public class Edge {
-    
-    String condition;           // warunek przypisany do krawędzi
-    int capacity;               // pojemność krawędzi - ilość tokenów które przechodza przez krawędź
-    int sourceId;               // id wierzchołka źródła
-    int destinationId;          // id wierzchołka docelowego
-    
-    public Edge(int sourceId, int destinationId){
-        this.condition = null;                                           
-        this.capacity = 1;                                               
+
+    private static final int DEFAULT_CAPACITY = 1;
+
+    int capacity = DEFAULT_CAPACITY;               // pojemność krawędzi - ilość tokenów które przechodza przez krawędź
+    int sourceId;                                  // id wierzchołka źródła
+    int destinationId;                             // id wierzchołka docelowego
+
+    public Edge(int sourceId, int destinationId) {
         this.sourceId = sourceId;
         this.destinationId = destinationId;
     }
-    
-    // Pytanie: Za co to jest odpowiedzialne? 
-    public Edge(Edge edge){
-        
+
+    // TODO usunąć/zmodyfikować
+    public Edge(Edge edge) {
+
     }
-    
-    public String getKey(){
-        return "{"+ sourceId + "," + destinationId + "}";
+
+    public String getKey() {
+        return "{" + sourceId + "," + destinationId + "}";
     }
-    
-    public int getSourceId(){
-        return sourceId;
-    }
-    
-    public int getDestinationId(){
-        return destinationId;
-    }
-    
-    public int getCapacity(){
+
+    public int getCapacity() {
         return capacity;
     }
-    
-    public String getCondition(){
-        return condition;
-    }
-    
-    public void setCondition(String condition){
-        this.condition = condition;
-    }
-    
-    public void setCapacity(int capacity){
+
+    public void setCapacity(int capacity) {
         this.capacity = capacity;
     }
-    
+
+    public int getSourceId() {
+        return sourceId;
+    }
+
+    public void setSourceId(int sourceId) {
+        this.sourceId = sourceId;
+    }
+
+    public int getDestinationId() {
+        return destinationId;
+    }
+
+    public void setDestinationId(int destinationId) {
+        this.destinationId = destinationId;
+    }
+
     @Override
-    public String toString(){
+    public String toString() {
         return "Edge: " + this.getKey();
     }
 }

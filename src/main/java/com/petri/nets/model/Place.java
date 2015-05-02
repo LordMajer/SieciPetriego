@@ -1,25 +1,26 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.petri.nets.model;
 
 /**
- *
  * @author Mateusz
  */
 public class Place extends Vertex {
 
-    private int tokenCount;             // określa ile aktualnie znajduje się w tym miejscu tokenów
-    private String type;                // określa typ miejsca          null bęzie oznaczał brak konkretnego typu
-    private int capacity;               // określa pojemność miejsca    (-1) będzie oznaczało nieskonczoność 
+    private static final int DEFAULT_TOKEN_COUNT = 0;
+    private static final int DEFAULT_CAPACITY = -1;
+
+    private int tokenCount = DEFAULT_TOKEN_COUNT;             // określa ile aktualnie znajduje się w tym miejscu tokenów
+    @Deprecated // TODO usunąć pole type
+    private String type;                                      // określa typ miejsca          null bęzie oznaczał brak konkretnego typu
+    private int capacity = DEFAULT_CAPACITY;                  // określa pojemność miejsca    (-1) będzie oznaczało nieskonczoność
 
     public Place(int id) {
         super(id);
         this.name = "P" + id;
-        this.tokenCount = 0;
-        this.capacity = -1;
-        this.type = null;
+    }
+
+    public Place(int id, Position position) {
+        super(id, position);
+        this.name = "P" + id;
     }
 
     public Place(Place place) {
@@ -34,24 +35,24 @@ public class Place extends Vertex {
         return tokenCount;
     }
 
+    public void setTokenCount(int tokenCount) {
+        this.tokenCount = tokenCount;
+    }
+
     public String getType() {
         return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public int getCapacity() {
         return capacity;
     }
 
-    public void setTokenCount(int count) {
-        tokenCount = count;
-    }
-
-    public void setType(String t) {
-        type = t;
-    }
-
-    public void setCapacity(int number) {
-        capacity = number;
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
     }
 
     @Override

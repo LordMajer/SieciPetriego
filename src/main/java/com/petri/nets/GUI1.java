@@ -26,10 +26,6 @@ import com.petri.nets.model.Transition;
 import com.petri.nets.model.Vertex;
 import com.petri.nets.model.Edge;
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 /**
  *
  * @author Mateusz

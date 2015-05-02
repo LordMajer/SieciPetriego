@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.petri.nets.model;
 
 import java.util.ArrayList;
@@ -36,8 +32,8 @@ public class CustomGraph {
      * krawędzie
      */
     public void initialize() {
-        Place place = new Place(1);
-        Transition transition = new Transition(2);
+        Place place = new Place(1, new Position(100, 100));
+        Transition transition = new Transition(2, new Position(100, 150));
         Edge edge = new Edge(place.getID(), transition.getID());
 
         vertices.put(place.getID(), place);
