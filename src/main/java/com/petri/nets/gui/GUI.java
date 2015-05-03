@@ -622,7 +622,8 @@ public class GUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         resultsPanel.removeAll();
         resultsPanel.revalidate();
-        int[][] tab = InputMatrix.calculate(graphModel);
+        InputMatrix inputMatrix = new InputMatrix(graphModel);
+        int[][] tab = inputMatrix.calculate();
 
         JTextArea textArea = new JTextArea();
         textArea.setFont(new Font("monospaced", Font.PLAIN, 12));
@@ -649,7 +650,8 @@ public class GUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         resultsPanel.removeAll();
         resultsPanel.revalidate();
-        int[][] tab = OutputMatrix.calculate(graphModel);
+        OutputMatrix outputMatrix = new OutputMatrix(graphModel);
+        int[][] tab = outputMatrix.calculate();
 
         JTextArea textArea = new JTextArea();
         textArea.setFont(new Font("monospaced", Font.PLAIN, 12));
@@ -672,14 +674,15 @@ public class GUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         resultsPanel.removeAll();
         resultsPanel.revalidate();
-        int[][] incidenceMatrix = IncidenceMatrix.calculate(graphModel);
+        IncidenceMatrix incidenceMatrix = new IncidenceMatrix(graphModel);
+        int[][] tab = incidenceMatrix.calculate();
 
         JTextArea textArea = new JTextArea();
         textArea.setFont(new Font("monospaced", Font.PLAIN, 12));
-        for (int i = 0; i < incidenceMatrix.length; i++) {
-            for (int j = 0; j < incidenceMatrix[i].length; j++) {
-                System.out.print(incidenceMatrix[i][j] + " ");
-                textArea.append(incidenceMatrix[i][j] + " ");
+        for (int i = 0; i < tab.length; i++) {
+            for (int j = 0; j < tab[i].length; j++) {
+                System.out.print(tab[i][j] + " ");
+                textArea.append(tab[i][j] + " ");
             }
             System.out.println();
             textArea.append("\n");

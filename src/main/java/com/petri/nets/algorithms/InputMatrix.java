@@ -6,39 +6,21 @@ import com.petri.nets.model.Place;
 import com.petri.nets.model.Transition;
 
 import java.util.List;
-import java.util.Map;
 
-public class InputMatrix {
+public class InputMatrix extends IOMatrix{
 
-    public static int[][] calculate(CustomGraph graph) {
-        Map<Integer, Place> places = graph.getPlaces();
-        Map<Integer, Transition> transitions = graph.getTransitions();
-        Map<String, Edge> edges = graph.getEdges();
-        int placeCounter = 0;
-        int transitionCounter = 0;
-        int[][] tab = new int[places.size()][transitions.size()];
-        List<Integer> idList;
-        Edge edge;
 
-        for (Place place : places.values()) {
-            System.out.println(place);
-            for (Transition transition : transitions.values()) {
-                System.out.println(transition);
-                idList = transition.getSuccessors();
-                for (int i = 0; i < transition.getSuccessors().size(); i++) {
-                    if (idList.get(i) == place.getID()) {
-                        edge = edges.get(new Edge(transition.getID(), place.getID()).getKey());
-                        tab[placeCounter][transitionCounter] = edge.getCapacity();
-                    }
-                }
-                System.out.println("licznik przejść: " + transitionCounter);
-                transitionCounter++;
-            }
-            transitionCounter = 0;
-            System.out.println("licznik miejsc: " + transitionCounter);
-            placeCounter++;
-        }
+    public InputMatrix(CustomGraph graph) {
+        super(graph);
+    }
 
-        return tab;
+    @Override
+    protected List<Integer> getVertices(Transition transition) {
+        return transition.getSuccessors();
+    }
+
+    @Override
+    protected Edge getEdge(Transition transition, Place place) {
+        return new Edge(transition.getID(), place.getID());
     }
 }
