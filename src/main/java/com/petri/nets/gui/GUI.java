@@ -1,4 +1,4 @@
-package com.petri.nets;
+package com.petri.nets.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
@@ -30,7 +30,7 @@ import com.petri.nets.model.Edge;
  *
  * @author Mateusz
  */
-public class GUI1 extends javax.swing.JFrame {
+public class GUI extends javax.swing.JFrame {
 
     JGraph jGraph;
     CustomGraph graphModel;
@@ -40,7 +40,7 @@ public class GUI1 extends javax.swing.JFrame {
     /**
      * Creates new form GUI
      */
-    public GUI1() {
+    public GUI() {
         initComponents();                                                // inicjalizacja komponentów GUI
         graphModel = new CustomGraph();
         createGraph(graphModel);                                         // stworzenie wizualizacji
@@ -500,7 +500,7 @@ public class GUI1 extends javax.swing.JFrame {
     private void addPassageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPassageButtonActionPerformed
 
         revalidateModelVertexPosition(jGraph);
-        Transition przejscie = new Transition(graphModel.getNewID());
+        Transition przejscie = new Transition(graphModel.getNewID(), graphModel.getNewName(Transition.getVertexType()));
         graphModel.addVertex(przejscie);
         createGraph(graphModel);
     }//GEN-LAST:event_addPassageButtonActionPerformed
@@ -508,7 +508,7 @@ public class GUI1 extends javax.swing.JFrame {
     private void addPlaceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPlaceButtonActionPerformed
 
         revalidateModelVertexPosition(jGraph);
-        Place miejsce = new Place(graphModel.getNewID());
+        Place miejsce = new Place(graphModel.getNewID(), graphModel.getNewName(Place.getVertexType()));
         graphModel.addVertex(miejsce);
         createGraph(graphModel);
     }//GEN-LAST:event_addPlaceButtonActionPerformed
@@ -779,13 +779,13 @@ public class GUI1 extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GUI1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GUI1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GUI1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GUI1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
@@ -793,7 +793,7 @@ public class GUI1 extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new GUI1().setVisible(true);
+                new GUI().setVisible(true);
             }
         });
     }

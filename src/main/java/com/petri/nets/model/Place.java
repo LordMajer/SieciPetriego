@@ -1,24 +1,27 @@
 package com.petri.nets.model;
 
+import com.petri.nets.helpers.VertexType;
+
 /**
  * @author Mateusz
  */
 public class Place extends Vertex {
 
+    private static final VertexType VERTEX_TYPE = VertexType.PLACE;
     private static final int DEFAULT_TOKEN_COUNT = 0;
     private static final int DEFAULT_CAPACITY = -1;
 
     private int tokenCount = DEFAULT_TOKEN_COUNT;             // określa ile aktualnie znajduje się w tym miejscu tokenów
     private int capacity = DEFAULT_CAPACITY;                  // określa pojemność miejsca    (-1) będzie oznaczało nieskonczoność
 
-    public Place(int id) {
+    public Place(int id, String name) {
         super(id);
-        this.name = "P" + id;
+        this.name = name;
     }
 
-    public Place(int id, Position position) {
+    public Place(int id, String name, Position position) {
         super(id, position);
-        this.name = "P" + id;
+        this.name = name;
     }
 
     public Place(Place place) {
@@ -42,6 +45,10 @@ public class Place extends Vertex {
 
     public void setCapacity(int capacity) {
         this.capacity = capacity;
+    }
+
+    public static VertexType getVertexType() {
+        return VERTEX_TYPE;
     }
 
     @Override // TODO Zmiana na zwracanie nazwy wierzchołka (na razie może zostać, bo łatwiej weryfikować poprawność działania aplikacji)

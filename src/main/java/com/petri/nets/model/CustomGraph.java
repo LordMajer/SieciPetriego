@@ -1,7 +1,10 @@
 package com.petri.nets.model;
 
-import com.petri.nets.helpers.BasedOnNextIntGenerator;
-import com.petri.nets.helpers.UniqueIdGenerator;
+import com.petri.nets.helpers.VertexType;
+import com.petri.nets.helpers.generators.name.BasedOnClassDistinctionNameGenerator;
+import com.petri.nets.helpers.generators.id.BasedOnNextIntIdGenerator;
+import com.petri.nets.helpers.generators.id.UniqueIdGenerator;
+import com.petri.nets.helpers.generators.name.UniqueNameGenerator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +20,8 @@ public class CustomGraph {
 
     private Map<Integer, Vertex> vertices = new HashMap<>();
     private Map<String, Edge> edges = new HashMap<>();
-    private UniqueIdGenerator uniqueIdGenerator = new BasedOnNextIntGenerator();                                    // unikatowe id dla wierzchołków
+    private UniqueIdGenerator uniqueIdGenerator = new BasedOnNextIntIdGenerator();                                    // unikatowe id dla wierzchołków
+    private UniqueNameGenerator uniqueNameGenerator = new BasedOnClassDistinctionNameGenerator();
 
     public CustomGraph() {
         initialize();
@@ -28,8 +32,8 @@ public class CustomGraph {
      * krawędzie
      */
     public void initialize() {
-        Place place = new Place(getNewID(), new Position(100, 100));
-        Transition transition = new Transition(getNewID(), new Position(100, 150));
+        Place place = new Place(getNewID(), getNewName(Place.getVertexType()), new Position(100, 100));
+        Transition transition = new Transition(getNewID(), getNewName(Transition.getVertexType()), new Position(100, 150));
         Edge edge = new Edge(place.getID(), transition.getID());
 
         vertices.put(place.getID(), place);
@@ -153,6 +157,15 @@ public class CustomGraph {
      */
     public int getNewID() {
         return uniqueIdGenerator.getNext();
+    }
+
+    /**
+     * Generowanie unikalnej nazwy dla wierzchołka w zależności od jego typu
+     *
+     * @return
+     */
+    public String getNewName(VertexType vertexType) {
+        return uniqueNameGenerator.getNext(vertexType);
     }
 
     /**

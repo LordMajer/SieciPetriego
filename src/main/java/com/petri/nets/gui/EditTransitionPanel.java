@@ -1,4 +1,4 @@
-package com.petri.nets;
+package com.petri.nets.gui;
 
 import java.awt.Dimension;
 import java.awt.Point;

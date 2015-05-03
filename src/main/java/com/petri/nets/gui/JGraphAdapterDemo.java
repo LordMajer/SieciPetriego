@@ -1,4 +1,4 @@
-package com.petri.nets;
+package com.petri.nets.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
