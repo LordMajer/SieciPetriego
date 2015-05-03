@@ -11,6 +11,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import com.petri.nets.algorithms.IncidenceMatrix;
+import com.petri.nets.algorithms.InputMatrix;
+import com.petri.nets.algorithms.OutputMatrix;
+import com.petri.nets.model.*;
 import org.jgraph.JGraph;
 import org.jgraph.graph.AttributeMap;
 import org.jgraph.graph.CellView;
@@ -20,11 +24,6 @@ import org.jgraph.graph.GraphConstants;
 import org.jgraph.graph.VertexView;
 import org.jgrapht.ext.JGraphModelAdapter;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
-import com.petri.nets.model.CustomGraph;
-import com.petri.nets.model.Place;
-import com.petri.nets.model.Transition;
-import com.petri.nets.model.Vertex;
-import com.petri.nets.model.Edge;
 
 /**
  *
@@ -623,14 +622,10 @@ public class GUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         resultsPanel.removeAll();
         resultsPanel.revalidate();
-        int[][] tab = graphModel.inputMatrix();
-        Map<Integer, Place> places;            // treemap zachowuje kolejnosc kluczy
-        Map<Integer, Transition> passages;
+        int[][] tab = InputMatrix.calculate(graphModel);
 
         JTextArea textArea = new JTextArea();
         textArea.setFont(new Font("monospaced", Font.PLAIN, 12));
-        places = graphModel.getPlaces();
-        passages = graphModel.getTransitions();
         for (int i = 0; i < tab.length; i++) {
             for (int j = 0; j < tab[i].length; j++) {
                 System.out.print(tab[i][j] + " ");
@@ -654,14 +649,10 @@ public class GUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         resultsPanel.removeAll();
         resultsPanel.revalidate();
-        int[][] tab = graphModel.outputMatrix();
-        Map<Integer, Place> places;            // treemap zachowuje kolejnosc kluczy
-        Map<Integer, Transition> transitions;
+        int[][] tab = OutputMatrix.calculate(graphModel);
 
         JTextArea textArea = new JTextArea();
         textArea.setFont(new Font("monospaced", Font.PLAIN, 12));
-        places = graphModel.getPlaces();
-        transitions = graphModel.getTransitions();
 
         for (int i = 0; i < tab.length; i++) {
             for (int j = 0; j < tab[i].length; j++) {
@@ -681,14 +672,10 @@ public class GUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         resultsPanel.removeAll();
         resultsPanel.revalidate();
-        int[][] incidenceMatrix = graphModel.incidenceMatrix();
-        Map<Integer, Place> places;            // treemap zachowuje kolejnosc kluczy
-        Map<Integer, Transition> transitions;
+        int[][] incidenceMatrix = IncidenceMatrix.calculate(graphModel);
 
         JTextArea textArea = new JTextArea();
         textArea.setFont(new Font("monospaced", Font.PLAIN, 12));
-        places = graphModel.getPlaces();
-        transitions = graphModel.getTransitions();
         for (int i = 0; i < incidenceMatrix.length; i++) {
             for (int j = 0; j < incidenceMatrix[i].length; j++) {
                 System.out.print(incidenceMatrix[i][j] + " ");
@@ -719,7 +706,7 @@ public class GUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         System.out.println("Start symulacji...");
         // 1. sprawdzenie poprawności grafu- czy jest dobrze zbudowany:
-        String errors = graphModel.validateModel();
+        String errors = ModelValidator.validate(graphModel);
         if (errors == null) {
             // zablokowanie możliwości edycji grafu
             // przeprowadzenie pierwszego kroku symulacji.
