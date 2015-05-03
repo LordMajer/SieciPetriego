@@ -1,5 +1,8 @@
 package com.petri.nets.model;
 
+import com.petri.nets.helpers.BasedOnNextIntGenerator;
+import com.petri.nets.helpers.UniqueIdGenerator;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,14 +15,11 @@ import java.util.TreeMap;
  */
 public class CustomGraph {
 
-    private Map<Integer, Vertex> vertices;
-    private Map<String, Edge> edges;
-    private int counter;                                    // unikatowe id dla wierzchołków
+    private Map<Integer, Vertex> vertices = new HashMap<>();
+    private Map<String, Edge> edges = new HashMap<>();
+    private UniqueIdGenerator uniqueIdGenerator = new BasedOnNextIntGenerator();                                    // unikatowe id dla wierzchołków
 
     public CustomGraph() {
-        this.vertices = new HashMap<>();
-        this.edges = new HashMap<>();
-        this.counter = 3;
         initialize();
     }
 
@@ -28,8 +28,8 @@ public class CustomGraph {
      * krawędzie
      */
     public void initialize() {
-        Place place = new Place(1, new Position(100, 100));
-        Transition transition = new Transition(2, new Position(100, 150));
+        Place place = new Place(getNewID(), new Position(100, 100));
+        Transition transition = new Transition(getNewID(), new Position(100, 150));
         Edge edge = new Edge(place.getID(), transition.getID());
 
         vertices.put(place.getID(), place);
@@ -152,7 +152,7 @@ public class CustomGraph {
      * @return
      */
     public int getNewID() {
-        return counter++;
+        return uniqueIdGenerator.getNext();
     }
 
     /**
@@ -289,7 +289,7 @@ public class CustomGraph {
         Map<Integer, Place> places;            // treemap zachowuje kolejnosc kluczy
         Map<Integer, Transition> transitions;
         int placeCounter = 0;
-        int passageCounter = 0;
+        int transitionCounter = 0;
         int[][] tab = new int[getPlaces().size()][getTransitions().size()];
         List<Integer> idList;
         Edge edge;
@@ -305,14 +305,14 @@ public class CustomGraph {
                 for (int i = 0; i < transition.getPredecessors().size(); i++) {
                     if (idList.get(i) == place.getID()) {
                         edge = edges.get(new Edge(place.getID(), transition.getID()).getKey());
-                        tab[placeCounter][passageCounter] = edge.getCapacity();
+                        tab[placeCounter][transitionCounter] = edge.getCapacity();
                     }
                 }
-                System.out.println("licznik przejść: " + passageCounter);
-                passageCounter++;
+                System.out.println("licznik przejść: " + transitionCounter);
+                transitionCounter++;
             }
-            passageCounter = 0;
-            System.out.println("licznik miejsc: " + passageCounter);
+            transitionCounter = 0;
+            System.out.println("licznik miejsc: " + transitionCounter);
             placeCounter++;
         }
 
