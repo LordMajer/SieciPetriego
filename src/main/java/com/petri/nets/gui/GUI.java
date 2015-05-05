@@ -1,29 +1,17 @@
 package com.petri.nets.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Font;
+import com.petri.nets.model.*;
+import com.petri.nets.model.Edge;
+import org.jgraph.JGraph;
+import org.jgraph.graph.*;
+import org.jgrapht.ext.JGraphModelAdapter;
+import org.jgrapht.graph.DirectedWeightedMultigraph;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.Map;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-
-import com.petri.nets.algorithms.IncidenceMatrix;
-import com.petri.nets.algorithms.InputMatrix;
-import com.petri.nets.algorithms.OutputMatrix;
-import com.petri.nets.model.*;
-import org.jgraph.JGraph;
-import org.jgraph.graph.AttributeMap;
-import org.jgraph.graph.CellView;
-import org.jgraph.graph.DefaultEdge;
-import org.jgraph.graph.DefaultGraphCell;
-import org.jgraph.graph.GraphConstants;
-import org.jgraph.graph.VertexView;
-import org.jgrapht.ext.JGraphModelAdapter;
-import org.jgrapht.graph.DirectedWeightedMultigraph;
 
 /**
  *
@@ -622,26 +610,14 @@ public class GUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         resultsPanel.removeAll();
         resultsPanel.revalidate();
-        InputMatrix inputMatrix = new InputMatrix(graphModel);
-        int[][] tab = inputMatrix.calculate();
-
-        JTextArea textArea = new JTextArea();
-        textArea.setFont(new Font("monospaced", Font.PLAIN, 12));
-        for (int i = 0; i < tab.length; i++) {
-            for (int j = 0; j < tab[i].length; j++) {
-                System.out.print(tab[i][j] + " ");
-                textArea.append(tab[i][j] + " ");
-            }
-            System.out.println();
-            textArea.append("\n");
-        }
 
         // dodanie JTable do okna wynikowego:
         tabbedPane.addTab("Graf", scrollPane);
         tabbedPane.revalidate();
         tabbedPane.repaint();
 
-        resultsPanel.add(textArea);
+        MatrixCreator matrixCreator = new MatrixCreator(graphModel);
+        resultsPanel.add(matrixCreator.generateInputMatrix());
         tabbedPane.setSelectedIndex(0);
         System.out.println("Macierz wejść...");
     }//GEN-LAST:event_matrix1ButtonActionPerformed
@@ -650,22 +626,8 @@ public class GUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         resultsPanel.removeAll();
         resultsPanel.revalidate();
-        OutputMatrix outputMatrix = new OutputMatrix(graphModel);
-        int[][] tab = outputMatrix.calculate();
-
-        JTextArea textArea = new JTextArea();
-        textArea.setFont(new Font("monospaced", Font.PLAIN, 12));
-
-        for (int i = 0; i < tab.length; i++) {
-            for (int j = 0; j < tab[i].length; j++) {
-                System.out.print(tab[i][j] + " ");
-                textArea.append(tab[i][j] + " ");
-            }
-            System.out.println();
-            textArea.append("\n");
-        }
-
-        resultsPanel.add(textArea);
+        MatrixCreator matrixCreator = new MatrixCreator(graphModel);
+        resultsPanel.add(matrixCreator.generatOutputMatrix());
         tabbedPane.setSelectedIndex(0);
         System.out.println("MacierztabbedPane.setSelectedIndex(0); wyjść...");
     }//GEN-LAST:event_matrix2ButtonActionPerformed
@@ -674,21 +636,8 @@ public class GUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         resultsPanel.removeAll();
         resultsPanel.revalidate();
-        IncidenceMatrix incidenceMatrix = new IncidenceMatrix(graphModel);
-        int[][] tab = incidenceMatrix.calculate();
-
-        JTextArea textArea = new JTextArea();
-        textArea.setFont(new Font("monospaced", Font.PLAIN, 12));
-        for (int i = 0; i < tab.length; i++) {
-            for (int j = 0; j < tab[i].length; j++) {
-                System.out.print(tab[i][j] + " ");
-                textArea.append(tab[i][j] + " ");
-            }
-            System.out.println();
-            textArea.append("\n");
-        }
-
-        resultsPanel.add(textArea);
+        MatrixCreator matrixCreator = new MatrixCreator(graphModel);
+        resultsPanel.add(matrixCreator.generateIncidenceMatrix());
         tabbedPane.setSelectedIndex(0);
         System.out.println("Macierz incydencji...");
     }//GEN-LAST:event_matrix3ButtonActionPerformed

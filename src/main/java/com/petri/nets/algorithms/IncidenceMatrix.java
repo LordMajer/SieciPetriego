@@ -1,13 +1,16 @@
 package com.petri.nets.algorithms;
 
 import com.petri.nets.model.CustomGraph;
+import com.petri.nets.model.Edge;
+import com.petri.nets.model.Place;
+import com.petri.nets.model.Transition;
 
-public class IncidenceMatrix {
+import java.util.List;
 
-    CustomGraph graph;
+public class IncidenceMatrix extends IOMatrix {
 
     public IncidenceMatrix(CustomGraph graph) {
-        this.graph = graph;
+        super(graph);
     }
 
     public int[][] calculate() {
@@ -20,5 +23,15 @@ public class IncidenceMatrix {
             }
         }
         return incidenceMatrix;
+    }
+
+    @Override
+    protected List<Integer> getVertices(Transition transition) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected Edge getEdge(Transition transition, Place place) {
+        throw new UnsupportedOperationException();
     }
 }

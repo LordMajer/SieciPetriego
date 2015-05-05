@@ -7,7 +7,7 @@ import com.petri.nets.model.Transition;
 
 import java.util.List;
 
-public class InputMatrix extends IOMatrix{
+public class InputMatrix extends IOMatrix {
 
 
     public InputMatrix(CustomGraph graph) {
