@@ -19,24 +19,6 @@ public class CustomGraph {
     private UniqueIdGenerator uniqueIdGenerator = new BasedOnNextIntIdGenerator();                                    // unikatowe id dla wierzchołków
     private UniqueNameGenerator uniqueNameGenerator = new BasedOnClassDistinctionNameGenerator();
 
-    public CustomGraph() {
-        initialize();
-    }
-
-    /**
-     * Metoda inicjalizująca- dodaje jedno miejsce jedno przeście i dwie
-     * krawędzie
-     */
-    public void initialize() {
-        Place place = new Place(getNewID(), getNewName(Place.getVertexType()), new Position(100, 100));
-        Transition transition = new Transition(getNewID(), getNewName(Transition.getVertexType()), new Position(100, 150));
-        Edge edge = new Edge(place.getID(), transition.getID());
-
-        vertices.put(place.getID(), place);
-        vertices.put(transition.getID(), transition);
-        addEdge(edge);
-    }
-
     /**
      * Zwraca wszystkie wierzcholki nalezące do grafu
      *

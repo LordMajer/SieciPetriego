@@ -1,5 +1,6 @@
 package com.petri.nets.gui;
 
+import com.petri.nets.algorithms.GrafOsiagalnosci;
 import com.petri.nets.model.*;
 import com.petri.nets.model.Edge;
 import org.jgraph.JGraph;
@@ -31,6 +32,7 @@ public class GUI extends javax.swing.JFrame {
     public GUI() {
         initComponents();                                                // inicjalizacja komponentów GUI
         graphModel = new CustomGraph();
+        CustomGraphInitializer.initialize(graphModel);
         createGraph(graphModel);                                         // stworzenie wizualizacji
     }
 
@@ -660,6 +662,13 @@ public class GUI extends javax.swing.JFrame {
 
     private void option1ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_option1ButtonActionPerformed
         // TODO add your handling code here:
+        resultsPanel.removeAll();
+        resultsPanel.revalidate();
+        GrafOsiagalnosci grafOsiagalnosci = new GrafOsiagalnosci(graphModel);
+        grafOsiagalnosci.buildGrafOsiagalnosci();
+        System.out.println(grafOsiagalnosci.toString());
+        JPanel panel = getJPanelWithTitle("Graf osiągalności");
+        resultsPanel.add(panel);
         tabbedPane.setSelectedIndex(0);
         System.out.println("Graf osiągalności...");
     }//GEN-LAST:event_option1ButtonActionPerformed
