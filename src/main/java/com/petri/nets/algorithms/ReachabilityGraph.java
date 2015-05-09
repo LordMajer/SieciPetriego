@@ -2,32 +2,35 @@ package com.petri.nets.algorithms;
 
 import com.petri.nets.model.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
-public class GrafOsiagalnosci {
+public class ReachabilityGraph {
 
     private static final int VERTICES_LIMIT = 50;
-    private CustomGraph grafOsiagalnosci;
+    private CustomGraph reachabilityGraph;
     private Map<String, Vertex> states;
     private Map<String, Edge> edges;
     private Map<Integer, Transition> transitions;
     private Map<Integer, Place> places;
 
-    public GrafOsiagalnosci(CustomGraph baseGraph) {
-        this.grafOsiagalnosci = new CustomGraph();
+    public ReachabilityGraph(CustomGraph baseGraph) {
+        this.reachabilityGraph = new CustomGraph();
         this.edges = baseGraph.getEdges();
         this.transitions = baseGraph.getTransitions();
         this.places = baseGraph.getPlaces();
         this.states = new TreeMap<>();
     }
 
-    public CustomGraph buildGrafOsiagalnosci() {
+    public CustomGraph buildReachabilityGraph() {
         Map<Integer, Integer> initialState = getInitialState();
-        Vertex initialVertex = new Transition(grafOsiagalnosci.getNewID(), getTextValue(initialState));
-        grafOsiagalnosci.addVertex(initialVertex);
+        Vertex initialVertex = new Transition(reachabilityGraph.getNewID(), getTextValue(initialState));
+        reachabilityGraph.addVertex(initialVertex);
         states.put(getTextValue(initialState), initialVertex);
         resolveTransitions(initialState);
-        return grafOsiagalnosci;
+        return reachabilityGraph;
     }
 
     private Map<Integer, Integer> getInitialState() {
@@ -70,13 +73,13 @@ public class GrafOsiagalnosci {
         String previousStateTextValue = getTextValue(previousState);                                // Wyznaczenie reprezentacji dla stanu poprzedniego
         Vertex previousStateVertex = states.get(previousStateTextValue);                            // Pobranie wierzchołka z mapy stanów archiwalnych
         if (newStateVertex == null) {
-            newStateVertex = new Transition(grafOsiagalnosci.getNewID(), newStateTextValue, resolvePosition(newState));
-            grafOsiagalnosci.addVertex(newStateVertex);
-            grafOsiagalnosci.addEdge(new Edge(previousStateVertex.getID(), newStateVertex.getID()));
+            newStateVertex = new Transition(reachabilityGraph.getNewID(), newStateTextValue, resolvePosition(newState));
+            reachabilityGraph.addVertex(newStateVertex);
+            reachabilityGraph.addEdge(new Edge(previousStateVertex.getID(), newStateVertex.getID()));
             states.put(newStateTextValue, newStateVertex);
             resolveTransitions(newState);
         } else {
-            grafOsiagalnosci.addEdge(new Edge(previousStateVertex.getID(), newStateVertex.getID()));
+            reachabilityGraph.addEdge(new Edge(previousStateVertex.getID(), newStateVertex.getID()));
         }
     }
 

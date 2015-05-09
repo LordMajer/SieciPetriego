@@ -1,6 +1,6 @@
 package com.petri.nets.gui;
 
-import com.petri.nets.algorithms.GrafOsiagalnosci;
+import com.petri.nets.algorithms.ReachabilityGraph;
 import com.petri.nets.model.*;
 import com.petri.nets.model.Edge;
 import org.jgraph.JGraph;
@@ -669,9 +669,9 @@ public class GUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         resultsPanel.removeAll();
         resultsPanel.revalidate();
-        GrafOsiagalnosci grafOsiagalnosci = new GrafOsiagalnosci(graphModel);
+        ReachabilityGraph reachabilityGraph = new ReachabilityGraph(graphModel);
         JPanel panel = getJPanelWithTitle("Graf osiągalności");
-        panel.add(createJGraph(grafOsiagalnosci.buildGrafOsiagalnosci()));
+        panel.add(createJGraph(reachabilityGraph.buildReachabilityGraph()));
         resultsPanel.add(panel);
         tabbedPane.setSelectedIndex(0);
         System.out.println("Graf osiągalności...");
