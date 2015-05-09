@@ -70,7 +70,7 @@ public class GrafOsiagalnosci {
         String previousStateTextValue = getTextValue(previousState);                                // Wyznaczenie reprezentacji dla stanu poprzedniego
         Vertex previousStateVertex = states.get(previousStateTextValue);                            // Pobranie wierzchołka z mapy stanów archiwalnych
         if (newStateVertex == null) {
-            newStateVertex = new Transition(grafOsiagalnosci.getNewID(), newStateTextValue);
+            newStateVertex = new Transition(grafOsiagalnosci.getNewID(), newStateTextValue, resolvePosition(newState));
             grafOsiagalnosci.addVertex(newStateVertex);
             grafOsiagalnosci.addEdge(new Edge(previousStateVertex.getID(), newStateVertex.getID()));
             states.put(newStateTextValue, newStateVertex);
@@ -138,5 +138,11 @@ public class GrafOsiagalnosci {
             newState.put(id, currentValue + tokenToTake);
         }
         return newState;
+    }
+
+    private Position resolvePosition(Map<Integer, Integer> state) {
+        int x = states.size()%2 == 0 ? 0 : 100;
+        int y = states.size()*100;
+        return new Position(x, y);
     }
 }

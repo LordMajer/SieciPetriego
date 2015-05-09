@@ -43,10 +43,6 @@ public class GUI extends javax.swing.JFrame {
 
         jGraph = createJGraph(customGraph);
 
-        // pozycjonowanie:
-        for (Vertex vertex : customGraph.getVertices().values()) {
-            positionVertexAt(vertex, graphAdapter);
-        }
         adjustGraphDisplay(jGraph);
         //revalidateGraphVertexPosition(jGraph);
         refreshGraphTab();
@@ -65,6 +61,11 @@ public class GUI extends javax.swing.JFrame {
         //for(old.getGraphLayoutCache().getCellViews())
 
         graphAdapter = new JGraphModelAdapter<>(g);
+
+        // pozycjonowanie:
+        for (Vertex vertex : graph.getVertices().values()) {
+            positionVertexAt(vertex, graphAdapter);
+        }
         return new JGraph(graphAdapter);
     }
 

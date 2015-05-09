@@ -8,8 +8,8 @@ import java.util.List;
  */
 public class Vertex {
 
-    private static final int DEFAULT_WIDTH = 120;
-    private static final int DEFAULT_HEIGHT = 30;
+    private static final int DEFAULT_WIDTH = 50;
+    private static final int DEFAULT_HEIGHT = 50;
 
     protected String name;
     protected int id;
