@@ -33,35 +33,39 @@ public class GUI extends javax.swing.JFrame {
         initComponents();                                                // inicjalizacja komponentów GUI
         graphModel = new CustomGraph();
         CustomGraphInitializer.initialize(graphModel);
-        createGraph(graphModel);                                         // stworzenie wizualizacji
+        displayGraph(graphModel);                                         // stworzenie wizualizacji
     }
 
-    public void createGraph(CustomGraph customGraph) {
+    public void displayGraph(CustomGraph customGraph) {
 
         System.out.println(graphModel.getVertices());
         System.out.println(graphModel.getEdges());
 
+        jGraph = createJGraph(customGraph);
+
+        // pozycjonowanie:
+        for (Vertex vertex : customGraph.getVertices().values()) {
+            positionVertexAt(vertex, graphAdapter);
+        }
+        adjustGraphDisplay(jGraph);
+        //revalidateGraphVertexPosition(jGraph);
+        refreshGraphTab();
+    }
+
+    private JGraph createJGraph(CustomGraph graph) {
         DirectedWeightedMultigraph<Vertex, DefaultEdge> g = new DirectedWeightedMultigraph<>(DefaultEdge.class);
 
-        for (Vertex vertex : customGraph.getVertices().values()) {        // dodanie wierzchołków.
+        for (Vertex vertex : graph.getVertices().values()) {        // dodanie wierzchołków.
             g.addVertex(vertex);
         }
 
-        for (Edge edge : customGraph.getEdges().values()) {               // dodanie krawędzi.
-            g.addEdge(customGraph.getVertex(edge.getSourceId()), customGraph.getVertex(edge.getDestinationId()));
+        for (Edge edge : graph.getEdges().values()) {               // dodanie krawędzi.
+            g.addEdge(graph.getVertex(edge.getSourceId()), graph.getVertex(edge.getDestinationId()));
         }
         //for(old.getGraphLayoutCache().getCellViews())
 
         graphAdapter = new JGraphModelAdapter<>(g);
-        jGraph = new JGraph(graphAdapter);
-
-        // pozycjonowanie:
-        for (Vertex vertex : customGraph.getVertices().values()) {
-            positionVertexAt(vertex);
-        }
-        adjustGraphDisplay();
-        //revalidateGraphVertexPosition(jGraph);
-        refreshGraphTab();
+        return new JGraph(graphAdapter);
     }
 
     public void revalidateModelVertexPosition(JGraph oldGraph) {
@@ -80,7 +84,7 @@ public class GUI extends javax.swing.JFrame {
     }
 
     @SuppressWarnings("unchecked") // FIXME hb 28-nov-05: See FIXME below
-    private void positionVertexAt(Object vertex) {
+    private void positionVertexAt(Object vertex, JGraphModelAdapter graphAdapter) {
         Vertex vert = (Vertex) vertex;
         DefaultGraphCell cell = graphAdapter.getVertexCell(vertex);
         AttributeMap attr = cell.getAttributes();
@@ -466,7 +470,7 @@ public class GUI extends javax.swing.JFrame {
                 graphModel.removeVertex(vertex);
             }
         }
-        createGraph(graphModel);
+        displayGraph(graphModel);
     }//GEN-LAST:event_removeVertexButtonActionPerformed
 
     private void addEdgeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addEdgeButtonActionPerformed
@@ -483,7 +487,7 @@ public class GUI extends javax.swing.JFrame {
 
             Edge edge = new Edge(sourceVertex.getID(), destinationVertex.getID());
             graphModel.addEdge(edge);
-            createGraph(graphModel);
+            displayGraph(graphModel);
         }
     }//GEN-LAST:event_addEdgeButtonActionPerformed
 
@@ -492,7 +496,7 @@ public class GUI extends javax.swing.JFrame {
         revalidateModelVertexPosition(jGraph);
         Transition przejscie = new Transition(graphModel.getNewID(), graphModel.getNewName(Transition.getVertexType()));
         graphModel.addVertex(przejscie);
-        createGraph(graphModel);
+        displayGraph(graphModel);
     }//GEN-LAST:event_addPassageButtonActionPerformed
 
     private void addPlaceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPlaceButtonActionPerformed
@@ -500,7 +504,7 @@ public class GUI extends javax.swing.JFrame {
         revalidateModelVertexPosition(jGraph);
         Place miejsce = new Place(graphModel.getNewID(), graphModel.getNewName(Place.getVertexType()));
         graphModel.addVertex(miejsce);
-        createGraph(graphModel);
+        displayGraph(graphModel);
     }//GEN-LAST:event_addPlaceButtonActionPerformed
 
     private void option2ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_option2ButtonActionPerformed
@@ -532,7 +536,7 @@ public class GUI extends javax.swing.JFrame {
                 }
             }
         }
-        createGraph(graphModel);
+        displayGraph(graphModel);
     }//GEN-LAST:event_removeEdgeButtonActionPerformed
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
@@ -559,7 +563,7 @@ public class GUI extends javax.swing.JFrame {
                     modelVertex.setCapacity(changedVertex.getCapacity());
                 }
                 System.out.println(values);
-                createGraph(graphModel);
+                displayGraph(graphModel);
             } else if (obj instanceof Transition) {
 
                 System.out.println("Przejscie");
@@ -576,7 +580,7 @@ public class GUI extends javax.swing.JFrame {
                     modelVertex.setPriority(changedVertex.getPriority());
                 }
                 System.out.println(values);
-                createGraph(graphModel);
+                displayGraph(graphModel);
             } else {
                 JOptionPane.showMessageDialog(this, "Wystąpił błąd podczas zaznaczania!", "Błąd", JOptionPane.ERROR_MESSAGE);
             }
@@ -600,7 +604,7 @@ public class GUI extends javax.swing.JFrame {
                     // update:
                     modelEdge.setCapacity(changedVertex.getCapacity());
                 }
-                createGraph(graphModel);
+                displayGraph(graphModel);
             } else {
                 JOptionPane.showMessageDialog(this, "Brak takiej krawedzi!", "Błąd", JOptionPane.ERROR_MESSAGE);
             }
@@ -665,8 +669,8 @@ public class GUI extends javax.swing.JFrame {
         resultsPanel.removeAll();
         resultsPanel.revalidate();
         GrafOsiagalnosci grafOsiagalnosci = new GrafOsiagalnosci(graphModel);
-        grafOsiagalnosci.buildGrafOsiagalnosci();
         JPanel panel = getJPanelWithTitle("Graf osiągalności");
+        panel.add(createJGraph(grafOsiagalnosci.buildGrafOsiagalnosci()));
         resultsPanel.add(panel);
         tabbedPane.setSelectedIndex(0);
         System.out.println("Graf osiągalności...");
@@ -719,7 +723,7 @@ public class GUI extends javax.swing.JFrame {
         tabbedPane.setSelectedIndex(1);
     }
 
-    public void adjustGraphDisplay() {
+    public void adjustGraphDisplay(JGraph jGraph) {
         jGraph.setConnectable(false);                                    // zablokowanie niektórych możliwości edycji grafu
         jGraph.setDisconnectable(false);
         jGraph.setCloneable(false);
