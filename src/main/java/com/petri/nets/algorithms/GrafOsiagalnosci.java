@@ -6,7 +6,7 @@ import java.util.*;
 
 public class GrafOsiagalnosci {
 
-    private static final int ITERATION_LIMIT = 50;
+    private static final int VERTICES_LIMIT = 50;
     private CustomGraph grafOsiagalnosci;
     private Map<String, Vertex> states;
     private Map<String, Edge> edges;
@@ -51,7 +51,7 @@ public class GrafOsiagalnosci {
     private void resolveTransitions(Map<Integer, Integer> state) {
         for (Transition transition : transitions.values()) {
             resolveTransition(new TreeMap<>(state), transition);
-            if (states.size() > ITERATION_LIMIT) { // Aby uniknąć pętli nieskończonej
+            if (states.size() > VERTICES_LIMIT) { // Aby uniknąć pętli nieskończonej
                 return;
             }
         }
