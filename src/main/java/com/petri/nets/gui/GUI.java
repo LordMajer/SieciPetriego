@@ -666,7 +666,6 @@ public class GUI extends javax.swing.JFrame {
         resultsPanel.revalidate();
         GrafOsiagalnosci grafOsiagalnosci = new GrafOsiagalnosci(graphModel);
         grafOsiagalnosci.buildGrafOsiagalnosci();
-        System.out.println(grafOsiagalnosci.toString());
         JPanel panel = getJPanelWithTitle("Graf osiągalności");
         resultsPanel.add(panel);
         tabbedPane.setSelectedIndex(0);
