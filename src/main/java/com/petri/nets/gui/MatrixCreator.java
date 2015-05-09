@@ -8,6 +8,7 @@ import com.petri.nets.model.Place;
 import com.petri.nets.model.Transition;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.util.Map;
 
 public class MatrixCreator {
@@ -26,7 +27,7 @@ public class MatrixCreator {
         return getJTable(new InputMatrix(customGraph).calculate());
     }
 
-    public JTable generatOutputMatrix() {
+    public JTable generateOutputMatrix() {
         return getJTable(new OutputMatrix(customGraph).calculate());
     }
 
@@ -34,13 +35,21 @@ public class MatrixCreator {
         return getJTable(new IncidenceMatrix(customGraph).calculate());
     }
 
-    // TODO dodać nagłówek i zablokować edycję
     private JTable getJTable(int[][] matrix) {
-        JTable jTable = new JTable(matrix.length + 1, matrix[0].length + 1);
+        JTable jTable = getNotEditableTable(matrix.length + 1, matrix[0].length + 1);
         setTransitionHeaders(jTable);
         setRowHeaders(jTable);
         setMatrixValues(jTable, matrix);
         return jTable;
+    }
+
+    private JTable getNotEditableTable(int rowCount, int columnCount) {
+        return new JTable(new DefaultTableModel(rowCount, columnCount) {
+            @Override
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return false;
+            }
+        });
     }
 
     private void setTransitionHeaders(JTable jTable) {

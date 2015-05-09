@@ -8,6 +8,7 @@ import org.jgrapht.ext.JGraphModelAdapter;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
@@ -617,7 +618,9 @@ public class GUI extends javax.swing.JFrame {
         tabbedPane.repaint();
 
         MatrixCreator matrixCreator = new MatrixCreator(graphModel);
-        resultsPanel.add(matrixCreator.generateInputMatrix());
+        JPanel panel = getJPanelWithTitle("Macierz wejść");
+        panel.add(matrixCreator.generateInputMatrix());
+        resultsPanel.add(panel);
         tabbedPane.setSelectedIndex(0);
         System.out.println("Macierz wejść...");
     }//GEN-LAST:event_matrix1ButtonActionPerformed
@@ -627,9 +630,11 @@ public class GUI extends javax.swing.JFrame {
         resultsPanel.removeAll();
         resultsPanel.revalidate();
         MatrixCreator matrixCreator = new MatrixCreator(graphModel);
-        resultsPanel.add(matrixCreator.generatOutputMatrix());
+        JPanel panel = getJPanelWithTitle("Macierz wyjść");
+        panel.add(matrixCreator.generateOutputMatrix());
+        resultsPanel.add(panel);
         tabbedPane.setSelectedIndex(0);
-        System.out.println("MacierztabbedPane.setSelectedIndex(0); wyjść...");
+        System.out.println("Macierz wyjść...");
     }//GEN-LAST:event_matrix2ButtonActionPerformed
 
     private void matrix3ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_matrix3ButtonActionPerformed
@@ -637,10 +642,21 @@ public class GUI extends javax.swing.JFrame {
         resultsPanel.removeAll();
         resultsPanel.revalidate();
         MatrixCreator matrixCreator = new MatrixCreator(graphModel);
-        resultsPanel.add(matrixCreator.generateIncidenceMatrix());
+        JPanel panel = getJPanelWithTitle("Macierz incydencji");
+        panel.add(matrixCreator.generateIncidenceMatrix());
+        resultsPanel.add(panel);
         tabbedPane.setSelectedIndex(0);
         System.out.println("Macierz incydencji...");
     }//GEN-LAST:event_matrix3ButtonActionPerformed
+
+    private JPanel getJPanelWithTitle(String title) {
+        JPanel panel = new JPanel();
+        panel.setBorder (BorderFactory.createTitledBorder (BorderFactory.createEtchedBorder (),
+                title,
+                TitledBorder.CENTER,
+                TitledBorder.TOP));
+        return  panel;
+    }
 
     private void option1ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_option1ButtonActionPerformed
         // TODO add your handling code here:
