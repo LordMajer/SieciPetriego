@@ -11,10 +11,18 @@ public class Edge {
     private int capacity = DEFAULT_CAPACITY;               // pojemność krawędzi - ilość tokenów które przechodza przez krawędź
     private int sourceId;                                  // id wierzchołka źródła
     private int destinationId;                             // id wierzchołka docelowego
+    private String name;
 
     public Edge(int sourceId, int destinationId) {
         this.sourceId = sourceId;
         this.destinationId = destinationId;
+        this.name = "";
+    }
+
+    public Edge(int sourceId, int destinationId, String name) {
+        this.sourceId = sourceId;
+        this.destinationId = destinationId;
+        this.name = name;
     }
 
     // TODO usunąć/zmodyfikować
@@ -48,6 +56,14 @@ public class Edge {
 
     public void setDestinationId(int destinationId) {
         this.destinationId = destinationId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

@@ -75,11 +75,11 @@ public class ReachabilityGraph {
         if (newStateVertex == null) {
             newStateVertex = new Transition(reachabilityGraph.getNewID(), newStateTextValue, resolvePosition(newState));
             reachabilityGraph.addVertex(newStateVertex);
-            reachabilityGraph.addEdge(new Edge(previousStateVertex.getID(), newStateVertex.getID()));
+            reachabilityGraph.addEdge(new Edge(previousStateVertex.getID(), newStateVertex.getID(), transition.getName()));
             states.put(newStateTextValue, newStateVertex);
             resolveTransitions(newState);
         } else {
-            reachabilityGraph.addEdge(new Edge(previousStateVertex.getID(), newStateVertex.getID()));
+            reachabilityGraph.addEdge(new Edge(previousStateVertex.getID(), newStateVertex.getID(), transition.getName()));
         }
     }
 
