@@ -1,5 +1,6 @@
 package com.petri.nets.gui;
 
+import com.petri.nets.algorithms.CoverageTree;
 import com.petri.nets.algorithms.ReachabilityGraph;
 import com.petri.nets.model.*;
 import com.petri.nets.model.Edge;
@@ -510,6 +511,12 @@ public class GUI extends javax.swing.JFrame {
 
     private void option2ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_option2ButtonActionPerformed
         // TODO add your handling code here:
+        resultsPanel.removeAll();
+        resultsPanel.revalidate();
+        CoverageTree coverageTree = new CoverageTree(graphModel);
+        JPanel panel = getJPanelWithTitle("Drzewo pokrycia");
+        panel.add(createJGraph(coverageTree.buildCoverageTree()));
+        resultsPanel.add(panel);
         tabbedPane.setSelectedIndex(0);
         System.out.println("Drzewo pokrycia...");
     }//GEN-LAST:event_option2ButtonActionPerformed
