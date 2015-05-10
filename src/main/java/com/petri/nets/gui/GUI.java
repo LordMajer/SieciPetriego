@@ -1,5 +1,6 @@
 package com.petri.nets.gui;
 
+import com.petri.nets.algorithms.CoverageGraph;
 import com.petri.nets.algorithms.CoverageTree;
 import com.petri.nets.algorithms.ReachabilityGraph;
 import com.petri.nets.model.*;
@@ -509,18 +510,6 @@ public class GUI extends javax.swing.JFrame {
         displayGraph(graphModel);
     }//GEN-LAST:event_addPlaceButtonActionPerformed
 
-    private void option2ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_option2ButtonActionPerformed
-        // TODO add your handling code here:
-        resultsPanel.removeAll();
-        resultsPanel.revalidate();
-        CoverageTree coverageTree = new CoverageTree(graphModel);
-        JPanel panel = getJPanelWithTitle("Drzewo pokrycia");
-        panel.add(createJGraph(coverageTree.buildCoverageTree()));
-        resultsPanel.add(panel);
-        tabbedPane.setSelectedIndex(0);
-        System.out.println("Drzewo pokrycia...");
-    }//GEN-LAST:event_option2ButtonActionPerformed
-
     private void removeEdgeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeEdgeButtonActionPerformed
         revalidateModelVertexPosition(jGraph);
         Object[] cells = jGraph.getSelectionCells();
@@ -684,8 +673,26 @@ public class GUI extends javax.swing.JFrame {
         System.out.println("Graf osiągalności...");
     }//GEN-LAST:event_option1ButtonActionPerformed
 
+    private void option2ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_option2ButtonActionPerformed
+        // TODO add your handling code here:
+        resultsPanel.removeAll();
+        resultsPanel.revalidate();
+        CoverageTree coverageTree = new CoverageTree(graphModel);
+        JPanel panel = getJPanelWithTitle("Drzewo pokrycia");
+        panel.add(createJGraph(coverageTree.buildCoverageTree()));
+        resultsPanel.add(panel);
+        tabbedPane.setSelectedIndex(0);
+        System.out.println("Drzewo pokrycia...");
+    }//GEN-LAST:event_option2ButtonActionPerformed
+
     private void option3ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_option3ButtonActionPerformed
         // TODO add your handling code here:
+        resultsPanel.removeAll();
+        resultsPanel.revalidate();
+        CoverageGraph coverageGraph = new CoverageGraph(graphModel);
+        JPanel panel = getJPanelWithTitle("Graf pokrycia");
+        panel.add(createJGraph(coverageGraph.buildCoverageGraph()));
+        resultsPanel.add(panel);
         tabbedPane.setSelectedIndex(0);
         System.out.println("Graf pokrycia...");
     }//GEN-LAST:event_option3ButtonActionPerformed
