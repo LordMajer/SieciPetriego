@@ -623,7 +623,7 @@ public class GUI extends javax.swing.JFrame {
         MatrixCreator matrixCreator = new MatrixCreator(graphModel);
         JPanel panel = getJPanelWithTitle("Macierz wejść");
         panel.add(matrixCreator.generateInputMatrix());
-        resultsPanel.add(panel);
+        resultsPanel.add(getJScrollPane(panel));
         tabbedPane.setSelectedIndex(0);
         System.out.println("Macierz wejść...");
     }//GEN-LAST:event_matrix1ButtonActionPerformed
@@ -635,7 +635,7 @@ public class GUI extends javax.swing.JFrame {
         MatrixCreator matrixCreator = new MatrixCreator(graphModel);
         JPanel panel = getJPanelWithTitle("Macierz wyjść");
         panel.add(matrixCreator.generateOutputMatrix());
-        resultsPanel.add(panel);
+        resultsPanel.add(getJScrollPane(panel));
         tabbedPane.setSelectedIndex(0);
         System.out.println("Macierz wyjść...");
     }//GEN-LAST:event_matrix2ButtonActionPerformed
@@ -647,28 +647,19 @@ public class GUI extends javax.swing.JFrame {
         MatrixCreator matrixCreator = new MatrixCreator(graphModel);
         JPanel panel = getJPanelWithTitle("Macierz incydencji");
         panel.add(matrixCreator.generateIncidenceMatrix());
-        resultsPanel.add(panel);
+        resultsPanel.add(getJScrollPane(panel));
         tabbedPane.setSelectedIndex(0);
         System.out.println("Macierz incydencji...");
     }//GEN-LAST:event_matrix3ButtonActionPerformed
-
-    private JPanel getJPanelWithTitle(String title) {
-        JPanel panel = new JPanel();
-        panel.setBorder (BorderFactory.createTitledBorder (BorderFactory.createEtchedBorder (),
-                title,
-                TitledBorder.CENTER,
-                TitledBorder.TOP));
-        return  panel;
-    }
 
     private void option1ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_option1ButtonActionPerformed
         // TODO add your handling code here:
         resultsPanel.removeAll();
         resultsPanel.revalidate();
         ReachabilityGraph reachabilityGraph = new ReachabilityGraph(graphModel);
-        JPanel panel = getJPanelWithTitle("Graf osiągalności");
+        JPanel panel = getJPanelWithBorderLayoutAndTitle("Graf osiągalności");
         panel.add(createJGraph(reachabilityGraph.buildReachabilityGraph()));
-        resultsPanel.add(panel);
+        resultsPanel.add(getJScrollPane(panel));
         tabbedPane.setSelectedIndex(0);
         System.out.println("Graf osiągalności...");
     }//GEN-LAST:event_option1ButtonActionPerformed
@@ -678,9 +669,9 @@ public class GUI extends javax.swing.JFrame {
         resultsPanel.removeAll();
         resultsPanel.revalidate();
         CoverageTree coverageTree = new CoverageTree(graphModel);
-        JPanel panel = getJPanelWithTitle("Drzewo pokrycia");
+        JPanel panel = getJPanelWithBorderLayoutAndTitle("Drzewo pokrycia");
         panel.add(createJGraph(coverageTree.buildCoverageTree()));
-        resultsPanel.add(panel);
+        resultsPanel.add(getJScrollPane(panel));
         tabbedPane.setSelectedIndex(0);
         System.out.println("Drzewo pokrycia...");
     }//GEN-LAST:event_option2ButtonActionPerformed
@@ -690,9 +681,9 @@ public class GUI extends javax.swing.JFrame {
         resultsPanel.removeAll();
         resultsPanel.revalidate();
         CoverageGraph coverageGraph = new CoverageGraph(graphModel);
-        JPanel panel = getJPanelWithTitle("Graf pokrycia");
+        JPanel panel = getJPanelWithBorderLayoutAndTitle("Graf pokrycia");
         panel.add(createJGraph(coverageGraph.buildCoverageGraph()));
-        resultsPanel.add(panel);
+        resultsPanel.add(getJScrollPane(panel));
         tabbedPane.setSelectedIndex(0);
         System.out.println("Graf pokrycia...");
     }//GEN-LAST:event_option3ButtonActionPerformed
@@ -742,6 +733,26 @@ public class GUI extends javax.swing.JFrame {
         jGraph.setConnectable(false);                                    // zablokowanie niektórych możliwości edycji grafu
         jGraph.setDisconnectable(false);
         jGraph.setCloneable(false);
+    }
+
+    private JPanel getJPanelWithTitle(String title) {
+        JPanel panel = new JPanel();
+        panel.setBorder (BorderFactory.createTitledBorder (BorderFactory.createEtchedBorder (),
+                title,
+                TitledBorder.CENTER,
+                TitledBorder.TOP));
+        return panel;
+    }
+
+    private JPanel getJPanelWithBorderLayoutAndTitle(String title) {
+        JPanel panel = getJPanelWithTitle(title);
+        panel.setLayout(new BorderLayout());
+        return panel;
+    }
+
+    private JScrollPane getJScrollPane(JPanel panel) {
+        JScrollPane jScrollPane = new JScrollPane(panel);
+        return jScrollPane;
     }
 
     /**
