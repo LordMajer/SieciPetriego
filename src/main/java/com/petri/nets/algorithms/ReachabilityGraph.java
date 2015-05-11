@@ -26,7 +26,7 @@ public class ReachabilityGraph {
 
     public CustomGraph buildReachabilityGraph() {
         Map<Integer, Integer> initialState = getInitialState();
-        Vertex initialVertex = new Transition(reachabilityGraph.getNewID(), getTextValue(initialState));
+        Vertex initialVertex = new Transition(reachabilityGraph.getNewID(), getTextValueWithInfinitySign(initialState));
         reachabilityGraph.addVertex(initialVertex);
         states.put(getTextValue(initialState), initialVertex);
         resolveTransitions(initialState);
@@ -39,6 +39,20 @@ public class ReachabilityGraph {
             initialState.put(place.getID(), place.getTokenCount());
         }
         return initialState;
+    }
+
+    private String getTextValueWithInfinitySign(Map<Integer, Integer> idToTokenMap) {
+        StringBuilder stateBuilder = new StringBuilder();
+        for (Integer token : idToTokenMap.values()) {
+            if (!token.equals(Integer.MAX_VALUE)) {
+                stateBuilder.append(token);
+            } else {
+                stateBuilder.append("\u221E");
+            }
+            stateBuilder.append(",");
+        }
+        stateBuilder.deleteCharAt(stateBuilder.length() - 1);
+        return stateBuilder.toString();
     }
 
     private String getTextValue(Map<Integer, Integer> idToTokenMap) {
@@ -73,7 +87,7 @@ public class ReachabilityGraph {
         String previousStateTextValue = getTextValue(previousState);                                // Wyznaczenie reprezentacji dla stanu poprzedniego
         Vertex previousStateVertex = states.get(previousStateTextValue);                            // Pobranie wierzchołka z mapy stanów archiwalnych
         if (newStateVertex == null) {
-            newStateVertex = new Transition(reachabilityGraph.getNewID(), newStateTextValue, resolvePosition(newState));
+            newStateVertex = new Transition(reachabilityGraph.getNewID(), getTextValueWithInfinitySign(newState), resolvePosition(newState));
             reachabilityGraph.addVertex(newStateVertex);
             reachabilityGraph.addEdge(new Edge(previousStateVertex.getID(), newStateVertex.getID(), transition.getName()));
             states.put(newStateTextValue, newStateVertex);

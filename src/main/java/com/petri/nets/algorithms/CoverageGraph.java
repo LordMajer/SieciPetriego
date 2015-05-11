@@ -26,7 +26,7 @@ public class CoverageGraph {
 
     public CustomGraph buildCoverageGraph() {
         Map<Integer, Integer> initialState = getInitialState();
-        Vertex initialVertex = new Transition(coverageGraph.getNewID(), getTextValue(initialState));
+        Vertex initialVertex = new Transition(coverageGraph.getNewID(), getTextValueWithInfinitySign(initialState));
         coverageGraph.addVertex(initialVertex);
         states.put(getTextValue(initialState), initialVertex);
         resolveTransitions(initialState);
@@ -39,6 +39,20 @@ public class CoverageGraph {
             initialState.put(place.getID(), place.getTokenCount());
         }
         return initialState;
+    }
+
+    private String getTextValueWithInfinitySign(Map<Integer, Integer> idToTokenMap) {
+        StringBuilder stateBuilder = new StringBuilder();
+        for (Integer token : idToTokenMap.values()) {
+            if (!token.equals(Integer.MAX_VALUE)) {
+                stateBuilder.append(token);
+            } else {
+                stateBuilder.append("\u221E");
+            }
+            stateBuilder.append(",");
+        }
+        stateBuilder.deleteCharAt(stateBuilder.length() - 1);
+        return stateBuilder.toString();
     }
 
     private String getTextValue(Map<Integer, Integer> idToTokenMap) {
@@ -79,14 +93,14 @@ public class CoverageGraph {
         Map<Integer, Integer> stateWithInfinity = checkIfGreater(newState);
         if (stateWithInfinity != null) {
             String stateWithInfinityTextValue = getTextValue(stateWithInfinity);
-            newStateVertex = new Transition(coverageGraph.getNewID(), stateWithInfinityTextValue, resolvePosition(stateWithInfinity)); // wierzchołek z nieskończonością
+            newStateVertex = new Transition(coverageGraph.getNewID(), getTextValueWithInfinitySign(stateWithInfinity), resolvePosition(stateWithInfinity)); // wierzchołek z nieskończonością
             coverageGraph.addVertex(newStateVertex);
             coverageGraph.addEdge(new Edge(previousStateVertex.getID(), newStateVertex.getID(), transition.getName()));
             states.put(stateWithInfinityTextValue, newStateVertex);
             resolveTransitions(stateWithInfinity);
             return;
         }
-        newStateVertex = new Transition(coverageGraph.getNewID(), newStateTextValue, resolvePosition(newState));
+        newStateVertex = new Transition(coverageGraph.getNewID(), getTextValueWithInfinitySign(newState), resolvePosition(newState));
         coverageGraph.addVertex(newStateVertex);
         coverageGraph.addEdge(new Edge(previousStateVertex.getID(), newStateVertex.getID(), transition.getName()));
         states.put(newStateTextValue, newStateVertex);
@@ -101,7 +115,7 @@ public class CoverageGraph {
             String[] tokens = state.split(",");
             i = 0;
             for (Map.Entry<Integer, Integer> token : currentState.entrySet()) {
-                if (token.getValue() == Integer.valueOf(tokens[i])) {
+                if (token.getValue().equals(Integer.valueOf(tokens[i]))) {
                     newState.put(token.getKey(), token.getValue());
                 } else if (token.getValue() > Integer.valueOf(tokens[i])) {
                     newState.put(token.getKey(), Integer.MAX_VALUE);

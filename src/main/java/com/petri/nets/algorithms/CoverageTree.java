@@ -26,7 +26,7 @@ public class CoverageTree {
 
     public CustomGraph buildCoverageTree() {
         Map<Integer, Integer> initialState = getInitialState();
-        Vertex initialVertex = new Transition(coverageTree.getNewID(), getTextValue(initialState));
+        Vertex initialVertex = new Transition(coverageTree.getNewID(), getTextValueWithInfinitySign(initialState));
         coverageTree.addVertex(initialVertex);
         states.put(getTextValue(initialState), initialVertex);
         resolveTransitions(initialState);
@@ -39,6 +39,20 @@ public class CoverageTree {
             initialState.put(place.getID(), place.getTokenCount());
         }
         return initialState;
+    }
+
+    private String getTextValueWithInfinitySign(Map<Integer, Integer> idToTokenMap) {
+        StringBuilder stateBuilder = new StringBuilder();
+        for (Integer token : idToTokenMap.values()) {
+            if (!token.equals(Integer.MAX_VALUE)) {
+                stateBuilder.append(token);
+            } else {
+                stateBuilder.append("\u221E");
+            }
+            stateBuilder.append(",");
+        }
+        stateBuilder.deleteCharAt(stateBuilder.length() - 1);
+        return stateBuilder.toString();
     }
 
     private String getTextValue(Map<Integer, Integer> idToTokenMap) {
@@ -73,7 +87,7 @@ public class CoverageTree {
         String previousStateTextValue = getTextValue(previousState);                                // Wyznaczenie reprezentacji dla stanu poprzedniego
         Vertex previousStateVertex = states.get(previousStateTextValue);                            // Pobranie wierzchołka z mapy stanów archiwalnych
         if (newStateVertex != null) {   // Sprawdzenie czy duplikat
-            newStateVertex = new Transition(coverageTree.getNewID(), newStateTextValue + " - Duplikat", resolvePosition(newState)); // duplikat
+            newStateVertex = new Transition(coverageTree.getNewID(), getTextValueWithInfinitySign(newState) + " - Duplikat", resolvePosition(newState)); // duplikat
             coverageTree.addVertex(newStateVertex);
             coverageTree.addEdge(new Edge(previousStateVertex.getID(), newStateVertex.getID(), transition.getName()));
             return;
@@ -81,14 +95,14 @@ public class CoverageTree {
         Map<Integer, Integer> stateWithInfinity = checkIfGreater(newState);
         if (stateWithInfinity != null) {
             String stateWithInfinityTextValue = getTextValue(stateWithInfinity);
-            newStateVertex = new Transition(coverageTree.getNewID(), stateWithInfinityTextValue, resolvePosition(stateWithInfinity)); // wierzchołek z nieskończonością
+            newStateVertex = new Transition(coverageTree.getNewID(), getTextValueWithInfinitySign(newState), resolvePosition(stateWithInfinity)); // wierzchołek z nieskończonością
             coverageTree.addVertex(newStateVertex);
             coverageTree.addEdge(new Edge(previousStateVertex.getID(), newStateVertex.getID(), transition.getName()));
             states.put(stateWithInfinityTextValue, newStateVertex);
             resolveTransitions(stateWithInfinity);
             return;
         }
-        newStateVertex = new Transition(coverageTree.getNewID(), newStateTextValue, resolvePosition(newState));
+        newStateVertex = new Transition(coverageTree.getNewID(), getTextValueWithInfinitySign(newState), resolvePosition(newState));
         coverageTree.addVertex(newStateVertex);
         coverageTree.addEdge(new Edge(previousStateVertex.getID(), newStateVertex.getID(), transition.getName()));
         states.put(newStateTextValue, newStateVertex);
@@ -103,7 +117,7 @@ public class CoverageTree {
             String[] tokens = state.split(",");
             i = 0;
             for (Map.Entry<Integer, Integer> token : currentState.entrySet()) {
-                if (token.getValue() == Integer.valueOf(tokens[i])) {
+                if (token.getValue().equals(Integer.valueOf(tokens[i]))) {
                     newState.put(token.getKey(), token.getValue());
                 } else if (token.getValue() > Integer.valueOf(tokens[i])) {
                     newState.put(token.getKey(), Integer.MAX_VALUE);
