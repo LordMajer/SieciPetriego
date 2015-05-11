@@ -1,12 +1,13 @@
 package com.petri.nets.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Mateusz
  */
-public class Vertex {
+public class Vertex implements Serializable {
 
     private static final int DEFAULT_WIDTH = 50;
     private static final int DEFAULT_HEIGHT = 50;

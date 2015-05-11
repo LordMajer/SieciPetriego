@@ -1,10 +1,12 @@
 package com.petri.nets.model;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Mateusz
  */
-public class Edge {
+public class Edge implements Serializable {
 
     private static final int DEFAULT_CAPACITY = 1;
 

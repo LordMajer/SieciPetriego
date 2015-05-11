@@ -1,6 +1,8 @@
 package com.petri.nets.helpers.generators.id;
 
-public class BasedOnNextIntIdGenerator implements UniqueIdGenerator {
+import java.io.Serializable;
+
+public class BasedOnNextIntIdGenerator implements UniqueIdGenerator, Serializable {
 
     private int currentValue = 0;
 

@@ -2,10 +2,12 @@ package com.petri.nets.model;
 
 import com.petri.nets.helpers.VertexType;
 
+import java.io.Serializable;
+
 /**
  * @author Mateusz
  */
-public class Transition extends Vertex {
+public class Transition extends Vertex implements Serializable {
 
     private static final VertexType VERTEX_TYPE = VertexType.TRANSITION;
     private static final int DEFAULT_PRIORITY = -1;

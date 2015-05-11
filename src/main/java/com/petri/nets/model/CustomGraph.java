@@ -6,13 +6,14 @@ import com.petri.nets.helpers.generators.id.UniqueIdGenerator;
 import com.petri.nets.helpers.generators.name.BasedOnClassDistinctionNameGenerator;
 import com.petri.nets.helpers.generators.name.UniqueNameGenerator;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  *
  * @author Mateusz
  */
-public class CustomGraph {
+public class CustomGraph implements Serializable {
 
     private Map<Integer, Vertex> vertices = new HashMap<>();
     private Map<String, Edge> edges = new HashMap<>();

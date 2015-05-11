@@ -2,10 +2,11 @@ package com.petri.nets.helpers.generators.name;
 
 import com.petri.nets.helpers.VertexType;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BasedOnClassDistinctionNameGenerator implements UniqueNameGenerator {
+public class BasedOnClassDistinctionNameGenerator implements UniqueNameGenerator, Serializable {
 
     private static final int INITIAL_VALUE = 1;
 

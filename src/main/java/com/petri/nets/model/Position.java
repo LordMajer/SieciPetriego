@@ -1,10 +1,12 @@
 package com.petri.nets.model;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Mateusz
  */
-public class Position {
+public class Position implements Serializable {
     
     private double x;
     private double y;
