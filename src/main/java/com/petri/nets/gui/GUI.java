@@ -769,15 +769,10 @@ public class GUI extends javax.swing.JFrame {
     private void loadGraphButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadGraphButtonActionPerformed
         graphModel = GraphReader.loadGraph(graphModel);
         displayGraph(graphModel);
-        JOptionPane.showMessageDialog(this, "Graf został wczytany", "INFORMACJA", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_loadGraphButtonActionPerformed
 
     private void saveGraphButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveGraphButtonActionPerformed
-        if (GraphWriter.saveGraph(graphModel) == true) {
-            JOptionPane.showMessageDialog(this, "Graf został zapisany", "INFORMACJA", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(this, "Zapisywanie grafu nie powiodło się!!!", "BŁĄD", JOptionPane.ERROR_MESSAGE);
-        }
+        GraphWriter.saveGraph(graphModel);
     }//GEN-LAST:event_saveGraphButtonActionPerformed
 
     public void refreshGraphTab() {

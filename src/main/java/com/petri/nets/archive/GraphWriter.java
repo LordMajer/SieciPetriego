@@ -7,7 +7,7 @@ import java.io.*;
 
 public class GraphWriter {
 
-    public static boolean saveGraph(CustomGraph graph) {
+    public static void saveGraph(CustomGraph graph) {
         JFileChooser fileChooser = new JFileChooser();
         int returnVal = fileChooser.showSaveDialog(fileChooser);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -15,11 +15,11 @@ public class GraphWriter {
             try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file))) {
                 outputStream.writeObject(graph);
                 outputStream.flush();
-                return true;
+                JOptionPane.showMessageDialog(null, "Graf został zapisany", "INFORMACJA", JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "Zapisywanie grafu nie powiodło się!!!", "BŁĄD", JOptionPane.ERROR_MESSAGE);
                 e.printStackTrace();
             }
         }
-        return false;
     }
 }

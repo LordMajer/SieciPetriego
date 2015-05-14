@@ -13,8 +13,11 @@ public class GraphReader {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(file))) {
-                return (CustomGraph) inputStream.readObject();
+                CustomGraph loadedGraph = (CustomGraph) inputStream.readObject();
+                JOptionPane.showMessageDialog(null, "Graf został wczytany", "INFORMACJA", JOptionPane.INFORMATION_MESSAGE);
+                return loadedGraph;
             } catch (ClassNotFoundException | IOException e) {
+                JOptionPane.showMessageDialog(null, "Wczytywanie grafu nie powiodło się!!!", "BŁĄD", JOptionPane.ERROR_MESSAGE);
                 e.printStackTrace();
             }
         }
