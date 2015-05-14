@@ -70,6 +70,6 @@ public class Edge implements Serializable {
 
     @Override
     public String toString() {
-        return "Edge: " + this.getKey();
+        return name;
     }
 }

@@ -2,16 +2,18 @@ package com.petri.nets;
 
 import com.mxgraph.layout.mxCircleLayout;
 import com.mxgraph.layout.mxIGraphLayout;
+import com.mxgraph.model.mxICell;
 import com.mxgraph.swing.mxGraphComponent;
-import com.petri.nets.model.CustomGraph;
-import com.petri.nets.model.CustomGraphInitializer;
-import com.petri.nets.model.Edge;
-import com.petri.nets.model.Vertex;
+import com.mxgraph.util.mxConstants;
+import com.mxgraph.view.mxStylesheet;
+import com.petri.nets.model.*;
 import org.jgrapht.ListenableGraph;
 import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.ListenableDirectedWeightedGraph;
 
 import javax.swing.*;
+import java.util.Hashtable;
+import java.util.Map;
 
 public class JGraphXSample {
 
@@ -25,7 +27,25 @@ public class JGraphXSample {
         mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
         layout.execute(graphAdapter.getDefaultParent());
 
-        frame.add(new mxGraphComponent(graphAdapter));
+
+        mxStylesheet stylesheet = graphAdapter.getStylesheet();
+        Hashtable<String, Object> style = new Hashtable<>();
+        style.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_ELLIPSE);
+        stylesheet.putCellStyle("ROUNDED", style);
+        graphAdapter.setStylesheet(stylesheet);
+
+
+        for (Map.Entry<Vertex, mxICell> vertex : graphAdapter.getVertexToCellMap().entrySet()) {
+            if (vertex.getKey() instanceof Place) {
+                vertex.getValue().setStyle("ROUNDED");
+            }
+        }
+
+        mxGraphComponent mxGraphComponent = new mxGraphComponent(graphAdapter);
+        mxGraphComponent.refresh(); // to do the changes visible
+
+        frame.add(mxGraphComponent);
+
 
         frame.pack();
         frame.setLocationByPlatform(true);
