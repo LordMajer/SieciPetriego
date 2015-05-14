@@ -11,11 +11,18 @@
     <properties>
         <jgraph.version>5.13.0.0</jgraph.version>
         <jgraph-core.version>0.9.1</jgraph-core.version>
+        <jgraphx.version>2.3.0.5</jgraphx.version>
         <netbeans-lib.version>RELEASE701</netbeans-lib.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <!-- TODO Delete jgraph or jgraphX library - depending which one will be finally used  -->
     <dependencies>
+        <dependency>
+            <groupId>org.tinyjee.jgraphx</groupId>
+            <artifactId>jgraphx</artifactId>
+            <version>${jgraphx.version}</version>
+        </dependency>
         <dependency>
             <groupId>jgraph</groupId>
             <artifactId>jgraph</artifactId>
