@@ -2,6 +2,7 @@ package com.petri.nets;
 
 import com.mxgraph.layout.mxCircleLayout;
 import com.mxgraph.layout.mxIGraphLayout;
+import com.mxgraph.model.mxGeometry;
 import com.mxgraph.model.mxICell;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxConstants;
@@ -27,17 +28,18 @@ public class JGraphXSample {
         mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
         layout.execute(graphAdapter.getDefaultParent());
 
-
         mxStylesheet stylesheet = graphAdapter.getStylesheet();
         Hashtable<String, Object> style = new Hashtable<>();
         style.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_ELLIPSE);
         stylesheet.putCellStyle("ROUNDED", style);
         graphAdapter.setStylesheet(stylesheet);
 
-
         for (Map.Entry<Vertex, mxICell> vertex : graphAdapter.getVertexToCellMap().entrySet()) {
-            if (vertex.getKey() instanceof Place) {
-                vertex.getValue().setStyle("ROUNDED");
+            Vertex currentVertex = vertex.getKey();
+            mxICell currentVertexCell = vertex.getValue();
+            currentVertexCell.setGeometry(new mxGeometry(currentVertex.getX(), currentVertex.getY(), currentVertex.getWidth(), currentVertex.getHeight()));
+            if (currentVertex instanceof Place) {
+                currentVertexCell.setStyle("ROUNDED");
             }
         }
 
