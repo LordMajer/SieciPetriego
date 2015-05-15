@@ -60,7 +60,7 @@ public class EditTransitionPanel extends JDialog {
 
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        nameLabel.setText("Przepustowość:");
+        nameLabel.setText("Nazwa:");
         getContentPane().add(nameLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 130, 25));
         getContentPane().add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 34, 259, 10));
 

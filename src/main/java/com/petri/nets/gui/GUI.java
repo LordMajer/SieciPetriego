@@ -1,5 +1,7 @@
 package com.petri.nets.gui;
 
+import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
+import com.mxgraph.layout.mxIGraphLayout;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
 import com.mxgraph.model.mxICell;
@@ -63,12 +65,10 @@ public class GUI extends javax.swing.JFrame {
         for (Edge edge : graph.getEdges().values()) {               // dodanie krawędzi.
             g.addEdge(graph.getVertex(edge.getSourceId()), graph.getVertex(edge.getDestinationId()), edge);
         }
-        //for(old.getGraphLayoutCache().getCellViews())
 
         JGraphXAdapter graphAdapter = new JGraphXAdapter<>(g);
-
-        // pozycjonowanie:
         positionVertices(graphAdapter);
+        setEdgesProperties(graphAdapter);
         return graphAdapter;
     }
 
@@ -84,7 +84,12 @@ public class GUI extends javax.swing.JFrame {
         }
     }
 
-    @SuppressWarnings("unchecked") // FIXME hb 28-nov-05: See FIXME below
+    private void setEdgesProperties(JGraphXAdapter<Vertex, Edge> graphAdapter) {
+        for (mxICell currentEdgeCell : graphAdapter.getEdgeToCellMap().values()) {
+            currentEdgeCell.setStyle("editable=false");
+        }
+    }
+
     private void positionVertices(JGraphXAdapter<Vertex, Edge> graphAdapter) {
         mxStylesheet stylesheet = graphAdapter.getStylesheet();
         Hashtable<String, Object> style = new Hashtable<>();
@@ -97,9 +102,9 @@ public class GUI extends javax.swing.JFrame {
             mxICell currentVertexCell = vertex.getValue();
             currentVertexCell.setGeometry(new mxGeometry(currentVertex.getX(), currentVertex.getY(), currentVertex.getWidth(), currentVertex.getHeight()));
             if (currentVertex instanceof Place) {
-                currentVertexCell.setStyle("ROUNDED;fillColor=yellow");
+                currentVertexCell.setStyle("ROUNDED;fillColor=yellow;editable=false");
             } else {
-                currentVertexCell.setStyle("fillColor=white");
+                currentVertexCell.setStyle("fillColor=white;editable=false");
             }
         }
     }
@@ -129,7 +134,6 @@ public class GUI extends javax.swing.JFrame {
         addEdgeButton = new javax.swing.JButton();
         removePanel = new javax.swing.JPanel();
         removeVertexButton = new javax.swing.JButton();
-        removeEdgeButton = new javax.swing.JButton();
         simulationPanel = new javax.swing.JPanel();
         stopSimulationButton = new javax.swing.JButton();
         startSimulationButton = new javax.swing.JButton();
@@ -291,30 +295,20 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
-        removeEdgeButton.setText("Usuń krawędź");
-        removeEdgeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removeEdgeButtonActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout removePanelLayout = new javax.swing.GroupLayout(removePanel);
         removePanel.setLayout(removePanelLayout);
         removePanelLayout.setHorizontalGroup(
             removePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(removePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(removePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(removeVertexButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(removeEdgeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(removeVertexButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         removePanelLayout.setVerticalGroup(
             removePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(removePanelLayout.createSequentialGroup()
-                .addComponent(removeVertexButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
-                .addComponent(removeEdgeButton))
+                .addComponent(removeVertexButton, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         simulationPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Symulacja"));
@@ -513,15 +507,16 @@ public class GUI extends javax.swing.JFrame {
         revalidateModelVertexPosition(graphAdapter);
         Object[] cells = graphAdapter.getSelectionCells();
         if (cells.length != 1) {
-            JOptionPane.showMessageDialog(this, "Aby Usunąć nalezy zaznaczyć dokładnie jeden element!", "Błąd", JOptionPane.ERROR_MESSAGE);
-        } else {
-            Object obj = ((mxCell) cells[0]).getValue();
-            if (obj instanceof Vertex) {
-
-                Vertex vertex = (Vertex) obj;
-                // usuniecie wierzchołka
-                graphModel.removeVertex(vertex);
-            }
+            JOptionPane.showMessageDialog(this, "Aby usunąć element należy zaznaczyć dokładnie jeden element!", "BŁĄD", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        Object obj = ((mxCell) cells[0]).getValue();
+        if (obj instanceof Vertex) {
+            Vertex vertex = (Vertex) obj;
+            graphModel.removeVertex(vertex);
+        } else if (obj instanceof Edge) {
+            Edge edge = (Edge) obj;
+            graphModel.removeEdge(edge);
         }
         displayGraph(graphModel);
     }//GEN-LAST:event_removeVertexButtonActionPerformed
@@ -559,32 +554,6 @@ public class GUI extends javax.swing.JFrame {
         graphModel.addVertex(miejsce);
         displayGraph(graphModel);
     }//GEN-LAST:event_addPlaceButtonActionPerformed
-
-    private void removeEdgeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeEdgeButtonActionPerformed
-        revalidateModelVertexPosition(graphAdapter);
-        Object[] cells = graphAdapter.getSelectionCells();
-        if (cells.length != 2) {
-            JOptionPane.showMessageDialog(this, "Aby Usunąć krawędź należy zaznaczyć dwa wierzchołki które są nią polączone!", "Błąd", JOptionPane.ERROR_MESSAGE);
-        } else {
-            Edge tempEdge;
-            Vertex vertex1 = (Vertex) ((mxCell) cells[0]).getValue();
-            Vertex vertex2 = (Vertex) ((mxCell) cells[1]).getValue();
-
-            tempEdge = new Edge(vertex1.getID(), vertex2.getID());
-            if (graphModel.getEdges().containsKey(tempEdge.getKey())) {
-                System.out.println("if1");
-                graphModel.removeEdge(tempEdge);
-            } else {
-                System.out.println("else");
-                tempEdge = new Edge(vertex2.getID(), vertex1.getID());
-                if (graphModel.getEdges().containsKey(tempEdge.getKey())) {
-                    System.out.println("if2");
-                    graphModel.removeEdge(tempEdge);
-                }
-            }
-        }
-        displayGraph(graphModel);
-    }//GEN-LAST:event_removeEdgeButtonActionPerformed
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
 
@@ -708,7 +677,7 @@ public class GUI extends javax.swing.JFrame {
         resultsPanel.revalidate();
         ReachabilityGraph reachabilityGraph = new ReachabilityGraph(graphModel);
         JPanel panel = getJPanelWithBorderLayoutAndTitle("Graf osiągalności");
-        panel.add(createJGraphComponent(createJGraphXAdapter(reachabilityGraph.buildReachabilityGraph())));
+        panel.add(createJGraphComponentWithLayout(createJGraphXAdapter(reachabilityGraph.buildReachabilityGraph())));
         resultsPanel.add(getJScrollPane(panel));
         tabbedPane.setSelectedIndex(0);
         System.out.println("Graf osiągalności...");
@@ -720,7 +689,7 @@ public class GUI extends javax.swing.JFrame {
         resultsPanel.revalidate();
         CoverageTree coverageTree = new CoverageTree(graphModel);
         JPanel panel = getJPanelWithBorderLayoutAndTitle("Drzewo pokrycia");
-        panel.add(createJGraphComponent(createJGraphXAdapter(coverageTree.buildCoverageTree())));
+        panel.add(createJGraphComponentWithLayout(createJGraphXAdapter(coverageTree.buildCoverageTree())));
         resultsPanel.add(getJScrollPane(panel));
         tabbedPane.setSelectedIndex(0);
         System.out.println("Drzewo pokrycia...");
@@ -732,7 +701,7 @@ public class GUI extends javax.swing.JFrame {
         resultsPanel.revalidate();
         CoverageGraph coverageGraph = new CoverageGraph(graphModel);
         JPanel panel = getJPanelWithBorderLayoutAndTitle("Graf pokrycia");
-        panel.add(createJGraphComponent(createJGraphXAdapter(coverageGraph.buildCoverageGraph())));
+        panel.add(createJGraphComponentWithLayout(createJGraphXAdapter(coverageGraph.buildCoverageGraph())));
         resultsPanel.add(getJScrollPane(panel));
         tabbedPane.setSelectedIndex(0);
         System.out.println("Graf pokrycia...");
@@ -795,6 +764,13 @@ public class GUI extends javax.swing.JFrame {
         mxGraphComponent mxGraphComponent = new mxGraphComponent(graphAdapter);
         mxGraphComponent.setConnectable(false); // disable possibility of new edges creation
         mxGraphComponent.refresh(); // to do the changes visible
+        return mxGraphComponent;
+    }
+
+    private JScrollPane createJGraphComponentWithLayout(JGraphXAdapter<Vertex, Edge> graphAdapter) {
+        JScrollPane mxGraphComponent = createJGraphComponent(graphAdapter);
+        mxIGraphLayout layout = new mxHierarchicalLayout(graphAdapter);
+        layout.execute(graphAdapter.getDefaultParent());
         return mxGraphComponent;
     }
 
@@ -874,7 +850,6 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JButton option2Button;
     private javax.swing.JButton option3Button;
     private javax.swing.JPanel optionPanel;
-    private javax.swing.JButton removeEdgeButton;
     private javax.swing.JPanel removePanel;
     private javax.swing.JButton removeVertexButton;
     private javax.swing.JPanel resultsPanel;
