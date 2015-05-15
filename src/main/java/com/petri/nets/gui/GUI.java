@@ -53,14 +53,14 @@ public class GUI extends javax.swing.JFrame {
     }
 
     private JGraph createJGraph(CustomGraph graph) {
-        DirectedWeightedMultigraph<Vertex, DefaultEdge> g = new DirectedWeightedMultigraph<>(DefaultEdge.class);
+        DirectedWeightedMultigraph<Vertex, Edge> g = new DirectedWeightedMultigraph<>(Edge.class);
 
         for (Vertex vertex : graph.getVertices().values()) {        // dodanie wierzchołków.
             g.addVertex(vertex);
         }
 
         for (Edge edge : graph.getEdges().values()) {               // dodanie krawędzi.
-            g.addEdge(graph.getVertex(edge.getSourceId()), graph.getVertex(edge.getDestinationId()));
+            g.addEdge(graph.getVertex(edge.getSourceId()), graph.getVertex(edge.getDestinationId()), edge);
         }
         //for(old.getGraphLayoutCache().getCellViews())
 
