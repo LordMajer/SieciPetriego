@@ -1,22 +1,26 @@
 package com.petri.nets.gui;
 
+import com.mxgraph.model.mxCell;
+import com.mxgraph.model.mxGeometry;
+import com.mxgraph.model.mxICell;
+import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.util.mxConstants;
+import com.mxgraph.view.mxStylesheet;
 import com.petri.nets.algorithms.CoverageGraph;
 import com.petri.nets.algorithms.CoverageTree;
 import com.petri.nets.algorithms.ReachabilityGraph;
 import com.petri.nets.archive.GraphReader;
 import com.petri.nets.archive.GraphWriter;
 import com.petri.nets.model.*;
-import com.petri.nets.model.Edge;
-import org.jgraph.JGraph;
-import org.jgraph.graph.*;
-import org.jgrapht.ext.JGraphModelAdapter;
-import org.jgrapht.graph.DirectedWeightedMultigraph;
+import org.jgrapht.ListenableGraph;
+import org.jgrapht.ext.JGraphXAdapter;
+import org.jgrapht.graph.ListenableDirectedWeightedGraph;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -25,9 +29,8 @@ import java.util.Map;
  */
 public class GUI extends javax.swing.JFrame {
 
-    JGraph jGraph;
     CustomGraph graphModel;
-    JGraphModelAdapter graphAdapter;
+    JGraphXAdapter<Vertex, Edge> graphAdapter;
     JScrollPane scrollPane;
 
     /**
@@ -45,15 +48,14 @@ public class GUI extends javax.swing.JFrame {
         System.out.println(graphModel.getVertices());
         System.out.println(graphModel.getEdges());
 
-        jGraph = createJGraph(customGraph);
+        graphAdapter = createJGraphXAdapter(customGraph);
 
-        adjustGraphDisplay(jGraph);
         //revalidateGraphVertexPosition(jGraph);
         refreshGraphTab();
     }
 
-    private JGraph createJGraph(CustomGraph graph) {
-        DirectedWeightedMultigraph<Vertex, Edge> g = new DirectedWeightedMultigraph<>(Edge.class);
+    private JGraphXAdapter<Vertex, Edge> createJGraphXAdapter(CustomGraph graph) {
+        ListenableGraph<Vertex, Edge> g = new ListenableDirectedWeightedGraph<>(Edge.class);
 
         for (Vertex vertex : graph.getVertices().values()) {        // dodanie wierzchołków.
             g.addVertex(vertex);
@@ -64,44 +66,43 @@ public class GUI extends javax.swing.JFrame {
         }
         //for(old.getGraphLayoutCache().getCellViews())
 
-        graphAdapter = new JGraphModelAdapter<>(g);
+        JGraphXAdapter graphAdapter = new JGraphXAdapter<>(g);
 
         // pozycjonowanie:
-        for (Vertex vertex : graph.getVertices().values()) {
-            positionVertexAt(vertex, graphAdapter);
-        }
-        return new JGraph(graphAdapter);
+        positionVertices(graphAdapter);
+        return graphAdapter;
     }
 
-    public void revalidateModelVertexPosition(JGraph oldGraph) {
-
-        for (CellView view : oldGraph.getGraphLayoutCache().getCellViews()) {
-            if (view instanceof VertexView) {
-                Vertex oldVertex = (Vertex) ((DefaultGraphCell) view.getCell()).getUserObject();
-                Vertex newVertex = graphModel.getVertex(oldVertex.getID());
-                Rectangle2D rectangle = (Rectangle2D) view.getAllAttributes().get("bounds");
-                newVertex.setX((int) rectangle.getX());
-                newVertex.setY((int) rectangle.getY());
-                newVertex.setWidth((int) rectangle.getWidth());
-                newVertex.setHeight((int) rectangle.getHeight());
-            }
+    public void revalidateModelVertexPosition(JGraphXAdapter<Vertex, Edge> oldGraph) {
+        for (Map.Entry<Vertex, mxICell> vertex : graphAdapter.getVertexToCellMap().entrySet()) {
+            Vertex currentVertex = vertex.getKey();
+            mxICell currentVertexCell = vertex.getValue();
+            mxGeometry currentVertexCellGeometry = currentVertexCell.getGeometry();
+            currentVertex.setHeight((int) currentVertexCellGeometry.getHeight());
+            currentVertex.setWidth((int) currentVertexCellGeometry.getWidth());
+            currentVertex.setX((int) currentVertexCellGeometry.getX());
+            currentVertex.setY((int) currentVertexCellGeometry.getY());
         }
     }
 
     @SuppressWarnings("unchecked") // FIXME hb 28-nov-05: See FIXME below
-    private void positionVertexAt(Object vertex, JGraphModelAdapter graphAdapter) {
-        Vertex vert = (Vertex) vertex;
-        DefaultGraphCell cell = graphAdapter.getVertexCell(vertex);
-        AttributeMap attr = cell.getAttributes();
+    private void positionVertices(JGraphXAdapter<Vertex, Edge> graphAdapter) {
+        mxStylesheet stylesheet = graphAdapter.getStylesheet();
+        Hashtable<String, Object> style = new Hashtable<>();
+        style.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_ELLIPSE);
+        stylesheet.putCellStyle("ROUNDED", style);
+        graphAdapter.setStylesheet(stylesheet);
 
-        Rectangle2D newBounds = new Rectangle2D.Double(vert.getX(), vert.getY(), vert.getWidth(), vert.getHeight());
-
-        GraphConstants.setBounds(attr, newBounds);
-
-        // TODO: Clean up generics once JGraph goes generic
-        org.jgraph.graph.AttributeMap cellAttr = new AttributeMap();
-        cellAttr.put(cell, attr);
-        graphAdapter.edit(cellAttr, null, null, null);
+        for (Map.Entry<Vertex, mxICell> vertex : graphAdapter.getVertexToCellMap().entrySet()) {
+            Vertex currentVertex = vertex.getKey();
+            mxICell currentVertexCell = vertex.getValue();
+            currentVertexCell.setGeometry(new mxGeometry(currentVertex.getX(), currentVertex.getY(), currentVertex.getWidth(), currentVertex.getHeight()));
+            if (currentVertex instanceof Place) {
+                currentVertexCell.setStyle("ROUNDED;fillColor=yellow");
+            } else {
+                currentVertexCell.setStyle("fillColor=white");
+            }
+        }
     }
 
     /**
@@ -510,12 +511,12 @@ public class GUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void removeVertexButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeVertexButtonActionPerformed
-        revalidateModelVertexPosition(jGraph);
-        Object[] cells = jGraph.getSelectionCells();
+        revalidateModelVertexPosition(graphAdapter);
+        Object[] cells = graphAdapter.getSelectionCells();
         if (cells.length != 1) {
             JOptionPane.showMessageDialog(this, "Aby Usunąć nalezy zaznaczyć dokładnie jeden element!", "Błąd", JOptionPane.ERROR_MESSAGE);
         } else {
-            Object obj = ((DefaultGraphCell) cells[0]).getUserObject();
+            Object obj = ((mxCell) cells[0]).getValue();
             if (obj instanceof Vertex) {
 
                 Vertex vertex = (Vertex) obj;
@@ -529,14 +530,14 @@ public class GUI extends javax.swing.JFrame {
     private void addEdgeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addEdgeButtonActionPerformed
         // TODO add your handling code here:
 
-        revalidateModelVertexPosition(jGraph);
-        Object[] cells = jGraph.getSelectionCells();
+        revalidateModelVertexPosition(graphAdapter);
+        Object[] cells = graphAdapter.getSelectionCells();
         if (cells.length != 2) {
             JOptionPane.showMessageDialog(this, "Aby dodać krawędź należy zaznaczyć dokładnie 2 wierzchołki!", "Błąd", JOptionPane.ERROR_MESSAGE);
         } else {
 
-            Vertex sourceVertex = (Vertex) ((DefaultGraphCell) cells[0]).getUserObject();
-            Vertex destinationVertex = (Vertex) ((DefaultGraphCell) cells[1]).getUserObject();
+            Vertex sourceVertex = (Vertex) ((mxCell) cells[0]).getValue();
+            Vertex destinationVertex = (Vertex) ((mxCell) cells[1]).getValue();
 
             Edge edge = new Edge(sourceVertex.getID(), destinationVertex.getID());
             graphModel.addEdge(edge);
@@ -546,7 +547,7 @@ public class GUI extends javax.swing.JFrame {
 
     private void addPassageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPassageButtonActionPerformed
 
-        revalidateModelVertexPosition(jGraph);
+        revalidateModelVertexPosition(graphAdapter);
         Transition przejscie = new Transition(graphModel.getNewID(), graphModel.getNewName(Transition.getVertexType()));
         graphModel.addVertex(przejscie);
         displayGraph(graphModel);
@@ -554,21 +555,21 @@ public class GUI extends javax.swing.JFrame {
 
     private void addPlaceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPlaceButtonActionPerformed
 
-        revalidateModelVertexPosition(jGraph);
+        revalidateModelVertexPosition(graphAdapter);
         Place miejsce = new Place(graphModel.getNewID(), graphModel.getNewName(Place.getVertexType()));
         graphModel.addVertex(miejsce);
         displayGraph(graphModel);
     }//GEN-LAST:event_addPlaceButtonActionPerformed
 
     private void removeEdgeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeEdgeButtonActionPerformed
-        revalidateModelVertexPosition(jGraph);
-        Object[] cells = jGraph.getSelectionCells();
+        revalidateModelVertexPosition(graphAdapter);
+        Object[] cells = graphAdapter.getSelectionCells();
         if (cells.length != 2) {
             JOptionPane.showMessageDialog(this, "Aby Usunąć krawędź należy zaznaczyć dwa wierzchołki które są nią polączone!", "Błąd", JOptionPane.ERROR_MESSAGE);
         } else {
             Edge tempEdge;
-            Vertex vertex1 = (Vertex) ((DefaultGraphCell) cells[0]).getUserObject();
-            Vertex vertex2 = (Vertex) ((DefaultGraphCell) cells[1]).getUserObject();
+            Vertex vertex1 = (Vertex) ((mxCell) cells[0]).getValue();
+            Vertex vertex2 = (Vertex) ((mxCell) cells[1]).getValue();
 
             tempEdge = new Edge(vertex1.getID(), vertex2.getID());
             if (graphModel.getEdges().containsKey(tempEdge.getKey())) {
@@ -588,12 +589,12 @@ public class GUI extends javax.swing.JFrame {
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
 
-        revalidateModelVertexPosition(jGraph);
-        Object[] cells = jGraph.getSelectionCells();
+        revalidateModelVertexPosition(graphAdapter);
+        Object[] cells = graphAdapter.getSelectionCells();
         if (cells.length == 1) {
             // edycja miejsca lub przejścia
 
-            Object obj = ((DefaultGraphCell) cells[0]).getUserObject();
+            Object obj = (Vertex) ((mxCell) cells[0]).getValue();
             if (obj instanceof Place) {
 
                 Map<String, Object> values = new HashMap<>();
@@ -636,8 +637,8 @@ public class GUI extends javax.swing.JFrame {
             // pozyskanie krawędzi:
             System.out.println("Edycja krawędzi");
             Map<String, Object> values = new HashMap<>();
-            Vertex sourceObject = (Vertex) ((DefaultGraphCell) cells[0]).getUserObject();
-            Vertex destinationObject = (Vertex) ((DefaultGraphCell) cells[1]).getUserObject();
+            Vertex sourceObject = (Vertex) ((mxCell) cells[0]).getValue();
+            Vertex destinationObject = (Vertex) ((mxCell) cells[1]).getValue();
             Edge chosenEdge = new Edge(sourceObject.getID(), destinationObject.getID());
             System.out.println(chosenEdge);
             Edge foundEdge = graphModel.getEdge(chosenEdge.getKey());
@@ -708,7 +709,7 @@ public class GUI extends javax.swing.JFrame {
         resultsPanel.revalidate();
         ReachabilityGraph reachabilityGraph = new ReachabilityGraph(graphModel);
         JPanel panel = getJPanelWithBorderLayoutAndTitle("Graf osiągalności");
-        panel.add(createJGraph(reachabilityGraph.buildReachabilityGraph()));
+        panel.add(createJGraphComponent(createJGraphXAdapter(reachabilityGraph.buildReachabilityGraph())));
         resultsPanel.add(getJScrollPane(panel));
         tabbedPane.setSelectedIndex(0);
         System.out.println("Graf osiągalności...");
@@ -720,7 +721,7 @@ public class GUI extends javax.swing.JFrame {
         resultsPanel.revalidate();
         CoverageTree coverageTree = new CoverageTree(graphModel);
         JPanel panel = getJPanelWithBorderLayoutAndTitle("Drzewo pokrycia");
-        panel.add(createJGraph(coverageTree.buildCoverageTree()));
+        panel.add(createJGraphComponent(createJGraphXAdapter(coverageTree.buildCoverageTree())));
         resultsPanel.add(getJScrollPane(panel));
         tabbedPane.setSelectedIndex(0);
         System.out.println("Drzewo pokrycia...");
@@ -732,7 +733,7 @@ public class GUI extends javax.swing.JFrame {
         resultsPanel.revalidate();
         CoverageGraph coverageGraph = new CoverageGraph(graphModel);
         JPanel panel = getJPanelWithBorderLayoutAndTitle("Graf pokrycia");
-        panel.add(createJGraph(coverageGraph.buildCoverageGraph()));
+        panel.add(createJGraphComponent(createJGraphXAdapter(coverageGraph.buildCoverageGraph())));
         resultsPanel.add(getJScrollPane(panel));
         tabbedPane.setSelectedIndex(0);
         System.out.println("Graf pokrycia...");
@@ -781,17 +782,19 @@ public class GUI extends javax.swing.JFrame {
             tabbedPane.remove(1);
         }
         //jGraph = new JGraph(model, view);
-        scrollPane = new JScrollPane(jGraph);
+
+        scrollPane = new JScrollPane(createJGraphComponent(graphAdapter));
         tabbedPane.addTab("Graf", scrollPane);
         tabbedPane.revalidate();
         tabbedPane.repaint();
         tabbedPane.setSelectedIndex(1);
     }
 
-    public void adjustGraphDisplay(JGraph jGraph) {
-        jGraph.setConnectable(false);                                    // zablokowanie niektórych możliwości edycji grafu
-        jGraph.setDisconnectable(false);
-        jGraph.setCloneable(false);
+    private JScrollPane createJGraphComponent(JGraphXAdapter<Vertex, Edge> graphAdapter) {
+        mxGraphComponent mxGraphComponent = new mxGraphComponent(graphAdapter);
+        mxGraphComponent.setConnectable(false); // disable possibility of new edges creation
+        mxGraphComponent.refresh(); // to do the changes visible
+        return mxGraphComponent;
     }
 
     private JPanel getJPanelWithTitle(String title) {
