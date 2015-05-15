@@ -50,7 +50,6 @@ public class GUI extends javax.swing.JFrame {
 
         graphAdapter = createJGraphXAdapter(customGraph);
 
-        //revalidateGraphVertexPosition(jGraph);
         refreshGraphTab();
     }
 
@@ -73,7 +72,7 @@ public class GUI extends javax.swing.JFrame {
         return graphAdapter;
     }
 
-    public void revalidateModelVertexPosition(JGraphXAdapter<Vertex, Edge> oldGraph) {
+    public void revalidateModelVertexPosition(JGraphXAdapter<Vertex, Edge> graphAdapter) {
         for (Map.Entry<Vertex, mxICell> vertex : graphAdapter.getVertexToCellMap().entrySet()) {
             Vertex currentVertex = vertex.getKey();
             mxICell currentVertexCell = vertex.getValue();
@@ -768,11 +767,13 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_stopSimulationButtonActionPerformed
 
     private void loadGraphButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadGraphButtonActionPerformed
+        revalidateModelVertexPosition(graphAdapter);
         graphModel = GraphReader.loadGraph(graphModel);
         displayGraph(graphModel);
     }//GEN-LAST:event_loadGraphButtonActionPerformed
 
     private void saveGraphButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveGraphButtonActionPerformed
+        revalidateModelVertexPosition(graphAdapter);
         GraphWriter.saveGraph(graphModel);
     }//GEN-LAST:event_saveGraphButtonActionPerformed
 
