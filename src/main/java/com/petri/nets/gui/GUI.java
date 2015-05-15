@@ -21,6 +21,8 @@ import org.jgrapht.graph.ListenableDirectedWeightedGraph;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -760,9 +762,18 @@ public class GUI extends javax.swing.JFrame {
         tabbedPane.setSelectedIndex(1);
     }
 
-    private JScrollPane createJGraphComponent(JGraphXAdapter<Vertex, Edge> graphAdapter) {
+    private JScrollPane createJGraphComponent(final JGraphXAdapter<Vertex, Edge> graphAdapter) {
         mxGraphComponent mxGraphComponent = new mxGraphComponent(graphAdapter);
         mxGraphComponent.setConnectable(false); // disable possibility of new edges creation
+        mxGraphComponent.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                Object[] cells = graphAdapter.getSelectionCells();
+                if (e.getKeyCode() == 127 && cells.length == 1) {
+                    removeVertexButtonActionPerformed(null);
+                }
+            }
+        });
         mxGraphComponent.refresh(); // to do the changes visible
         return mxGraphComponent;
     }
