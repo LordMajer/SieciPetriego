@@ -23,8 +23,6 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -513,21 +511,19 @@ public class GUI extends javax.swing.JFrame {
     private void removeVertexButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeVertexButtonActionPerformed
         revalidateModelVertexPosition(graphAdapter);
         Object[] cells = graphAdapter.getSelectionCells();
-        if (cells.length < 1) {
+        if (cells.length != 1) {
             JOptionPane.showMessageDialog(this, "Aby usunąć element należy zaznaczyć dokładnie jeden element!", "BŁĄD", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        for (int i = 0 ; i < cells.length ; i++) {
-            Object obj = ((mxCell) cells[i]).getValue();
-            if (obj instanceof Vertex) {
-                Vertex vertex = (Vertex) obj;
-                graphModel.removeVertex(vertex);
-            } else if (obj instanceof Edge) {
-                Edge edge = (Edge) obj;
-                graphModel.removeEdge(edge);
-            }
-            displayGraph(graphModel);
+        Object obj = ((mxCell) cells[0]).getValue();
+        if (obj instanceof Vertex) {
+            Vertex vertex = (Vertex) obj;
+            graphModel.removeVertex(vertex);
+        } else if (obj instanceof Edge) {
+            Edge edge = (Edge) obj;
+            graphModel.removeEdge(edge);
         }
+        displayGraph(graphModel);
     }//GEN-LAST:event_removeVertexButtonActionPerformed
 
     private void addEdgeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addEdgeButtonActionPerformed
@@ -655,6 +651,9 @@ public class GUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         resultsPanel.removeAll();
         resultsPanel.revalidate();
+        if (!isGraphValid(graphModel)) {
+            return;
+        }
 
         // dodanie JTable do okna wynikowego:
         tabbedPane.addTab(GRAPH_TAB_TITLE, scrollPane);
@@ -673,6 +672,9 @@ public class GUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         resultsPanel.removeAll();
         resultsPanel.revalidate();
+        if (!isGraphValid(graphModel)) {
+            return;
+        }
         MatrixCreator matrixCreator = new MatrixCreator(graphModel);
         JPanel panel = getJPanelWithTitle("Macierz wyjść");
         panel.add(matrixCreator.generateOutputMatrix());
@@ -685,6 +687,9 @@ public class GUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         resultsPanel.removeAll();
         resultsPanel.revalidate();
+        if (!isGraphValid(graphModel)) {
+            return;
+        }
         MatrixCreator matrixCreator = new MatrixCreator(graphModel);
         JPanel panel = getJPanelWithTitle("Macierz incydencji");
         panel.add(matrixCreator.generateIncidenceMatrix());
@@ -697,6 +702,9 @@ public class GUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         resultsPanel.removeAll();
         resultsPanel.revalidate();
+        if (!isGraphValid(graphModel)) {
+            return;
+        }
         ReachabilityGraph reachabilityGraph = new ReachabilityGraph(graphModel);
         JPanel panel = getJPanelWithBorderLayoutAndTitle("Graf osiągalności");
         panel.add(createJGraphComponentWithLayout(createJGraphXAdapter(reachabilityGraph.buildReachabilityGraph())));
@@ -709,6 +717,9 @@ public class GUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         resultsPanel.removeAll();
         resultsPanel.revalidate();
+        if (!isGraphValid(graphModel)) {
+            return;
+        }
         CoverageTree coverageTree = new CoverageTree(graphModel);
         JPanel panel = getJPanelWithBorderLayoutAndTitle("Drzewo pokrycia");
         panel.add(createJGraphComponentWithLayout(createJGraphXAdapter(coverageTree.buildCoverageTree())));
@@ -721,6 +732,9 @@ public class GUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         resultsPanel.removeAll();
         resultsPanel.revalidate();
+        if (!isGraphValid(graphModel)) {
+            return;
+        }
         CoverageGraph coverageGraph = new CoverageGraph(graphModel);
         JPanel panel = getJPanelWithBorderLayoutAndTitle("Graf pokrycia");
         panel.add(createJGraphComponentWithLayout(createJGraphXAdapter(coverageGraph.buildCoverageGraph())));
@@ -734,20 +748,29 @@ public class GUI extends javax.swing.JFrame {
         System.out.println("Start symulacji...");
         // 1. sprawdzenie poprawności grafu- czy jest dobrze zbudowany:
         String errors = ModelValidator.validate(graphModel);
-        if (errors == null) {
+        if (isGraphValid(graphModel)) {
             // zablokowanie możliwości edycji grafu
             // przeprowadzenie pierwszego kroku symulacji.
-        } else {
+        }
+    }//GEN-LAST:event_startSimulationButtonActionPerformed
+
+    private boolean isGraphValid(CustomGraph graphModel) {
+        System.out.println("Szukanie błędów...");
+        // 1. sprawdzenie poprawności grafu- czy jest dobrze zbudowany:
+        String errors = ModelValidator.validate(graphModel);
+        if (errors != null) {
             // wystąpiły błędy przy sprawdzaniu poprawności.... wypisanie ich w zakładce wyniki:
             JPanel errorPanel = new JPanel(new BorderLayout());
             JTextArea errorTextArea = new JTextArea();
             errorTextArea.setFont(new Font("monospaced", Font.PLAIN, 12));
             errorTextArea.setText(errors);
             errorPanel.add(errorTextArea, BorderLayout.CENTER);
-            tabbedPane.add(errorPanel);
+            resultsPanel.add(errorPanel);
             tabbedPane.setSelectedIndex(0);
+            return false;
         }
-    }//GEN-LAST:event_startSimulationButtonActionPerformed
+        return true;
+    }
 
     private void stepButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stepButtonActionPerformed
         System.out.println("Krok symulacji..");
@@ -775,7 +798,8 @@ public class GUI extends javax.swing.JFrame {
         }
         //jGraph = new JGraph(model, view);
 
-        tabbedPane.addTab(GRAPH_TAB_TITLE, createJGraphComponent(graphAdapter));
+        scrollPane = new JScrollPane(createJGraphComponent(graphAdapter));
+        tabbedPane.addTab("Graf", scrollPane);
         tabbedPane.revalidate();
         tabbedPane.repaint();
         tabbedPane.setSelectedIndex(1);
@@ -788,7 +812,7 @@ public class GUI extends javax.swing.JFrame {
             @Override
             public void keyPressed(KeyEvent e) {
                 Object[] cells = graphAdapter.getSelectionCells();
-                if (tabbedPane.getSelectedIndex() == tabbedPane.indexOfTab(GRAPH_TAB_TITLE) && cells.length > 0 && e.getKeyCode() == 127) {
+                if (tabbedPane.getSelectedIndex() == tabbedPane.indexOfTab(GRAPH_TAB_TITLE) && cells.length == 1 && e.getKeyCode() == 127) {
                     removeVertexButtonActionPerformed(null);
                 }
             }
