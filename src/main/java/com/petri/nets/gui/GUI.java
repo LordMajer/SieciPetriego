@@ -567,7 +567,7 @@ public class GUI extends javax.swing.JFrame {
         if (cells.length == 1) {
             // edycja miejsca lub przejścia
 
-            Object obj = (Vertex) ((mxCell) cells[0]).getValue();
+            Object obj = ((mxCell) cells[0]).getValue();
             if (obj instanceof Place) {
 
                 Map<String, Object> values = new HashMap<>();
@@ -599,6 +599,19 @@ public class GUI extends javax.swing.JFrame {
                     // update:
                     modelVertex.setName(changedVertex.getName());
                     modelVertex.setPriority(changedVertex.getPriority());
+                }
+                System.out.println(values);
+                displayGraph(graphModel);
+            } else if (obj instanceof Edge) {
+                System.out.println("Edycja krawędzi");
+                Map<String, Object> values = new HashMap<>();
+                values.put("Object", obj);
+                EditEdgePanel editEdgePanel = new EditEdgePanel(this, "Edycja krawędzi", true, values);
+                if (values.get("Status") != null && values.get("Status").equals("Ok")) {
+                    Edge modelEdge = (Edge) graphModel.getEdge(((Edge) values.get("Object")).getKey());
+                    Edge changedEdge = (Edge) values.get("ReturnObject");
+                    // update:
+                    modelEdge.setCapacity(changedEdge.getCapacity());
                 }
                 System.out.println(values);
                 displayGraph(graphModel);
