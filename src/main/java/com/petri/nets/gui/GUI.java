@@ -31,6 +31,8 @@ public class GUI extends javax.swing.JFrame {
     private static final int GRAPH_TAB_INDEX = 1;
     private static final int RESULT_TAB_INDEX = 0;
     private static final int DEL_KEY_CODE = 127;
+    private static final String INFORMATION_MESSAGE_TITLE = "INFORMACJA";
+    private static final String ERROR_MESSAGE_TITLE = "BŁĄD";
 
     CustomGraph graphModel;
     Simulator simulator;
@@ -470,7 +472,7 @@ public class GUI extends javax.swing.JFrame {
         revalidateModelVertexPosition(graphAdapter);
         Object[] cells = graphAdapter.getSelectionCells();
         if (cells.length < 1) {
-            JOptionPane.showMessageDialog(this, "Najpierw zaznacz element, który chcesz usunąć!!!!", "BŁĄD", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Najpierw zaznacz element, który chcesz usunąć!!!!", ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
             return;
         }
         for (int i = 0 ; i < cells.length ; i++) {
@@ -490,7 +492,7 @@ public class GUI extends javax.swing.JFrame {
         revalidateModelVertexPosition(graphAdapter);
         Object[] cells = graphAdapter.getSelectionCells();
         if (cells.length != 2) {
-            JOptionPane.showMessageDialog(this, "Aby dodać krawędź należy zaznaczyć dokładnie 2 wierzchołki!", "Błąd", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Aby dodać krawędź należy zaznaczyć dokładnie 2 wierzchołki!", ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
             return;
         }
         Vertex sourceVertex = (Vertex) ((mxCell) cells[0]).getValue();
@@ -526,12 +528,12 @@ public class GUI extends javax.swing.JFrame {
             } else if (selectedElement instanceof Edge) {
                 editEdge(selectedElement);
             } else {
-                JOptionPane.showMessageDialog(this, "Wystąpił błąd podczas zaznaczania!", "BŁĄD", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Wystąpił błąd podczas zaznaczania!", ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
             }
         } else if (selectedElements.length == 2 && selectedElements[0] instanceof Vertex && selectedElements[1] instanceof Vertex) {
             editEdge(selectedElements);
         } else {
-            JOptionPane.showMessageDialog(this, "Aby edytować elementy grafu należy zaznaczyć pojedynczy element lub dwa wierzchołki w celu edycji krawędzi pomiędzy nimi!", "BŁĄD", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Aby edytować elementy grafu należy zaznaczyć pojedynczy element lub dwa wierzchołki w celu edycji krawędzi pomiędzy nimi!", ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_editButtonActionPerformed
 
@@ -590,7 +592,7 @@ public class GUI extends javax.swing.JFrame {
             }
             displayGraph(graphModel);
         } else {
-            JOptionPane.showMessageDialog(this, "Brak krawedzi pomiędzy zaznaczonymi wierzchołkami!", "Błąd", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Brak krawedzi pomiędzy zaznaczonymi wierzchołkami!", ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -701,12 +703,12 @@ public class GUI extends javax.swing.JFrame {
     private void stepButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stepButtonActionPerformed
         java.util.List<Transition> possibleSteps = simulator.getPossibleSteps();
         if (possibleSteps.size() == 0) {
-            JOptionPane.showMessageDialog(this, "Brak możliwych kroków!", "INFORMACJA", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Brak możliwych kroków!", INFORMATION_MESSAGE_TITLE, JOptionPane.INFORMATION_MESSAGE);
             return;
         } else if (possibleSteps.size() == 1) {
             Transition transition = possibleSteps.get(0);
             simulator.takeStep(transition);
-            JOptionPane.showMessageDialog(this, "Wykonano przejście : " + transition.getName(), "INFORMACJA", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Wykonano przejście : " + transition.getName(), INFORMATION_MESSAGE_TITLE, JOptionPane.INFORMATION_MESSAGE);
             resultsPanel.removeAll();
             resultsPanel.revalidate();
             resultsPanel.add(createJGraphComponent(CustomGraphToJGraphXAdapterTransformer.transform(simulator.getGraph())));
@@ -715,13 +717,13 @@ public class GUI extends javax.swing.JFrame {
             Transition transition = graphModel.getTransitionByName(possibleSteps, optionChosen);
             if (transition != null) {
                 simulator.takeStep(transition);
-                JOptionPane.showMessageDialog(this, "Wykonano przejście : " + transition.getName(), "INFORMACJA", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Wykonano przejście : " + transition.getName(), INFORMATION_MESSAGE_TITLE, JOptionPane.INFORMATION_MESSAGE);
                 resultsPanel.removeAll();
                 resultsPanel.revalidate();
                 resultsPanel.add(createJGraphComponent(CustomGraphToJGraphXAdapterTransformer.transform(simulator.getGraph())));
             } else {
                 if (optionChosen != null) {
-                    JOptionPane.showMessageDialog(this, "Wskazane przejście (" + optionChosen + ") nie jest w tej chwili możliwe", "BŁĄD", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Wskazane przejście (" + optionChosen + ") nie jest w tej chwili możliwe", ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
