@@ -33,6 +33,9 @@ import java.util.Map;
  */
 public class GUI extends javax.swing.JFrame {
 
+    private static final String GRAPH_TAB_TITLE = "Graf";
+    private static final String RESULT_TAB_TITLE = "Wyniki";
+
     CustomGraph graphModel;
     JGraphXAdapter<Vertex, Edge> graphAdapter;
     JScrollPane scrollPane;
@@ -480,7 +483,7 @@ public class GUI extends javax.swing.JFrame {
         jScrollPane2.setViewportView(jPanel5);
 
         resultsPanel.setLayout(new java.awt.BorderLayout());
-        tabbedPane.addTab("Wyniki", resultsPanel);
+        tabbedPane.addTab(RESULT_TAB_TITLE, resultsPanel);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -637,7 +640,7 @@ public class GUI extends javax.swing.JFrame {
         resultsPanel.revalidate();
 
         // dodanie JTable do okna wynikowego:
-        tabbedPane.addTab("Graf", scrollPane);
+        tabbedPane.addTab(GRAPH_TAB_TITLE, scrollPane);
         tabbedPane.revalidate();
         tabbedPane.repaint();
 
@@ -750,7 +753,7 @@ public class GUI extends javax.swing.JFrame {
 
     public void refreshGraphTab() {
 
-        if (tabbedPane.indexOfTab("Graf") != -1) {
+        if (tabbedPane.indexOfTab(GRAPH_TAB_TITLE) != -1) {
             tabbedPane.remove(1);
         }
         //jGraph = new JGraph(model, view);
@@ -769,7 +772,7 @@ public class GUI extends javax.swing.JFrame {
             @Override
             public void keyPressed(KeyEvent e) {
                 Object[] cells = graphAdapter.getSelectionCells();
-                if (e.getKeyCode() == 127 && cells.length == 1) {
+                if (tabbedPane.getSelectedIndex() == tabbedPane.indexOfTab(GRAPH_TAB_TITLE) && cells.length == 1 && e.getKeyCode() == 127) {
                     removeVertexButtonActionPerformed(null);
                 }
             }
