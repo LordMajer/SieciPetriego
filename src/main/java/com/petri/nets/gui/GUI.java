@@ -641,7 +641,7 @@ public class GUI extends javax.swing.JFrame {
         }
         ReachabilityGraph reachabilityGraph = new ReachabilityGraph(graphModel);
         JPanel panel = getJPanelWithBorderLayoutAndTitle("Graf osiągalności");
-        panel.add(createJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(reachabilityGraph.buildReachabilityGraph())));
+        panel.add(createJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(reachabilityGraph.build())));
         resultsPanel.add(getJScrollPane(panel));
         tabbedPane.setSelectedIndex(RESULT_TAB_INDEX);
     }//GEN-LAST:event_option1ButtonActionPerformed
@@ -654,7 +654,7 @@ public class GUI extends javax.swing.JFrame {
         }
         CoverageTree coverageTree = new CoverageTree(graphModel);
         JPanel panel = getJPanelWithBorderLayoutAndTitle("Drzewo pokrycia");
-        panel.add(createJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(coverageTree.buildCoverageTree())));
+        panel.add(createJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(coverageTree.build())));
         resultsPanel.add(getJScrollPane(panel));
         tabbedPane.setSelectedIndex(RESULT_TAB_INDEX);
     }//GEN-LAST:event_option2ButtonActionPerformed
@@ -667,7 +667,7 @@ public class GUI extends javax.swing.JFrame {
         }
         CoverageGraph coverageGraph = new CoverageGraph(graphModel);
         JPanel panel = getJPanelWithBorderLayoutAndTitle("Graf pokrycia");
-        panel.add(createJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(coverageGraph.buildCoverageGraph())));
+        panel.add(createJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(coverageGraph.build())));
         resultsPanel.add(getJScrollPane(panel));
         tabbedPane.setSelectedIndex(RESULT_TAB_INDEX);
     }//GEN-LAST:event_option3ButtonActionPerformed
