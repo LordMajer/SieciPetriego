@@ -1,5 +1,6 @@
 package com.petri.nets.simulation;
 
+import com.petri.nets.helpers.common.CommonOperations;
 import com.petri.nets.model.*;
 
 import java.util.ArrayList;
@@ -17,8 +18,8 @@ public class Simulator {
     public List<Transition> getPossibleSteps() {
         List<Transition> possibleMovements = new ArrayList<>();
         for (Transition transition : graph.getTransitions().values()) {
-            List<Edge> edges = getEdgesContaining(transition);
-            List<Edge> destinationEdges = getDestinationEdges(transition, edges);
+            List<Edge> edges = CommonOperations.getEdgesContaining(transition, graph.getEdges());
+            List<Edge> destinationEdges = CommonOperations.getDestinationEdges(transition, edges);
             if (canStepBeDone(destinationEdges)) {
                 possibleMovements.add(transition);
             }
@@ -27,9 +28,9 @@ public class Simulator {
     }
 
     public CustomGraph takeStep(Transition transition) {
-        List<Edge> edges = getEdgesContaining(transition);
-        List<Edge> sourceEdges = getSourceEdges(transition, edges);
-        List<Edge> destinationEdges = getDestinationEdges(transition, edges);
+        List<Edge> edges = CommonOperations.getEdgesContaining(transition, graph.getEdges());
+        List<Edge> sourceEdges = CommonOperations.getSourceEdges(transition, edges);
+        List<Edge> destinationEdges = CommonOperations.getDestinationEdges(transition, edges);
         resolveState(sourceEdges, destinationEdges);
         stepNumber++;
         return graph;
@@ -42,39 +43,6 @@ public class Simulator {
             }
         }
         return true;
-    }
-
-    private List<Edge> getEdgesContaining(Transition transition) {
-        List<Edge> edgesContainingGivenTransition = new ArrayList<>();
-        int id = transition.getID();
-        for (Edge edge : graph.getEdges().values()) {
-            if (id == edge.getSourceId() || id == edge.getDestinationId()) {
-                edgesContainingGivenTransition.add(edge);
-            }
-        }
-        return edgesContainingGivenTransition;
-    }
-
-    private List<Edge> getDestinationEdges(Transition transition, List<Edge> edges) {
-        int id = transition.getID();
-        List<Edge> destinationEdges = new ArrayList<>();
-        for (Edge edge : edges) {
-            if (edge.getDestinationId() == id) {
-                destinationEdges.add(edge);
-            }
-        }
-        return destinationEdges;
-    }
-
-    private List<Edge> getSourceEdges(Transition transition, List<Edge> edges) {
-        int id = transition.getID();
-        List<Edge> sourceEdges = new ArrayList<>();
-        for (Edge edge : edges) {
-            if (edge.getSourceId() == id) {
-                sourceEdges.add(edge);
-            }
-        }
-        return sourceEdges;
     }
 
     private void resolveState(List<Edge> sourceEdges, List<Edge> destinationEdges) {

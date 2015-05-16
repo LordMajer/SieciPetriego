@@ -1,8 +1,8 @@
 package com.petri.nets.algorithms;
 
+import com.petri.nets.helpers.common.CommonOperations;
 import com.petri.nets.model.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -75,12 +75,12 @@ public class CoverageTree {
     }
 
     private void resolveTransition(Map<Integer, Integer> previousState, Transition transition) {
-        List<Edge> edgesContainingTransition = getEdgesContaining(transition);                      // Pobranie krawędzi zawierających przejście
-        List<Edge> destinationEdges = getDestinationEdges(transition, edgesContainingTransition);   // Krawędzie prowadzące do przejścia
+        List<Edge> edgesContainingTransition = CommonOperations.getEdgesContaining(transition, edges);                      // Pobranie krawędzi zawierających przejście
+        List<Edge> destinationEdges = CommonOperations.getDestinationEdges(transition, edgesContainingTransition);   // Krawędzie prowadzące do przejścia
         if (hasAllInfinitives(previousState) || !canStepBeDone(destinationEdges, previousState)) {
             return;
         }
-        List<Edge> sourceEdges = getSourceEdges(transition, edgesContainingTransition);             // Krawędzie prowadzące od przejścia
+        List<Edge> sourceEdges = CommonOperations.getSourceEdges(transition, edgesContainingTransition);             // Krawędzie prowadzące od przejścia
         Map<Integer, Integer> newState = resolveState(previousState, sourceEdges, destinationEdges);
         String newStateTextValue = getTextValue(newState);
         Vertex newStateVertex = states.get(newStateTextValue);                                      // Pobranie z mapy stanów archiwalnych odpowiedniego wierzchołka (o ile istnieje)
@@ -131,39 +131,6 @@ public class CoverageTree {
             }
         }
         return null;
-    }
-
-    private List<Edge> getEdgesContaining(Transition transition) {
-        List<Edge> edgesContainingGivenTransition = new ArrayList<>();
-        int id = transition.getID();
-        for (Edge edge : edges.values()) {
-            if (id == edge.getSourceId() || id == edge.getDestinationId()) {
-                edgesContainingGivenTransition.add(edge);
-            }
-        }
-        return edgesContainingGivenTransition;
-    }
-
-    private List<Edge> getDestinationEdges(Transition transition, List<Edge> edges) {
-        int id = transition.getID();
-        List<Edge> destinationEdges = new ArrayList<>();
-        for (Edge edge : edges) {
-            if (edge.getDestinationId() == id) {
-                destinationEdges.add(edge);
-            }
-        }
-        return destinationEdges;
-    }
-
-    private List<Edge> getSourceEdges(Transition transition, List<Edge> edges) {
-        int id = transition.getID();
-        List<Edge> sourceEdges = new ArrayList<>();
-        for (Edge edge : edges) {
-            if (edge.getSourceId() == id) {
-                sourceEdges.add(edge);
-            }
-        }
-        return sourceEdges;
     }
 
     private boolean canStepBeDone(List<Edge> destinationEdges, Map<Integer, Integer> idToTokenMap) {
