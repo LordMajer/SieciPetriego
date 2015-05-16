@@ -10,21 +10,13 @@ public class ModelValidator {
         Vertex vertexToCheck;
         // przejście po wszystkich wierzchołkach i sprawdzenie czy są poprawnie połaczone.
 
+        if (vertices.isEmpty()) {
+            return "Model nie został wprowadzony";
+        }
         for (Vertex vertex : vertices.values()) {
             if (vertex instanceof Place) {
                 // następnikami i poprzednikami moga być tylko przejścia
-                // sprawdzanie następników:
-                for (int successor : vertex.getSuccessors()) {
-                    vertexToCheck = vertices.get(successor);
-                    if (!(vertexToCheck instanceof Transition)) {
-                        errorsBuilder.append("Wierzchołek typu miejsce: ")
-                                .append(vertex)
-                                .append(" posiada nielegalne połaczenie z wierzchołkiem: ")
-                                .append(vertexToCheck)
-                                .append("\n");
-                    }
-                }
-                // sprawdzanie poprzedników:
+                // TODO sprawdzanie tylko poprzedników, po to, żeby nie duplikować informacji. Nie zadziała jeżeli będzie możliwe odłączenie krawędzi
                 for (int predecessor : vertex.getPredecessors()) {
                     vertexToCheck = vertices.get(predecessor);
                     if (!(vertexToCheck instanceof Transition)) {
@@ -36,23 +28,11 @@ public class ModelValidator {
                     }
                 }
             } else {
-                // następnikami i poprzednikami moga być tylko miejsca.
-                //sprawdzanie następników
-                for (int successor : vertex.getSuccessors()) {
-                    vertexToCheck = vertices.get(successor);
-                    if (!(vertexToCheck instanceof Place)) {
-                        errorsBuilder.append("Wierzchołek typu miejsce: ")
-                                .append(vertex)
-                                .append(" posiada nielegalne połaczenie z wierzchołkiem: ")
-                                .append(vertexToCheck)
-                                .append("\n");
-                    }
-                }
                 // sprawdzanie poprzedników:
                 for (int predecessor : vertex.getPredecessors()) {
                     vertexToCheck = vertices.get(predecessor);
                     if (!(vertexToCheck instanceof Place)) {
-                        errorsBuilder.append("Wierzchołek typu miejsce: ")
+                        errorsBuilder.append("Wierzchołek typu przejście: ")
                                 .append(vertex)
                                 .append(" posiada nielegalne połaczenie z wierzchołkiem: ")
                                 .append(vertexToCheck)
