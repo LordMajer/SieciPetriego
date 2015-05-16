@@ -6,18 +6,15 @@ import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
 import com.mxgraph.model.mxICell;
 import com.mxgraph.swing.mxGraphComponent;
-import com.mxgraph.util.mxConstants;
-import com.mxgraph.view.mxStylesheet;
 import com.petri.nets.algorithms.CoverageGraph;
 import com.petri.nets.algorithms.CoverageTree;
 import com.petri.nets.algorithms.ReachabilityGraph;
 import com.petri.nets.archive.GraphReader;
 import com.petri.nets.archive.GraphWriter;
+import com.petri.nets.helpers.transformation.CustomGraphToJGraphXAdapterTransformer;
 import com.petri.nets.model.*;
 import com.petri.nets.simulation.Simulator;
-import org.jgrapht.ListenableGraph;
 import org.jgrapht.ext.JGraphXAdapter;
-import org.jgrapht.graph.ListenableDirectedWeightedGraph;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -25,26 +22,21 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 
-/**
- *
- * @author Mateusz
- */
 public class GUI extends javax.swing.JFrame {
 
     private static final String GRAPH_TAB_TITLE = "Graf";
     private static final String RESULT_TAB_TITLE = "Wyniki";
+    private static final int GRAPH_TAB_INDEX = 1;
+    private static final int RESULT_TAB_INDEX = 0;
+    private static final int DEL_KEY_CODE = 127;
 
     CustomGraph graphModel;
     Simulator simulator;
     JGraphXAdapter<Vertex, Edge> graphAdapter;
     JScrollPane scrollPane;
 
-    /**
-     * Creates new form GUI
-     */
     public GUI() {
         initComponents();                                                // inicjalizacja komponentów GUI
         graphModel = new CustomGraph();
@@ -52,68 +44,20 @@ public class GUI extends javax.swing.JFrame {
         displayGraph(graphModel);                                         // stworzenie wizualizacji
     }
 
-    public void displayGraph(CustomGraph customGraph) {
-
-        System.out.println(graphModel.getVertices());
-        System.out.println(graphModel.getEdges());
-
-        graphAdapter = createJGraphXAdapter(customGraph);
-
+    private void displayGraph(CustomGraph customGraph) {
+        graphAdapter = CustomGraphToJGraphXAdapterTransformer.transform(customGraph);
         refreshGraphTab();
     }
 
-    private JGraphXAdapter<Vertex, Edge> createJGraphXAdapter(CustomGraph graph) {
-        ListenableGraph<Vertex, Edge> g = new ListenableDirectedWeightedGraph<>(Edge.class);
-
-        for (Vertex vertex : graph.getVertices().values()) {        // dodanie wierzchołków.
-            g.addVertex(vertex);
+    private void refreshGraphTab() {
+        if (tabbedPane.indexOfTab(GRAPH_TAB_TITLE) != -1) {
+            tabbedPane.remove(GRAPH_TAB_INDEX);
         }
-
-        for (Edge edge : graph.getEdges().values()) {               // dodanie krawędzi.
-            g.addEdge(graph.getVertex(edge.getSourceId()), graph.getVertex(edge.getDestinationId()), edge);
-        }
-
-        JGraphXAdapter graphAdapter = new JGraphXAdapter<>(g);
-        positionVertices(graphAdapter);
-        setEdgesProperties(graphAdapter);
-        return graphAdapter;
-    }
-
-    public void revalidateModelVertexPosition(JGraphXAdapter<Vertex, Edge> graphAdapter) {
-        for (Map.Entry<Vertex, mxICell> vertex : graphAdapter.getVertexToCellMap().entrySet()) {
-            Vertex currentVertex = vertex.getKey();
-            mxICell currentVertexCell = vertex.getValue();
-            mxGeometry currentVertexCellGeometry = currentVertexCell.getGeometry();
-            currentVertex.setHeight((int) currentVertexCellGeometry.getHeight());
-            currentVertex.setWidth((int) currentVertexCellGeometry.getWidth());
-            currentVertex.setX((int) currentVertexCellGeometry.getX());
-            currentVertex.setY((int) currentVertexCellGeometry.getY());
-        }
-    }
-
-    private void setEdgesProperties(JGraphXAdapter<Vertex, Edge> graphAdapter) {
-        for (mxICell currentEdgeCell : graphAdapter.getEdgeToCellMap().values()) {
-            currentEdgeCell.setStyle("editable=false");
-        }
-    }
-
-    private void positionVertices(JGraphXAdapter<Vertex, Edge> graphAdapter) {
-        mxStylesheet stylesheet = graphAdapter.getStylesheet();
-        Hashtable<String, Object> style = new Hashtable<>();
-        style.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_ELLIPSE);
-        stylesheet.putCellStyle("ROUNDED", style);
-        graphAdapter.setStylesheet(stylesheet);
-
-        for (Map.Entry<Vertex, mxICell> vertex : graphAdapter.getVertexToCellMap().entrySet()) {
-            Vertex currentVertex = vertex.getKey();
-            mxICell currentVertexCell = vertex.getValue();
-            currentVertexCell.setGeometry(new mxGeometry(currentVertex.getX(), currentVertex.getY(), currentVertex.getWidth(), currentVertex.getHeight()));
-            if (currentVertex instanceof Place) {
-                currentVertexCell.setStyle("ROUNDED;fillColor=yellow;editable=false");
-            } else {
-                currentVertexCell.setStyle("fillColor=white;editable=false");
-            }
-        }
+        scrollPane = new JScrollPane(createJGraphComponent(graphAdapter));
+        tabbedPane.addTab(GRAPH_TAB_TITLE, scrollPane);
+        tabbedPane.revalidate();
+        tabbedPane.repaint();
+        tabbedPane.setSelectedIndex(GRAPH_TAB_INDEX);
     }
 
     /**
@@ -510,44 +454,53 @@ public class GUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void revalidateModelVertexPosition(JGraphXAdapter<Vertex, Edge> graphAdapter) {
+        for (Map.Entry<Vertex, mxICell> vertex : graphAdapter.getVertexToCellMap().entrySet()) {
+            Vertex currentVertex = vertex.getKey();
+            mxICell currentVertexCell = vertex.getValue();
+            mxGeometry currentVertexCellGeometry = currentVertexCell.getGeometry();
+            currentVertex.setHeight(currentVertexCellGeometry.getHeight());
+            currentVertex.setWidth(currentVertexCellGeometry.getWidth());
+            currentVertex.setX(currentVertexCellGeometry.getX());
+            currentVertex.setY(currentVertexCellGeometry.getY());
+        }
+    }
+
     private void removeVertexButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeVertexButtonActionPerformed
         revalidateModelVertexPosition(graphAdapter);
         Object[] cells = graphAdapter.getSelectionCells();
-        if (cells.length != 1) {
-            JOptionPane.showMessageDialog(this, "Aby usunąć element należy zaznaczyć dokładnie jeden element!", "BŁĄD", JOptionPane.ERROR_MESSAGE);
+        if (cells.length < 1) {
+            JOptionPane.showMessageDialog(this, "Najpierw zaznacz element, który chcesz usunąć!!!!", "BŁĄD", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        Object obj = ((mxCell) cells[0]).getValue();
-        if (obj instanceof Vertex) {
-            Vertex vertex = (Vertex) obj;
-            graphModel.removeVertex(vertex);
-        } else if (obj instanceof Edge) {
-            Edge edge = (Edge) obj;
-            graphModel.removeEdge(edge);
+        for (int i = 0 ; i < cells.length ; i++) {
+            Object obj = ((mxCell) cells[i]).getValue();
+            if (obj instanceof Vertex) {
+                Vertex vertex = (Vertex) obj;
+                graphModel.removeVertex(vertex);
+            } else if (obj instanceof Edge) {
+                Edge edge = (Edge) obj;
+                graphModel.removeEdge(edge);
+            }
+            displayGraph(graphModel);
         }
-        displayGraph(graphModel);
     }//GEN-LAST:event_removeVertexButtonActionPerformed
 
     private void addEdgeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addEdgeButtonActionPerformed
-        // TODO add your handling code here:
-
         revalidateModelVertexPosition(graphAdapter);
         Object[] cells = graphAdapter.getSelectionCells();
         if (cells.length != 2) {
             JOptionPane.showMessageDialog(this, "Aby dodać krawędź należy zaznaczyć dokładnie 2 wierzchołki!", "Błąd", JOptionPane.ERROR_MESSAGE);
-        } else {
-
-            Vertex sourceVertex = (Vertex) ((mxCell) cells[0]).getValue();
-            Vertex destinationVertex = (Vertex) ((mxCell) cells[1]).getValue();
-
-            Edge edge = new Edge(sourceVertex.getID(), destinationVertex.getID());
-            graphModel.addEdge(edge);
-            displayGraph(graphModel);
+            return;
         }
+        Vertex sourceVertex = (Vertex) ((mxCell) cells[0]).getValue();
+        Vertex destinationVertex = (Vertex) ((mxCell) cells[1]).getValue();
+        Edge edge = new Edge(sourceVertex.getID(), destinationVertex.getID());
+        graphModel.addEdge(edge);
+        displayGraph(graphModel);
     }//GEN-LAST:event_addEdgeButtonActionPerformed
 
     private void addPassageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPassageButtonActionPerformed
-
         revalidateModelVertexPosition(graphAdapter);
         Transition przejscie = new Transition(graphModel.getNewID(), graphModel.getNewName(Transition.getVertexType()));
         graphModel.addVertex(przejscie);
@@ -555,7 +508,6 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_addPassageButtonActionPerformed
 
     private void addPlaceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPlaceButtonActionPerformed
-
         revalidateModelVertexPosition(graphAdapter);
         Place miejsce = new Place(graphModel.getNewID(), graphModel.getNewName(Place.getVertexType()));
         graphModel.addVertex(miejsce);
@@ -563,115 +515,99 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_addPlaceButtonActionPerformed
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
-
         revalidateModelVertexPosition(graphAdapter);
-        Object[] cells = graphAdapter.getSelectionCells();
-        if (cells.length == 1) {
-            // edycja miejsca lub przejścia
-
-            Object obj = ((mxCell) cells[0]).getValue();
-            if (obj instanceof Place) {
-
-                Map<String, Object> values = new HashMap<>();
-                values.put("Object", obj);
-                EditPlacePanel editPlacePanel = new EditPlacePanel(this, "Edycja miejsca", true, values);
-                // sprawdzenie czy należy edytować zawartość miejsca: Edycja jeśli status ok
-                if (values.get("Status") != null && values.get("Status").equals("Ok")) {
-                    System.out.println("Następuje zmiana danych miejsca.");
-                    Place modelVertex = (Place) graphModel.getVertex(((Place) values.get("Object")).getID());
-                    Place changedVertex = (Place) values.get("ReturnObject");
-                    // update:
-                    modelVertex.setName(changedVertex.getName());
-                    modelVertex.setTokenCount(changedVertex.getTokenCount());
-                    modelVertex.setCapacity(changedVertex.getCapacity());
-                }
-                System.out.println(values);
-                displayGraph(graphModel);
-            } else if (obj instanceof Transition) {
-
-                System.out.println("Przejscie");
-                Map<String, Object> values = new HashMap<>();
-                values.put("Object", obj);
-                EditTransitionPanel editPassagePanel = new EditTransitionPanel(this, "Edycja przejscia", true, values);
-
-                // sprawdzenie czy należy edytować zawartość przejścia: Edycja jeśli status ok
-                if (values.get("Status") != null && values.get("Status").equals("Ok")) {
-                    Transition modelVertex = (Transition) graphModel.getVertex(((Transition) values.get("Object")).getID());
-                    Transition changedVertex = (Transition) values.get("ReturnObject");
-                    // update:
-                    modelVertex.setName(changedVertex.getName());
-                    modelVertex.setPriority(changedVertex.getPriority());
-                }
-                System.out.println(values);
-                displayGraph(graphModel);
-            } else if (obj instanceof Edge) {
-                System.out.println("Edycja krawędzi");
-                Map<String, Object> values = new HashMap<>();
-                values.put("Object", obj);
-                EditEdgePanel editEdgePanel = new EditEdgePanel(this, "Edycja krawędzi", true, values);
-                if (values.get("Status") != null && values.get("Status").equals("Ok")) {
-                    Edge modelEdge = (Edge) graphModel.getEdge(((Edge) values.get("Object")).getKey());
-                    Edge changedEdge = (Edge) values.get("ReturnObject");
-                    // update:
-                    modelEdge.setCapacity(changedEdge.getCapacity());
-                }
-                System.out.println(values);
-                displayGraph(graphModel);
+        Object[] selectedElements = graphAdapter.getSelectionCells();
+        if (selectedElements.length == 1) {
+            Object selectedElement = ((mxCell) selectedElements[0]).getValue();
+            if (selectedElement instanceof Place) {
+                editPlace(selectedElement);
+            } else if (selectedElement instanceof Transition) {
+                editTransition(selectedElement);
+            } else if (selectedElement instanceof Edge) {
+                editEdge(selectedElement);
             } else {
-                JOptionPane.showMessageDialog(this, "Wystąpił błąd podczas zaznaczania!", "Błąd", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Wystąpił błąd podczas zaznaczania!", "BŁĄD", JOptionPane.ERROR_MESSAGE);
             }
-        } else if (cells.length == 2) {
-            // edycja krawędzi
-            // pozyskanie krawędzi:
-            System.out.println("Edycja krawędzi");
-            Map<String, Object> values = new HashMap<>();
-            Vertex sourceObject = (Vertex) ((mxCell) cells[0]).getValue();
-            Vertex destinationObject = (Vertex) ((mxCell) cells[1]).getValue();
-            Edge chosenEdge = new Edge(sourceObject.getID(), destinationObject.getID());
-            System.out.println(chosenEdge);
-            Edge foundEdge = graphModel.getEdge(chosenEdge.getKey());
-
-            if (foundEdge != null) {
-                values.put("Object", foundEdge);
-                EditEdgePanel editEdgePanel = new EditEdgePanel(this, "Edycja krawędzi", true, values);
-                if (values.get("Status") != null && values.get("Status").equals("Ok")) {
-                    Edge modelEdge = (Edge) graphModel.getEdge(((Edge) values.get("Object")).getKey());
-                    Edge changedVertex = (Edge) values.get("ReturnObject");
-                    // update:
-                    modelEdge.setCapacity(changedVertex.getCapacity());
-                }
-                displayGraph(graphModel);
-            } else {
-                JOptionPane.showMessageDialog(this, "Brak takiej krawedzi!", "Błąd", JOptionPane.ERROR_MESSAGE);
-            }
+        } else if (selectedElements.length == 2 && selectedElements[0] instanceof Vertex && selectedElements[1] instanceof Vertex) {
+            editEdge(selectedElements);
         } else {
-            JOptionPane.showMessageDialog(this, "Aby Edytowac należy zaznaczyć dokładnie jeden element lub dwa elementy w celu edycji krawędzi pomiędzy nimi!", "Błąd", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Aby edytować elementy grafu należy zaznaczyć pojedynczy element lub dwa wierzchołki w celu edycji krawędzi pomiędzy nimi!", "BŁĄD", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_editButtonActionPerformed
 
+    private void editPlace(Object selectedPlace) {
+        Map<String, Object> values = new HashMap<>();
+        values.put("Object", selectedPlace);
+        EditPlacePanel editPlacePanel = new EditPlacePanel(this, "Edycja miejsca", true, values);
+        if (values.get("Status") != null && values.get("Status").equals("Ok")) {
+            Place modelVertex = (Place) graphModel.getVertex(((Place) values.get("Object")).getID());
+            Place changedVertex = (Place) values.get("ReturnObject");
+            modelVertex.setName(changedVertex.getName());
+            modelVertex.setTokenCount(changedVertex.getTokenCount());
+            modelVertex.setCapacity(changedVertex.getCapacity());
+        }
+        displayGraph(graphModel);
+    }
+
+    private void editTransition(Object selectedTransition) {
+        Map<String, Object> values = new HashMap<>();
+        values.put("Object", selectedTransition);
+        EditTransitionPanel editTransitionPanel = new EditTransitionPanel(this, "Edycja przejścia", true, values);
+        if (values.get("Status") != null && values.get("Status").equals("Ok")) {
+            Transition modelVertex = (Transition) graphModel.getVertex(((Transition) values.get("Object")).getID());
+            Transition changedVertex = (Transition) values.get("ReturnObject");
+            modelVertex.setName(changedVertex.getName());
+            modelVertex.setPriority(changedVertex.getPriority());
+        }
+        displayGraph(graphModel);
+    }
+
+    private void editEdge(Object selectedEdge) {
+        Map<String, Object> values = new HashMap<>();
+        values.put("Object", selectedEdge);
+        EditEdgePanel editEdgePanel = new EditEdgePanel(this, "Edycja krawędzi", true, values);
+        if (values.get("Status") != null && values.get("Status").equals("Ok")) {
+            Edge modelEdge = (Edge) graphModel.getEdge(((Edge) values.get("Object")).getKey());
+            Edge changedEdge = (Edge) values.get("ReturnObject");
+            modelEdge.setCapacity(changedEdge.getCapacity());
+        }
+        displayGraph(graphModel);
+    }
+
+    private void editEdge(Object[] selectedVertices) {
+        Map<String, Object> values = new HashMap<>();
+        Vertex sourceObject = (Vertex) ((mxCell) selectedVertices[0]).getValue();
+        Vertex destinationObject = (Vertex) ((mxCell) selectedVertices[1]).getValue();
+        Edge chosenEdge = new Edge(sourceObject.getID(), destinationObject.getID());
+        Edge foundEdge = graphModel.getEdge(chosenEdge.getKey());
+        if (foundEdge != null) {
+            values.put("Object", foundEdge);
+            EditEdgePanel editEdgePanel = new EditEdgePanel(this, "Edycja krawędzi", true, values);
+            if (values.get("Status") != null && values.get("Status").equals("Ok")) {
+                Edge modelEdge = graphModel.getEdge(((Edge) values.get("Object")).getKey());
+                Edge changedVertex = (Edge) values.get("ReturnObject");
+                modelEdge.setCapacity(changedVertex.getCapacity());
+            }
+            displayGraph(graphModel);
+        } else {
+            JOptionPane.showMessageDialog(this, "Brak krawedzi pomiędzy zaznaczonymi wierzchołkami!", "Błąd", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     private void matrix1ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_matrix1ButtonActionPerformed
-        // TODO add your handling code here:
         resultsPanel.removeAll();
         resultsPanel.revalidate();
         if (!isGraphValid(graphModel)) {
             return;
         }
-
-        // dodanie JTable do okna wynikowego:
-        tabbedPane.addTab(GRAPH_TAB_TITLE, scrollPane);
-        tabbedPane.revalidate();
-        tabbedPane.repaint();
-
         MatrixCreator matrixCreator = new MatrixCreator(graphModel);
         JPanel panel = getJPanelWithTitle("Macierz wejść");
         panel.add(matrixCreator.generateInputMatrix());
         resultsPanel.add(getJScrollPane(panel));
-        tabbedPane.setSelectedIndex(0);
-        System.out.println("Macierz wejść...");
+        tabbedPane.setSelectedIndex(RESULT_TAB_INDEX);
     }//GEN-LAST:event_matrix1ButtonActionPerformed
 
     private void matrix2ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_matrix2ButtonActionPerformed
-        // TODO add your handling code here:
         resultsPanel.removeAll();
         resultsPanel.revalidate();
         if (!isGraphValid(graphModel)) {
@@ -681,12 +617,10 @@ public class GUI extends javax.swing.JFrame {
         JPanel panel = getJPanelWithTitle("Macierz wyjść");
         panel.add(matrixCreator.generateOutputMatrix());
         resultsPanel.add(getJScrollPane(panel));
-        tabbedPane.setSelectedIndex(0);
-        System.out.println("Macierz wyjść...");
+        tabbedPane.setSelectedIndex(RESULT_TAB_INDEX);
     }//GEN-LAST:event_matrix2ButtonActionPerformed
 
     private void matrix3ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_matrix3ButtonActionPerformed
-        // TODO add your handling code here:
         resultsPanel.removeAll();
         resultsPanel.revalidate();
         if (!isGraphValid(graphModel)) {
@@ -696,12 +630,10 @@ public class GUI extends javax.swing.JFrame {
         JPanel panel = getJPanelWithTitle("Macierz incydencji");
         panel.add(matrixCreator.generateIncidenceMatrix());
         resultsPanel.add(getJScrollPane(panel));
-        tabbedPane.setSelectedIndex(0);
-        System.out.println("Macierz incydencji...");
+        tabbedPane.setSelectedIndex(RESULT_TAB_INDEX);
     }//GEN-LAST:event_matrix3ButtonActionPerformed
 
     private void option1ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_option1ButtonActionPerformed
-        // TODO add your handling code here:
         resultsPanel.removeAll();
         resultsPanel.revalidate();
         if (!isGraphValid(graphModel)) {
@@ -709,14 +641,12 @@ public class GUI extends javax.swing.JFrame {
         }
         ReachabilityGraph reachabilityGraph = new ReachabilityGraph(graphModel);
         JPanel panel = getJPanelWithBorderLayoutAndTitle("Graf osiągalności");
-        panel.add(createJGraphComponentWithLayout(createJGraphXAdapter(reachabilityGraph.buildReachabilityGraph())));
+        panel.add(createJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(reachabilityGraph.buildReachabilityGraph())));
         resultsPanel.add(getJScrollPane(panel));
-        tabbedPane.setSelectedIndex(0);
-        System.out.println("Graf osiągalności...");
+        tabbedPane.setSelectedIndex(RESULT_TAB_INDEX);
     }//GEN-LAST:event_option1ButtonActionPerformed
 
     private void option2ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_option2ButtonActionPerformed
-        // TODO add your handling code here:
         resultsPanel.removeAll();
         resultsPanel.revalidate();
         if (!isGraphValid(graphModel)) {
@@ -724,14 +654,12 @@ public class GUI extends javax.swing.JFrame {
         }
         CoverageTree coverageTree = new CoverageTree(graphModel);
         JPanel panel = getJPanelWithBorderLayoutAndTitle("Drzewo pokrycia");
-        panel.add(createJGraphComponentWithLayout(createJGraphXAdapter(coverageTree.buildCoverageTree())));
+        panel.add(createJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(coverageTree.buildCoverageTree())));
         resultsPanel.add(getJScrollPane(panel));
-        tabbedPane.setSelectedIndex(0);
-        System.out.println("Drzewo pokrycia...");
+        tabbedPane.setSelectedIndex(RESULT_TAB_INDEX);
     }//GEN-LAST:event_option2ButtonActionPerformed
 
     private void option3ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_option3ButtonActionPerformed
-        // TODO add your handling code here:
         resultsPanel.removeAll();
         resultsPanel.revalidate();
         if (!isGraphValid(graphModel)) {
@@ -739,45 +667,38 @@ public class GUI extends javax.swing.JFrame {
         }
         CoverageGraph coverageGraph = new CoverageGraph(graphModel);
         JPanel panel = getJPanelWithBorderLayoutAndTitle("Graf pokrycia");
-        panel.add(createJGraphComponentWithLayout(createJGraphXAdapter(coverageGraph.buildCoverageGraph())));
+        panel.add(createJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(coverageGraph.buildCoverageGraph())));
         resultsPanel.add(getJScrollPane(panel));
-        tabbedPane.setSelectedIndex(0);
-        System.out.println("Graf pokrycia...");
+        tabbedPane.setSelectedIndex(RESULT_TAB_INDEX);
     }//GEN-LAST:event_option3ButtonActionPerformed
 
     private void startSimulationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startSimulationButtonActionPerformed
-        System.out.println("Start symulacji...");
         resultsPanel.removeAll();
         resultsPanel.revalidate();
-        // 1. sprawdzenie poprawności grafu- czy jest dobrze zbudowany:
-        String errors = ModelValidator.validate(graphModel);
+        ModelValidator.validate(graphModel);
         if (isGraphValid(graphModel)) {
             simulator = new Simulator(graphModel); //TODO clone graph model rather than passing to method
-            resultsPanel.add(createJGraphComponent(createJGraphXAdapter(simulator.getGraph())));
-            tabbedPane.setSelectedIndex(0);
+            resultsPanel.add(createJGraphComponent(CustomGraphToJGraphXAdapterTransformer.transform(simulator.getGraph())));
+            tabbedPane.setSelectedIndex(RESULT_TAB_INDEX);
         }
     }//GEN-LAST:event_startSimulationButtonActionPerformed
 
     private boolean isGraphValid(CustomGraph graphModel) {
-        System.out.println("Szukanie błędów...");
-        // 1. sprawdzenie poprawności grafu- czy jest dobrze zbudowany:
         String errors = ModelValidator.validate(graphModel);
         if (errors != null) {
-            // wystąpiły błędy przy sprawdzaniu poprawności.... wypisanie ich w zakładce wyniki:
             JPanel errorPanel = new JPanel(new BorderLayout());
             JTextArea errorTextArea = new JTextArea();
             errorTextArea.setFont(new Font("monospaced", Font.PLAIN, 12));
             errorTextArea.setText(errors);
             errorPanel.add(errorTextArea, BorderLayout.CENTER);
             resultsPanel.add(errorPanel);
-            tabbedPane.setSelectedIndex(0);
+            tabbedPane.setSelectedIndex(RESULT_TAB_INDEX);
             return false;
         }
         return true;
     }
 
     private void stepButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stepButtonActionPerformed
-        System.out.println("Krok symulacji..");
         java.util.List<Transition> possibleSteps = simulator.getPossibleSteps();
         if (possibleSteps.size() == 0) {
             JOptionPane.showMessageDialog(this, "Brak możliwych kroków!", "INFORMACJA", JOptionPane.INFORMATION_MESSAGE);
@@ -788,7 +709,7 @@ public class GUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Wykonano przejście : " + transition.getName(), "INFORMACJA", JOptionPane.INFORMATION_MESSAGE);
             resultsPanel.removeAll();
             resultsPanel.revalidate();
-            resultsPanel.add(createJGraphComponent(createJGraphXAdapter(simulator.getGraph())));
+            resultsPanel.add(createJGraphComponent(CustomGraphToJGraphXAdapterTransformer.transform(simulator.getGraph())));
         } else {
             String optionChosen = JOptionPane.showInputDialog("Wybierz jedno z możliwych przejść: " + possibleSteps.toString()); // TODO Display options as buttons to chose
             Transition transition = graphModel.getTransitionByName(possibleSteps, optionChosen);
@@ -797,7 +718,7 @@ public class GUI extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Wykonano przejście : " + transition.getName(), "INFORMACJA", JOptionPane.INFORMATION_MESSAGE);
                 resultsPanel.removeAll();
                 resultsPanel.revalidate();
-                resultsPanel.add(createJGraphComponent(createJGraphXAdapter(simulator.getGraph())));
+                resultsPanel.add(createJGraphComponent(CustomGraphToJGraphXAdapterTransformer.transform(simulator.getGraph())));
             } else {
                 if (optionChosen != null) {
                     JOptionPane.showMessageDialog(this, "Wskazane przejście (" + optionChosen + ") nie jest w tej chwili możliwe", "BŁĄD", JOptionPane.ERROR_MESSAGE);
@@ -807,10 +728,9 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_stepButtonActionPerformed
 
     private void stopSimulationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopSimulationButtonActionPerformed
-        System.out.println("Stop symulacji..");
         resultsPanel.removeAll();
         resultsPanel.revalidate();
-        tabbedPane.setSelectedIndex(1);
+        tabbedPane.setSelectedIndex(GRAPH_TAB_INDEX);
     }//GEN-LAST:event_stopSimulationButtonActionPerformed
 
     private void loadGraphButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadGraphButtonActionPerformed
@@ -824,19 +744,6 @@ public class GUI extends javax.swing.JFrame {
         GraphWriter.saveGraph(graphModel);
     }//GEN-LAST:event_saveGraphButtonActionPerformed
 
-    public void refreshGraphTab() {
-
-        if (tabbedPane.indexOfTab(GRAPH_TAB_TITLE) != -1) {
-            tabbedPane.remove(1);
-        }
-        //jGraph = new JGraph(model, view);
-
-        scrollPane = new JScrollPane(createJGraphComponent(graphAdapter));
-        tabbedPane.addTab("Graf", scrollPane);
-        tabbedPane.revalidate();
-        tabbedPane.repaint();
-        tabbedPane.setSelectedIndex(1);
-    }
 
     private JScrollPane createJGraphComponent(final JGraphXAdapter<Vertex, Edge> graphAdapter) {
         mxGraphComponent mxGraphComponent = new mxGraphComponent(graphAdapter);
@@ -845,7 +752,7 @@ public class GUI extends javax.swing.JFrame {
             @Override
             public void keyPressed(KeyEvent e) {
                 Object[] cells = graphAdapter.getSelectionCells();
-                if (tabbedPane.getSelectedIndex() == tabbedPane.indexOfTab(GRAPH_TAB_TITLE) && cells.length == 1 && e.getKeyCode() == 127) {
+                if (tabbedPane.getSelectedIndex() == tabbedPane.indexOfTab(GRAPH_TAB_TITLE) && cells.length == 1 && e.getKeyCode() == DEL_KEY_CODE) {
                     removeVertexButtonActionPerformed(null);
                 }
             }

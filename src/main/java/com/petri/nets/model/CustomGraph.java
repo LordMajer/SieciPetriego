@@ -9,10 +9,6 @@ import com.petri.nets.helpers.generators.name.UniqueNameGenerator;
 import java.io.Serializable;
 import java.util.*;
 
-/**
- *
- * @author Mateusz
- */
 public class CustomGraph implements Serializable {
 
     private Map<Integer, Vertex> vertices = new HashMap<>();
@@ -20,49 +16,22 @@ public class CustomGraph implements Serializable {
     private UniqueIdGenerator uniqueIdGenerator = new BasedOnNextIntIdGenerator();                                    // unikatowe id dla wierzchołków
     private UniqueNameGenerator uniqueNameGenerator = new BasedOnClassDistinctionNameGenerator();
 
-    /**
-     * Zwraca wszystkie wierzcholki nalezące do grafu
-     *
-     * @return
-     */
     public Map<Integer, Vertex> getVertices() {
         return vertices;
     }
 
-    /**
-     * Zwraca wszystkie krawędzie należące do grafu
-     *
-     * @return
-     */
     public Map<String, Edge> getEdges() {
         return edges;
     }
 
-    /**
-     * Pobranie wierzchołka o podanym id
-     *
-     * @param id
-     * @return
-     */
     public Vertex getVertex(int id) {
         return vertices.get(id);
     }
 
-    /**
-     * Pobranie krawedzi o podanym kluczu
-     *
-     * @param key
-     * @return
-     */
     public Edge getEdge(String key) {
         return edges.get(key);
     }
 
-    /**
-     * Dodawanie krawędzi do grafu
-     *
-     * @param edge
-     */
     public void addEdge(Edge edge) {
 
         Vertex sourceVertex = vertices.get(edge.getSourceId());
@@ -73,20 +42,10 @@ public class CustomGraph implements Serializable {
         edges.put(edge.getKey(), edge);
     }
 
-    /**
-     * Dodawanie wierzchołka do grafu
-     *
-     * @param vertex
-     */
     public void addVertex(Vertex vertex) {
         vertices.put(vertex.getID(), vertex);
     }
 
-    /**
-     * Usuwanie krawędzi z grafu
-     *
-     * @param edge
-     */
     public void removeEdge(Edge edge) {
         if (edge == null) {
             System.out.println("Krawędź została wcześniej usunięta");
@@ -101,11 +60,6 @@ public class CustomGraph implements Serializable {
         edges.remove(edge.getKey());
     }
 
-    /**
-     * Usuwanie wierzchołka z grafu
-     *
-     * @param vertex
-     */
     public void removeVertex(Vertex vertex) {
         Edge tempEdge;
         Vertex temp = vertices.get(vertex.getID());
@@ -119,10 +73,6 @@ public class CustomGraph implements Serializable {
             removeEdge(tempEdge);
         }
 
-        /*for(Vertex v : vertices.values()){                              // usuwanie krawędzi wchodzacych do wierzcholka
-         tempEdge = new Edge(v.getID(),temp.getID());
-         edges.remove(tempEdge.getKey());
-         }*/
         List<Integer> tempPredecessors = new ArrayList<>();
         tempPredecessors.addAll(temp.getPredecessors());
         for (int predecessor : tempPredecessors) {
@@ -134,20 +84,10 @@ public class CustomGraph implements Serializable {
         vertices.remove(vertex.getID());                                // usunięcie wierzchołka.
     }
 
-    /**
-     * Generowanie unikalnego ID dla wierzchołka- po prostu kolejna liczba
-     *
-     * @return
-     */
     public int getNewID() {
         return uniqueIdGenerator.getNext();
     }
 
-    /**
-     * Generowanie unikalnej nazwy dla wierzchołka w zależności od jego typu
-     *
-     * @return
-     */
     public String getNewName(VertexType vertexType) {
         return uniqueNameGenerator.getNext(vertexType);
     }

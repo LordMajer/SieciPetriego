@@ -8,10 +8,6 @@ import javax.swing.JFrame;
 
 import com.petri.nets.model.Place;
 
-/**
- *
- * @author Mateusz
- */
 public class EditPlacePanel extends JDialog {
 
     private Map<String, Object> returnValues;
@@ -20,7 +16,6 @@ public class EditPlacePanel extends JDialog {
      * Creates new form EditPlacePanel
      */
     public EditPlacePanel(JFrame parent, String title, boolean modal, Map<String, Object> values) {
-
         super(parent, title, modal);                                                                        // inicjalizacja okna dialogowego
         initComponents();
         if (parent != null) {
@@ -29,12 +24,10 @@ public class EditPlacePanel extends JDialog {
             setLocation(parentLocation.x + parentSize.width / 4, parentLocation.y + parentSize.height / 4);
         }
         returnValues = values;
-
         Place vertex = (Place) values.get("Object");                                                     // pobranie danych modyfikowanego miejsca
         tocenCountTextField.setText(Integer.toString(vertex.getTokenCount()));                              // wypełnienie pól formularza:
         nameTextField.setText(vertex.getName());
         capacityTextField.setText(Integer.toString(vertex.getCapacity()));
-
         setPreferredSize(new Dimension(370, 255));
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         pack();
@@ -109,10 +102,8 @@ public class EditPlacePanel extends JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
-
         returnValues.put("Status", "Ok");                                               // aktualizacja statusu 
         Place place = new Place((Place) returnValues.get("Object"));             // stworzenie nowego miejsca
-
         place.setName(nameTextField.getText());                                       // pobranie danych z pól formularza i zapisanie do nowego obiektu
         place.setTokenCount(Integer.parseInt(tocenCountTextField.getText()));
         place.setCapacity(Integer.parseInt(capacityTextField.getText()));
@@ -122,7 +113,6 @@ public class EditPlacePanel extends JDialog {
     }//GEN-LAST:event_submitButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-
         returnValues.put("Status", "Cancel");                                           // aktualizacja statusu 
         setVisible(false);                                                              // usunięcie okna dialogowego
         dispose();

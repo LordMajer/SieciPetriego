@@ -8,10 +8,6 @@ import javax.swing.JFrame;
 
 import com.petri.nets.model.Edge;
 
-/**
- *
- * @author Mateusz
- */
 public class EditEdgePanel extends JDialog {
 
     private Map<String, Object> returnValues;
@@ -20,7 +16,6 @@ public class EditEdgePanel extends JDialog {
      * Creates new form EditEdgePanel
      */
     public EditEdgePanel(JFrame parent, String title, boolean modal, Map<String, Object> values) {
-
         super(parent, title, modal);                                                                                // inicjalizacja okna dialogowego
         initComponents();
         if (parent != null) {
@@ -29,7 +24,6 @@ public class EditEdgePanel extends JDialog {
             setLocation(parentLocation.x + parentSize.width / 4, parentLocation.y + parentSize.height / 4);
         }
         returnValues = values;
-
         Edge edge = (Edge) returnValues.get("Object");                                                               // pobranie danych modyfikowanej krawędzi
         capacityTextField.setText(Integer.toString(edge.getCapacity()));                                            // wypełnienie pól formularza
         setPreferredSize(new Dimension(370, 200));
@@ -87,7 +81,6 @@ public class EditEdgePanel extends JDialog {
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
         returnValues.put("Status", "Ok");                                               // aktualizacja statusu 
         Edge edge = new Edge((Edge) returnValues.get("Object"));                         // stworzenie nowej krawędzi
-
         edge.setCapacity(Integer.parseInt(capacityTextField.getText()));                // pobranie danych z pól formularza i zapisanie do nowego obiektu
         returnValues.put("ReturnObject", edge);                                         // zapisanie nowego obiektu do wartości zwracanych
         setVisible(false);                                                              // usunięcie okna dialogowego

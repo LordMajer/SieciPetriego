@@ -87,7 +87,7 @@ public class ReachabilityGraph {
         String previousStateTextValue = getTextValue(previousState);                                // Wyznaczenie reprezentacji dla stanu poprzedniego
         Vertex previousStateVertex = states.get(previousStateTextValue);                            // Pobranie wierzchołka z mapy stanów archiwalnych
         if (newStateVertex == null) {
-            newStateVertex = new Transition(reachabilityGraph.getNewID(), getTextValueWithInfinitySign(newState), resolvePosition(newState));
+            newStateVertex = new Transition(reachabilityGraph.getNewID(), getTextValueWithInfinitySign(newState));
             reachabilityGraph.addVertex(newStateVertex);
             reachabilityGraph.addEdge(new Edge(previousStateVertex.getID(), newStateVertex.getID(), transition.getName()));
             states.put(newStateTextValue, newStateVertex);
@@ -155,11 +155,5 @@ public class ReachabilityGraph {
             newState.put(id, currentValue + tokenToTake);
         }
         return newState;
-    }
-
-    private Position resolvePosition(Map<Integer, Integer> state) {
-        int x = states.size()%2 == 0 ? 0 : 100;
-        int y = states.size()*100;
-        return new Position(x, y);
     }
 }

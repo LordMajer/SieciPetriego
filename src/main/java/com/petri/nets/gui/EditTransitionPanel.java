@@ -8,10 +8,6 @@ import javax.swing.JFrame;
 
 import com.petri.nets.model.Transition;
 
-/**
- *
- * @author Mateusz
- */
 public class EditTransitionPanel extends JDialog {
 
     private Map<String, Object> returnValues;
@@ -20,7 +16,6 @@ public class EditTransitionPanel extends JDialog {
      * Creates new form EditPassagePanel
      */
     public EditTransitionPanel(JFrame parent, String title, boolean modal, Map<String, Object> values) {
-
         super(parent, title, modal);                                                                            // inicjalizacja okna dialogowego
         initComponents();
         if (parent != null) {
@@ -29,11 +24,9 @@ public class EditTransitionPanel extends JDialog {
             setLocation(parentLocation.x + parentSize.width / 4, parentLocation.y + parentSize.height / 4);
         }
         returnValues = values;
-
         Transition vertex = (Transition) values.get("Object");                                                     // pobranie dantych modyfikowanego przejścia
         nameTextField.setText(vertex.getName());                                                                // wypełnienie pól formularza:
         priorityTextField.setText(Integer.toString(vertex.getPriority()));
-
         setPreferredSize(new Dimension(370, 255));
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         pack();
@@ -93,17 +86,14 @@ public class EditTransitionPanel extends JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-
         returnValues.put("Status", "Cancel");                                           // aktualizacja statusu w zwracanych wartościach
         setVisible(false);                                                              // usunięcie okna dialogowego
         dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
-
         returnValues.put("Status", "Ok");                                               // akatualizacja statusu w zwracanych wartościach
         Transition transition = new Transition((Transition) returnValues.get("Object"));     // tworzenie nowego przejścia
-
         transition.setName(nameTextField.getText());                                     // pobranie danych z pól i zapisanie do nowego przejścia
         transition.setPriority(Integer.parseInt(priorityTextField.getText()));
         returnValues.put("ReturnObject", transition);                                    // dodanie nowego przejścia do wartości zwracanych

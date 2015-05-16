@@ -93,14 +93,14 @@ public class CoverageGraph {
         Map<Integer, Integer> stateWithInfinity = checkIfGreater(newState);
         if (stateWithInfinity != null) {
             String stateWithInfinityTextValue = getTextValue(stateWithInfinity);
-            newStateVertex = new Transition(coverageGraph.getNewID(), getTextValueWithInfinitySign(stateWithInfinity), resolvePosition(stateWithInfinity)); // wierzchołek z nieskończonością
+            newStateVertex = new Transition(coverageGraph.getNewID(), getTextValueWithInfinitySign(stateWithInfinity)); // wierzchołek z nieskończonością
             coverageGraph.addVertex(newStateVertex);
             coverageGraph.addEdge(new Edge(previousStateVertex.getID(), newStateVertex.getID(), transition.getName()));
             states.put(stateWithInfinityTextValue, newStateVertex);
             resolveTransitions(stateWithInfinity);
             return;
         }
-        newStateVertex = new Transition(coverageGraph.getNewID(), getTextValueWithInfinitySign(newState), resolvePosition(newState));
+        newStateVertex = new Transition(coverageGraph.getNewID(), getTextValueWithInfinitySign(newState));
         coverageGraph.addVertex(newStateVertex);
         coverageGraph.addEdge(new Edge(previousStateVertex.getID(), newStateVertex.getID(), transition.getName()));
         states.put(newStateTextValue, newStateVertex);
@@ -201,11 +201,5 @@ public class CoverageGraph {
             }
         }
         return newState;
-    }
-
-    private Position resolvePosition(Map<Integer, Integer> state) {
-        int x = states.size()%2 == 0 ? 0 : 100;
-        int y = states.size()*100;
-        return new Position(x, y);
     }
 }

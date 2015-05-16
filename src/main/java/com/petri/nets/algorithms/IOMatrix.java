@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class IOMatrix {
+
     protected CustomGraph graph;
     private Map<Integer, Place> places;
     private Map<Integer, Transition> transitions;

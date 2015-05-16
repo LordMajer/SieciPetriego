@@ -5,15 +5,13 @@ import java.util.Map;
 public class ModelValidator {
 
     public static String validate(CustomGraph graph) {
-        Map<Integer, Vertex> vertices =  graph.getVertices();
+        Map<Integer, Vertex> vertices = graph.getVertices();
         StringBuilder errorsBuilder = new StringBuilder();
         Vertex vertexToCheck;
         // przejście po wszystkich wierzchołkach i sprawdzenie czy są poprawnie połaczone.
 
         for (Vertex vertex : vertices.values()) {
-
             if (vertex instanceof Place) {
-
                 // następnikami i poprzednikami moga być tylko przejścia
                 // sprawdzanie następników:
                 for (int successor : vertex.getSuccessors()) {
@@ -26,7 +24,6 @@ public class ModelValidator {
                                 .append("\n");
                     }
                 }
-
                 // sprawdzanie poprzedników:
                 for (int predecessor : vertex.getPredecessors()) {
                     vertexToCheck = vertices.get(predecessor);
@@ -51,7 +48,6 @@ public class ModelValidator {
                                 .append("\n");
                     }
                 }
-
                 // sprawdzanie poprzedników:
                 for (int predecessor : vertex.getPredecessors()) {
                     vertexToCheck = vertices.get(predecessor);
@@ -65,7 +61,6 @@ public class ModelValidator {
                 }
             }
         }
-
         if (errorsBuilder.length() > 0) {
             return errorsBuilder.toString();
         } else {

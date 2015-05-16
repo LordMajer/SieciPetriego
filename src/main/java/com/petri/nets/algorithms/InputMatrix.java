@@ -9,7 +9,6 @@ import java.util.List;
 
 public class InputMatrix extends IOMatrix {
 
-
     public InputMatrix(CustomGraph graph) {
         super(graph);
     }

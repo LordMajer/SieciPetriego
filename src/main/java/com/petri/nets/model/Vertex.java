@@ -4,9 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Mateusz
- */
 public class Vertex implements Serializable {
 
     private static final int DEFAULT_WIDTH = 75;
@@ -72,19 +69,19 @@ public class Vertex implements Serializable {
         this.id = id;
     }
 
-    public void setWidth(int width) {
+    public void setWidth(double width) {
         this.width = width;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(double height) {
         this.height = height;
     }
 
-    public void setX(int x) {
+    public void setX(double x) {
         position.setX(x);
     }
 
-    public void setY(int y) {
+    public void setY(double y) {
         position.setY(y);
     }
 

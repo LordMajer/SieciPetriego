@@ -4,9 +4,6 @@ import com.petri.nets.helpers.VertexType;
 
 import java.io.Serializable;
 
-/**
- * @author Mateusz
- */
 public class Place extends Vertex implements Serializable {
 
     private static final VertexType VERTEX_TYPE = VertexType.PLACE;

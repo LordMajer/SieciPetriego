@@ -87,7 +87,7 @@ public class CoverageTree {
         String previousStateTextValue = getTextValue(previousState);                                // Wyznaczenie reprezentacji dla stanu poprzedniego
         Vertex previousStateVertex = states.get(previousStateTextValue);                            // Pobranie wierzchołka z mapy stanów archiwalnych
         if (newStateVertex != null) {   // Sprawdzenie czy duplikat
-            newStateVertex = new Transition(coverageTree.getNewID(), getTextValueWithInfinitySign(newState) + " - Duplikat", resolvePosition(newState)); // duplikat
+            newStateVertex = new Transition(coverageTree.getNewID(), getTextValueWithInfinitySign(newState) + " - Duplikat"); // duplikat
             coverageTree.addVertex(newStateVertex);
             coverageTree.addEdge(new Edge(previousStateVertex.getID(), newStateVertex.getID(), transition.getName()));
             return;
@@ -95,14 +95,14 @@ public class CoverageTree {
         Map<Integer, Integer> stateWithInfinity = checkIfGreater(newState);
         if (stateWithInfinity != null) {
             String stateWithInfinityTextValue = getTextValue(stateWithInfinity);
-            newStateVertex = new Transition(coverageTree.getNewID(), getTextValueWithInfinitySign(newState), resolvePosition(stateWithInfinity)); // wierzchołek z nieskończonością
+            newStateVertex = new Transition(coverageTree.getNewID(), getTextValueWithInfinitySign(newState)); // wierzchołek z nieskończonością
             coverageTree.addVertex(newStateVertex);
             coverageTree.addEdge(new Edge(previousStateVertex.getID(), newStateVertex.getID(), transition.getName()));
             states.put(stateWithInfinityTextValue, newStateVertex);
             resolveTransitions(stateWithInfinity);
             return;
         }
-        newStateVertex = new Transition(coverageTree.getNewID(), getTextValueWithInfinitySign(newState), resolvePosition(newState));
+        newStateVertex = new Transition(coverageTree.getNewID(), getTextValueWithInfinitySign(newState));
         coverageTree.addVertex(newStateVertex);
         coverageTree.addEdge(new Edge(previousStateVertex.getID(), newStateVertex.getID(), transition.getName()));
         states.put(newStateTextValue, newStateVertex);
@@ -203,11 +203,5 @@ public class CoverageTree {
             }
         }
         return newState;
-    }
-
-    private Position resolvePosition(Map<Integer, Integer> state) {
-        int x = states.size()%2 == 0 ? 0 : 100;
-        int y = states.size()*100;
-        return new Position(x, y);
     }
 }
