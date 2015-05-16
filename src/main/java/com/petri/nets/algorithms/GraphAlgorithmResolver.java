@@ -1,5 +1,6 @@
 package com.petri.nets.algorithms;
 
+import com.petri.nets.helpers.common.CommonOperations;
 import com.petri.nets.model.*;
 
 import java.util.List;
@@ -73,6 +74,25 @@ public abstract class GraphAlgorithmResolver {
         }
     }
 
+    protected void resolveTransition(Map<Integer, Integer> previousState, Transition transition) {
+        List<Edge> edgesContainingTransition = CommonOperations.getEdgesContaining(transition, edges);                      // Pobranie krawędzi zawierających przejście
+        List<Edge> destinationEdges = CommonOperations.getDestinationEdges(transition, edgesContainingTransition);   // Krawędzie prowadzące do przejścia
+        if (shouldStopProcessingState(previousState, destinationEdges)) {
+            return;
+        }
+        List<Edge> sourceEdges = CommonOperations.getSourceEdges(transition, edgesContainingTransition);             // Krawędzie prowadzące od przejścia
+        Map<Integer, Integer> newState = resolveState(previousState, sourceEdges, destinationEdges);
+        String newStateTextValue = getTextValue(newState);
+        Vertex newStateVertex = states.get(newStateTextValue);                                      // Pobranie z mapy stanów archiwalnych odpowiedniego wierzchołka (o ile istnieje)
+        String previousStateTextValue = getTextValue(previousState);                                // Wyznaczenie reprezentacji dla stanu poprzedniego
+        Vertex previousStateVertex = states.get(previousStateTextValue);                            // Pobranie wierzchołka z mapy stanów archiwalnych
+        if (newStateVertex != null) {   // Sprawdzenie czy duplikat
+            dealWithDuplicate(newState, newStateVertex, previousStateVertex, newStateVertex, transition);
+            return;
+        }
+        dealWithNonDuplicate(newState, previousStateVertex, transition);
+    }
+
     protected Map<Integer, Integer> resolveState(Map<Integer, Integer> previousState, List<Edge> sourceEdges, List<Edge> destinationEdges) {
         Map<Integer, Integer> newState = new TreeMap<>(previousState);
         for (Edge edge : destinationEdges) {
@@ -136,7 +156,11 @@ public abstract class GraphAlgorithmResolver {
         return true;
     }
 
-    protected abstract void resolveTransition(Map<Integer, Integer> previousState, Transition transition);
-
     protected abstract boolean shouldUpdateTokenNumber(int value);
+
+    protected abstract boolean shouldStopProcessingState(Map<Integer, Integer> previousState, List<Edge> destinationEdges);
+
+    protected abstract void dealWithDuplicate(Map<Integer, Integer> newState, Vertex newStateVertex, Vertex previousStateVertex, Vertex duplicate, Vertex transition);
+
+    protected abstract void dealWithNonDuplicate(Map<Integer, Integer> newState, Vertex previousStateVertex, Vertex transition);
 }

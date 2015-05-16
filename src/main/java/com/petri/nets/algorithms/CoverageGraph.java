@@ -1,6 +1,5 @@
 package com.petri.nets.algorithms;
 
-import com.petri.nets.helpers.common.CommonOperations;
 import com.petri.nets.model.CustomGraph;
 import com.petri.nets.model.Edge;
 import com.petri.nets.model.Transition;
@@ -16,23 +15,24 @@ public class CoverageGraph extends GraphAlgorithmResolver{
     }
 
     @Override
-    protected void resolveTransition(Map<Integer, Integer> previousState, Transition transition) {
-        List<Edge> edgesContainingTransition = CommonOperations.getEdgesContaining(transition, edges);                      // Pobranie krawędzi zawierających przejście
-        List<Edge> destinationEdges = CommonOperations.getDestinationEdges(transition, edgesContainingTransition);   // Krawędzie prowadzące do przejścia
-        if (hasAllInfinitives(previousState) || !canStepBeDone(destinationEdges, previousState)) {
-            return;
-        }
-        List<Edge> sourceEdges = CommonOperations.getSourceEdges(transition, edgesContainingTransition);             // Krawędzie prowadzące od przejścia
-        Map<Integer, Integer> newState = resolveState(previousState, sourceEdges, destinationEdges);
-        String newStateTextValue = getTextValue(newState);
-        Vertex newStateVertex = states.get(newStateTextValue);                                      // Pobranie z mapy stanów archiwalnych odpowiedniego wierzchołka (o ile istnieje)
-        String previousStateTextValue = getTextValue(previousState);                                // Wyznaczenie reprezentacji dla stanu poprzedniego
-        Vertex previousStateVertex = states.get(previousStateTextValue);                            // Pobranie wierzchołka z mapy stanów archiwalnych
-        if (newStateVertex != null) {   // Sprawdzenie czy duplikat
-            graph.addEdge(new Edge(previousStateVertex.getID(), newStateVertex.getID(), transition.getName())); // połączenie z 'duplikatem'
-            return;
-        }
+    protected boolean shouldUpdateTokenNumber(int value) {
+        return value != Integer.MAX_VALUE;
+    }
+
+    @Override
+    protected boolean shouldStopProcessingState(Map<Integer, Integer> previousState, List<Edge> destinationEdges) {
+        return hasAllInfinitives(previousState) || !canStepBeDone(destinationEdges, previousState);
+    }
+
+    @Override
+    protected void dealWithDuplicate(Map<Integer, Integer> newState, Vertex newStateVertex, Vertex previousStateVertex, Vertex duplicate, Vertex transition) {
+        graph.addEdge(new Edge(previousStateVertex.getID(), duplicate.getID(), transition.getName())); // połączenie z 'duplikatem'
+    }
+
+    @Override
+    protected void dealWithNonDuplicate(Map<Integer, Integer> newState, Vertex previousStateVertex, Vertex transition) {
         Map<Integer, Integer> stateWithInfinity = checkIfGreater(newState);
+        Vertex newStateVertex;
         if (stateWithInfinity != null) {
             String stateWithInfinityTextValue = getTextValue(stateWithInfinity);
             newStateVertex = new Transition(graph.getNewID(), getTextValueWithInfinitySign(stateWithInfinity)); // wierzchołek z nieskończonością
@@ -45,12 +45,7 @@ public class CoverageGraph extends GraphAlgorithmResolver{
         newStateVertex = new Transition(graph.getNewID(), getTextValueWithInfinitySign(newState));
         graph.addVertex(newStateVertex);
         graph.addEdge(new Edge(previousStateVertex.getID(), newStateVertex.getID(), transition.getName()));
-        states.put(newStateTextValue, newStateVertex);
+        states.put(getTextValue(newState), newStateVertex);
         resolveTransitions(newState);
-    }
-
-    @Override
-    protected boolean shouldUpdateTokenNumber(int value) {
-        return value != Integer.MAX_VALUE;
     }
 }
