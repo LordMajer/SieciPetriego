@@ -172,6 +172,15 @@ public class CustomGraph implements Serializable {
         return transition;
     }
 
+    public Transition getTransitionByName(List<Transition> vertices, String name) {
+        for (Transition transition : vertices) {
+            if (transition.getName().equals(name)) {
+                return transition;
+            }
+        }
+        return null;
+    }
+
     public static void main(String[] args) {
         CustomGraph graph = new CustomGraph();
 

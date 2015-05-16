@@ -14,6 +14,7 @@ import com.petri.nets.algorithms.ReachabilityGraph;
 import com.petri.nets.archive.GraphReader;
 import com.petri.nets.archive.GraphWriter;
 import com.petri.nets.model.*;
+import com.petri.nets.simulation.Simulator;
 import org.jgrapht.ListenableGraph;
 import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.ListenableDirectedWeightedGraph;
@@ -37,6 +38,7 @@ public class GUI extends javax.swing.JFrame {
     private static final String RESULT_TAB_TITLE = "Wyniki";
 
     CustomGraph graphModel;
+    Simulator simulator;
     JGraphXAdapter<Vertex, Edge> graphAdapter;
     JScrollPane scrollPane;
 
@@ -744,13 +746,15 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_option3ButtonActionPerformed
 
     private void startSimulationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startSimulationButtonActionPerformed
-        // TODO add your handling code here:
         System.out.println("Start symulacji...");
+        resultsPanel.removeAll();
+        resultsPanel.revalidate();
         // 1. sprawdzenie poprawności grafu- czy jest dobrze zbudowany:
         String errors = ModelValidator.validate(graphModel);
         if (isGraphValid(graphModel)) {
-            // zablokowanie możliwości edycji grafu
-            // przeprowadzenie pierwszego kroku symulacji.
+            simulator = new Simulator(graphModel); //TODO clone graph model rather than passing to method
+            resultsPanel.add(createJGraphComponent(createJGraphXAdapter(simulator.getGraph())));
+            tabbedPane.setSelectedIndex(0);
         }
     }//GEN-LAST:event_startSimulationButtonActionPerformed
 
@@ -774,10 +778,39 @@ public class GUI extends javax.swing.JFrame {
 
     private void stepButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stepButtonActionPerformed
         System.out.println("Krok symulacji..");
+        java.util.List<Transition> possibleSteps = simulator.getPossibleSteps();
+        if (possibleSteps.size() == 0) {
+            JOptionPane.showMessageDialog(this, "Brak możliwych kroków!", "INFORMACJA", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        } else if (possibleSteps.size() == 1) {
+            Transition transition = possibleSteps.get(0);
+            simulator.takeStep(transition);
+            JOptionPane.showMessageDialog(this, "Wykonano przejście : " + transition.getName(), "INFORMACJA", JOptionPane.INFORMATION_MESSAGE);
+            resultsPanel.removeAll();
+            resultsPanel.revalidate();
+            resultsPanel.add(createJGraphComponent(createJGraphXAdapter(simulator.getGraph())));
+        } else {
+            String optionChosen = JOptionPane.showInputDialog("Wybierz jedno z możliwych przejść: " + possibleSteps.toString()); // TODO Display options as buttons to chose
+            Transition transition = graphModel.getTransitionByName(possibleSteps, optionChosen);
+            if (transition != null) {
+                simulator.takeStep(transition);
+                JOptionPane.showMessageDialog(this, "Wykonano przejście : " + transition.getName(), "INFORMACJA", JOptionPane.INFORMATION_MESSAGE);
+                resultsPanel.removeAll();
+                resultsPanel.revalidate();
+                resultsPanel.add(createJGraphComponent(createJGraphXAdapter(simulator.getGraph())));
+            } else {
+                if (optionChosen != null) {
+                    JOptionPane.showMessageDialog(this, "Wskazane przejście (" + optionChosen + ") nie jest w tej chwili możliwe", "BŁĄD", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
     }//GEN-LAST:event_stepButtonActionPerformed
 
     private void stopSimulationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopSimulationButtonActionPerformed
         System.out.println("Stop symulacji..");
+        resultsPanel.removeAll();
+        resultsPanel.revalidate();
+        tabbedPane.setSelectedIndex(1);
     }//GEN-LAST:event_stopSimulationButtonActionPerformed
 
     private void loadGraphButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadGraphButtonActionPerformed
