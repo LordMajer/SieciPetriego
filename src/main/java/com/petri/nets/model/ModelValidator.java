@@ -5,6 +5,8 @@ import java.util.Map;
 public class ModelValidator {
 
     public static String validate(CustomGraph graph) {
+        int placeCounter = 0;
+        int transitionCounter = 0;
         Map<Integer, Vertex> vertices = graph.getVertices();
         StringBuilder errorsBuilder = new StringBuilder();
         Vertex vertexToCheck;
@@ -27,6 +29,7 @@ public class ModelValidator {
                                 .append("\n");
                     }
                 }
+                placeCounter++;
             } else {
                 // sprawdzanie poprzedników:
                 for (int predecessor : vertex.getPredecessors()) {
@@ -39,7 +42,16 @@ public class ModelValidator {
                                 .append("\n");
                     }
                 }
+                transitionCounter++;
             }
+        }
+        if (placeCounter == 0) {
+            errorsBuilder.append("Nie wprowadzono żadnych wierzchołków typu miejsce")
+            .append("\n");
+        }
+        if (transitionCounter == 0) {
+            errorsBuilder.append("Nie wprowadzono żadnych wierzchołków typu przejście")
+                    .append("\n");
         }
         if (errorsBuilder.length() > 0) {
             return errorsBuilder.toString();

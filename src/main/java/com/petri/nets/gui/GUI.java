@@ -754,7 +754,7 @@ public class GUI extends javax.swing.JFrame {
             @Override
             public void keyPressed(KeyEvent e) {
                 Object[] cells = graphAdapter.getSelectionCells();
-                if (tabbedPane.getSelectedIndex() == tabbedPane.indexOfTab(GRAPH_TAB_TITLE) && cells.length == 1 && e.getKeyCode() == DEL_KEY_CODE) {
+                if (tabbedPane.getSelectedIndex() == tabbedPane.indexOfTab(GRAPH_TAB_TITLE) && cells.length > 0 && e.getKeyCode() == DEL_KEY_CODE) {
                     removeVertexButtonActionPerformed(null);
                 }
             }
