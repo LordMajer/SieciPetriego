@@ -511,19 +511,21 @@ public class GUI extends javax.swing.JFrame {
     private void removeVertexButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeVertexButtonActionPerformed
         revalidateModelVertexPosition(graphAdapter);
         Object[] cells = graphAdapter.getSelectionCells();
-        if (cells.length != 1) {
+        if (cells.length < 1) {
             JOptionPane.showMessageDialog(this, "Aby usunąć element należy zaznaczyć dokładnie jeden element!", "BŁĄD", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        Object obj = ((mxCell) cells[0]).getValue();
-        if (obj instanceof Vertex) {
-            Vertex vertex = (Vertex) obj;
-            graphModel.removeVertex(vertex);
-        } else if (obj instanceof Edge) {
-            Edge edge = (Edge) obj;
-            graphModel.removeEdge(edge);
+        for (int i = 0 ; i < cells.length ; i++) {
+            Object obj = ((mxCell) cells[i]).getValue();
+            if (obj instanceof Vertex) {
+                Vertex vertex = (Vertex) obj;
+                graphModel.removeVertex(vertex);
+            } else if (obj instanceof Edge) {
+                Edge edge = (Edge) obj;
+                graphModel.removeEdge(edge);
+            }
+            displayGraph(graphModel);
         }
-        displayGraph(graphModel);
     }//GEN-LAST:event_removeVertexButtonActionPerformed
 
     private void addEdgeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addEdgeButtonActionPerformed
@@ -785,7 +787,7 @@ public class GUI extends javax.swing.JFrame {
             @Override
             public void keyPressed(KeyEvent e) {
                 Object[] cells = graphAdapter.getSelectionCells();
-                if (tabbedPane.getSelectedIndex() == tabbedPane.indexOfTab(GRAPH_TAB_TITLE) && cells.length == 1 && e.getKeyCode() == 127) {
+                if (tabbedPane.getSelectedIndex() == tabbedPane.indexOfTab(GRAPH_TAB_TITLE) && cells.length > 0 && e.getKeyCode() == 127) {
                     removeVertexButtonActionPerformed(null);
                 }
             }

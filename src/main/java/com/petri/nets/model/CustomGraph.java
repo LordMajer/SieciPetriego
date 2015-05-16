@@ -88,10 +88,16 @@ public class CustomGraph implements Serializable {
      * @param edge
      */
     public void removeEdge(Edge edge) {
+        if (edge == null) {
+            System.out.println("Krawędź została wcześniej usunięta");
+            return;
+        }
         Vertex sourceVertex = vertices.get(edge.getSourceId());
-        sourceVertex.removeSuccessor(edge.getDestinationId());
         Vertex destinationVertex = vertices.get(edge.getDestinationId());
-        destinationVertex.removePredecessor(edge.getSourceId());
+        if (sourceVertex != null && destinationVertex != null) {
+            sourceVertex.removeSuccessor(edge.getDestinationId());
+            destinationVertex.removePredecessor(edge.getSourceId());
+        }
         edges.remove(edge.getKey());
     }
 
