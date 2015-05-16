@@ -23,6 +23,8 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -773,8 +775,7 @@ public class GUI extends javax.swing.JFrame {
         }
         //jGraph = new JGraph(model, view);
 
-        scrollPane = new JScrollPane(createJGraphComponent(graphAdapter));
-        tabbedPane.addTab("Graf", scrollPane);
+        tabbedPane.addTab(GRAPH_TAB_TITLE, createJGraphComponent(graphAdapter));
         tabbedPane.revalidate();
         tabbedPane.repaint();
         tabbedPane.setSelectedIndex(1);

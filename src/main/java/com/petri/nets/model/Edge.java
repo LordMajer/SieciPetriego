@@ -70,6 +70,6 @@ public class Edge implements Serializable {
 
     @Override
     public String toString() {
-        return name;
+        return name != null && !name.isEmpty() ? name : String.valueOf(capacity);
     }
 }
