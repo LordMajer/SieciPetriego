@@ -3,6 +3,7 @@ package com.petri.nets.algorithms;
 import com.petri.nets.helpers.common.CommonOperations;
 import com.petri.nets.model.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -15,12 +16,14 @@ public abstract class GraphAlgorithmResolver {
     protected Map<String, Edge> edges;
     protected Map<Integer, Transition> transitions;
     protected Map<Integer, Place> places;
+    private boolean priority;
 
     public GraphAlgorithmResolver(CustomGraph baseGraph) {
         this.graph = new CustomGraph();
         this.edges = baseGraph.getEdges();
         this.transitions = baseGraph.getTransitions();
         this.places = baseGraph.getPlaces();
+        this.priority = baseGraph.isPriority();
         this.states = new TreeMap<>();
     }
 
@@ -66,7 +69,11 @@ public abstract class GraphAlgorithmResolver {
     }
 
     protected void resolveTransitions(Map<Integer, Integer> state) {
-        for (Transition transition : transitions.values()) {
+        List<Transition> possibleSteps = getPossibleSteps(state);
+        if (priority) { // Jeżeli to sieć priorytetowa to można przejść tylko przed wierzchołki o max priorytecie
+            possibleSteps = CommonOperations.getMaxPriorityTransitions(possibleSteps);
+        }
+        for (Transition transition : possibleSteps) { // Wykonanie możliwych kroków
             resolveTransition(new TreeMap<>(state), transition);
             if (states.size() > VERTICES_LIMIT) { // Aby uniknąć pętli nieskończonej
                 return;
@@ -74,12 +81,21 @@ public abstract class GraphAlgorithmResolver {
         }
     }
 
+    private List<Transition> getPossibleSteps(Map<Integer, Integer> state) {
+        List<Transition> possibleSteps = new ArrayList<>();
+        for (Transition transition : transitions.values()) { // Wyszukiwanie możliwych przejść
+            List<Edge> edgesContainingTransition = CommonOperations.getEdgesContaining(transition, edges);                      // Pobranie krawędzi zawierających przejście
+            List<Edge> destinationEdges = CommonOperations.getDestinationEdges(transition, edgesContainingTransition);   // Krawędzie prowadzące do przejścia
+            if (!shouldStopProcessingState(state, destinationEdges)) {
+                possibleSteps.add(transition);
+            }
+        }
+        return possibleSteps;
+    }
+
     protected void resolveTransition(Map<Integer, Integer> previousState, Transition transition) {
         List<Edge> edgesContainingTransition = CommonOperations.getEdgesContaining(transition, edges);                      // Pobranie krawędzi zawierających przejście
         List<Edge> destinationEdges = CommonOperations.getDestinationEdges(transition, edgesContainingTransition);   // Krawędzie prowadzące do przejścia
-        if (shouldStopProcessingState(previousState, destinationEdges)) {
-            return;
-        }
         List<Edge> sourceEdges = CommonOperations.getSourceEdges(transition, edgesContainingTransition);             // Krawędzie prowadzące od przejścia
         Map<Integer, Integer> newState = resolveState(previousState, sourceEdges, destinationEdges);
         String newStateTextValue = getTextValue(newState);
