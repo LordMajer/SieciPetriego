@@ -7,7 +7,7 @@ import java.io.Serializable;
 public class Transition extends Vertex implements Serializable {
 
     private static final VertexType VERTEX_TYPE = VertexType.TRANSITION;
-    private static final int DEFAULT_PRIORITY = -1;
+    private static final int DEFAULT_PRIORITY = 0;
 
     private int priority = DEFAULT_PRIORITY;       // priorytet przejścia -1 oznacza brak priorytetu
 
@@ -41,6 +41,10 @@ public class Transition extends Vertex implements Serializable {
 
     @Override
     public String toString() {
-        return name;
+        if (priority != DEFAULT_PRIORITY) {
+            return name + "\nPriorytet: " + priority;
+        } else {
+            return name;
+        }
     }
 }

@@ -6,8 +6,8 @@ import java.util.List;
 
 public class Vertex implements Serializable {
 
-    private static final int DEFAULT_WIDTH = 75;
-    private static final int DEFAULT_HEIGHT = 75;
+    private static final int DEFAULT_WIDTH = 80;
+    private static final int DEFAULT_HEIGHT = 80;
 
     protected String name;
     protected int id;

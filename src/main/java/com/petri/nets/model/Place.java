@@ -52,6 +52,12 @@ public class Place extends Vertex implements Serializable {
 
     @Override
     public String toString() {
-        return name + " : " + tokenCount;
+        return new StringBuilder()
+                .append(name)
+                .append("\nL.tokenów: ")
+                .append(tokenCount)
+                .append("\nPojemność: ")
+                .append(capacity == DEFAULT_CAPACITY ? "\u221E" : capacity)
+                .toString();
     }
 }
