@@ -11,6 +11,7 @@ import com.petri.nets.algorithms.CoverageTree;
 import com.petri.nets.algorithms.ReachabilityGraph;
 import com.petri.nets.archive.GraphReader;
 import com.petri.nets.archive.GraphWriter;
+import com.petri.nets.helpers.common.ObjectDeepCopier;
 import com.petri.nets.helpers.transformation.CustomGraphToJGraphXAdapterTransformer;
 import com.petri.nets.model.*;
 import com.petri.nets.simulation.Simulator;
@@ -679,7 +680,7 @@ public class GUI extends javax.swing.JFrame {
         resultsPanel.revalidate();
         ModelValidator.validate(graphModel);
         if (isGraphValid(graphModel)) {
-            simulator = new Simulator(graphModel); //TODO clone graph model rather than passing to method
+            simulator = new Simulator(ObjectDeepCopier.getCopyOf(graphModel));
             resultsPanel.add(createJGraphComponent(CustomGraphToJGraphXAdapterTransformer.transform(simulator.getGraph())));
             tabbedPane.setSelectedIndex(RESULT_TAB_INDEX);
         }
