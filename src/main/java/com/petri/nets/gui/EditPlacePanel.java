@@ -28,6 +28,7 @@ public class EditPlacePanel extends JDialog {
         tocenCountTextField.setText(Integer.toString(vertex.getTokenCount()));                              // wypełnienie pól formularza:
         nameTextField.setText(vertex.getName());
         capacityTextField.setText(Integer.toString(vertex.getCapacity()));
+        capacityTextField.setToolTipText("Wartość -1 odpowiada nieskończoności");
         setPreferredSize(new Dimension(370, 255));
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         pack();
