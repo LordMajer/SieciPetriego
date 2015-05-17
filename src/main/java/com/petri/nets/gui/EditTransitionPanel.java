@@ -27,6 +27,10 @@ public class EditTransitionPanel extends JDialog {
         Transition vertex = (Transition) values.get("Object");                                                     // pobranie dantych modyfikowanego przejścia
         nameTextField.setText(vertex.getName());                                                                // wypełnienie pól formularza:
         priorityTextField.setText(Integer.toString(vertex.getPriority()));
+        if (!vertex.isPriority()) { // nie wyświetlanie informacji o priorytecie w przypadku sieci ogólnych
+            priorityLabel.setVisible(false);
+            priorityTextField.setVisible(false);
+        }
         setPreferredSize(new Dimension(370, 255));
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         pack();
@@ -46,7 +50,7 @@ public class EditTransitionPanel extends JDialog {
         jSeparator1 = new javax.swing.JSeparator();
         titleLabel = new javax.swing.JLabel();
         cancelButton = new javax.swing.JButton();
-        tokenCountLabel = new javax.swing.JLabel();
+        priorityLabel = new javax.swing.JLabel();
         nameTextField = new javax.swing.JTextField();
         submitButton = new javax.swing.JButton();
         priorityTextField = new javax.swing.JTextField();
@@ -70,8 +74,8 @@ public class EditTransitionPanel extends JDialog {
         });
         getContentPane().add(cancelButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 120, 96, 34));
 
-        tokenCountLabel.setText("Priorytet:");
-        getContentPane().add(tokenCountLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 81, 130, 25));
+        priorityLabel.setText("Priorytet:");
+        getContentPane().add(priorityLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 81, 130, 25));
         getContentPane().add(nameTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(144, 50, 200, 25));
 
         submitButton.setBackground(new java.awt.Color(51, 204, 0));
@@ -109,6 +113,6 @@ public class EditTransitionPanel extends JDialog {
     private javax.swing.JTextField priorityTextField;
     private javax.swing.JButton submitButton;
     private javax.swing.JLabel titleLabel;
-    private javax.swing.JLabel tokenCountLabel;
+    private javax.swing.JLabel priorityLabel;
     // End of variables declaration//GEN-END:variables
 }

@@ -10,6 +10,7 @@ public class Transition extends Vertex implements Serializable {
     private static final int DEFAULT_PRIORITY = 0;
 
     private int priority = DEFAULT_PRIORITY;       // priorytet przejścia -1 oznacza brak priorytetu
+    private boolean isPriority = false;
 
     public Transition(int id, String name) {
         super(id);
@@ -35,13 +36,21 @@ public class Transition extends Vertex implements Serializable {
         return priority;
     }
 
+    public void setPriority(boolean isPriority) {
+        this.isPriority = isPriority;
+    }
+
+    public boolean isPriority() {
+        return isPriority;
+    }
+
     public static VertexType getVertexType() {
         return VERTEX_TYPE;
     }
 
     @Override
     public String toString() {
-        if (priority != DEFAULT_PRIORITY) {
+        if (isPriority) {
             return name + "\nPriorytet: " + priority;
         } else {
             return name;

@@ -128,6 +128,9 @@ public class CustomGraph implements Serializable {
 
     public void setPriority(boolean priority) {
         this.priority = priority;
+        for (Transition transition : getTransitions().values()) { // Żeby nie wyświetlało informacji o priorytecie w przypadku sieci ogólnych
+            transition.setPriority(priority);
+        }
     }
 
     public static void main(String[] args) {

@@ -762,6 +762,7 @@ public class GUI extends javax.swing.JFrame {
 
     private void priorityCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_priorityCheckBoxActionPerformed
         graphModel.setPriority(priorityCheckBox.isSelected());
+        displayGraph(graphModel);
     }//GEN-LAST:event_priorityCheckBoxActionPerformed
 
     private JScrollPane createJGraphComponent(final JGraphXAdapter<Vertex, Edge> graphAdapter) {
