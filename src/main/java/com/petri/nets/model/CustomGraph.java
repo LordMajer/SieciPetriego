@@ -15,6 +15,7 @@ public class CustomGraph implements Serializable {
     private Map<String, Edge> edges = new HashMap<>();
     private UniqueIdGenerator uniqueIdGenerator = new BasedOnNextIntIdGenerator();                                    // unikatowe id dla wierzchołków
     private UniqueNameGenerator uniqueNameGenerator = new BasedOnClassDistinctionNameGenerator();
+    private boolean priority = false;
 
     public Map<Integer, Vertex> getVertices() {
         return vertices;
@@ -119,6 +120,14 @@ public class CustomGraph implements Serializable {
             }
         }
         return null;
+    }
+
+    public boolean isPriority() {
+        return priority;
+    }
+
+    public void setPriority(boolean priority) {
+        this.priority = priority;
     }
 
     public static void main(String[] args) {

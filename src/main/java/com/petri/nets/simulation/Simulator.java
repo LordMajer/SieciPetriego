@@ -24,6 +24,9 @@ public class Simulator {
                 possibleMovements.add(transition);
             }
         }
+        if (graph.isPriority()) {
+            possibleMovements = CommonOperations.getMaxPriorityTransitions(possibleMovements);
+        }
         return possibleMovements;
     }
 

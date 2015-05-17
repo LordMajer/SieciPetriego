@@ -41,4 +41,26 @@ public class CommonOperations {
         }
         return sourceEdges;
     }
+
+    public static List<Transition> getMaxPriorityTransitions(List<Transition> transitions) {
+        List<Transition> maxPiorityTransitions = new ArrayList<>();
+        int maxPriority = getMaxPriority(transitions);
+        for (Transition transition : transitions) {
+            if (transition.getPriority() == maxPriority) {
+                maxPiorityTransitions.add(transition);
+            }
+        }
+        return maxPiorityTransitions;
+    }
+
+    private static int getMaxPriority(List<Transition> transitions) {
+        int max = Integer.MIN_VALUE;
+        for (Transition transition : transitions) {
+            int transitionPriority = transition.getPriority();
+            if (transitionPriority > max) {
+                max = transitionPriority;
+            }
+        }
+        return max;
+    }
 }
