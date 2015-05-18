@@ -509,8 +509,18 @@ public class GUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Aby dodać krawędź należy zaznaczyć dokładnie 2 wierzchołki!", ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
             return;
         }
+        
         Vertex sourceVertex = (Vertex) ((mxCell) cells[0]).getValue();
         Vertex destinationVertex = (Vertex) ((mxCell) cells[1]).getValue();
+        
+         // Sprawdzenie czy wierzchołki są tych samych typów
+        if ((sourceVertex instanceof Place && destinationVertex instanceof Place)
+                || (sourceVertex instanceof Transition && destinationVertex instanceof Transition)) {
+            
+            JOptionPane.showMessageDialog(this, "Krawędź może istnieć tylko między dwoma wierzchołkami różnych typów!", ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
         Edge edge = new Edge(sourceVertex.getID(), destinationVertex.getID());
         graphModel.addEdge(edge);
         displayGraph(graphModel);
