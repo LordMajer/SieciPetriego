@@ -1,8 +1,11 @@
 package com.petri.nets.helpers.common;
 
+import com.petri.nets.gui.GUI;
 import com.petri.nets.model.Edge;
 import com.petri.nets.model.Transition;
+import com.petri.nets.model.Vertex;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -62,5 +65,13 @@ public class CommonOperations {
             }
         }
         return max;
+    }
+
+    public static boolean canBeConnected(Vertex a, Vertex b) {
+        if (a == null && b == null || a.getClass().equals(b.getClass())) {
+            JOptionPane.showMessageDialog(null, "Krawędź może istnieć tylko między dwoma wierzchołkami różnych typów!", GUI.ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
     }
 }

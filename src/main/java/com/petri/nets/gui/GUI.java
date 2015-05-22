@@ -6,12 +6,18 @@ import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
 import com.mxgraph.model.mxICell;
 import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.util.mxEvent;
+import com.mxgraph.util.mxEventObject;
+import com.mxgraph.util.mxEventSource;
 import com.petri.nets.algorithms.CoverageGraph;
 import com.petri.nets.algorithms.CoverageTree;
 import com.petri.nets.algorithms.ReachabilityGraph;
 import com.petri.nets.archive.GraphReader;
 import com.petri.nets.archive.GraphWriter;
+import com.petri.nets.helpers.VertexType;
+import com.petri.nets.helpers.common.CommonOperations;
 import com.petri.nets.helpers.common.ObjectDeepCopier;
+import com.petri.nets.helpers.common.PointToPositionTransformer;
 import com.petri.nets.helpers.transformation.CustomGraphToJGraphXAdapterTransformer;
 import com.petri.nets.model.*;
 import com.petri.nets.simulation.Simulator;
@@ -22,6 +28,8 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +41,9 @@ public class GUI extends javax.swing.JFrame {
     private static final int RESULT_TAB_INDEX = 0;
     private static final int DEL_KEY_CODE = 127;
     private static final String INFORMATION_MESSAGE_TITLE = "INFORMACJA";
-    private static final String ERROR_MESSAGE_TITLE = "BŁĄD";
+    public static final String ERROR_MESSAGE_TITLE = "BŁĄD";
+    private static int PLACE_ADDING_MASK = MouseEvent.SHIFT_DOWN_MASK;
+    private static int TRANSITION_ADDING_MASK = MouseEvent.SHIFT_DOWN_MASK;
 
     CustomGraph graphModel;
     Simulator simulator;
@@ -371,13 +381,13 @@ public class GUI extends javax.swing.JFrame {
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE)
+                                        .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -409,31 +419,31 @@ public class GUI extends javax.swing.JFrame {
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(optionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(addPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(removePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(simulationPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(filler1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(optionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(addPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(removePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(simulationPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(filler1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap())
         );
 
         jScrollPane2.setViewportView(jPanel5);
 
         resultsPanel.setLayout(new java.awt.BorderLayout());
-        tabbedPane.addTab("Wyniki", resultsPanel);
+        tabbedPane.addTab(RESULT_TAB_TITLE, resultsPanel);
 
         priorityCheckBox.setText("Sieć priorytetowa");
         priorityCheckBox.addActionListener(new java.awt.event.ActionListener() {
@@ -445,26 +455,26 @@ public class GUI extends javax.swing.JFrame {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 1082, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(priorityCheckBox, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addContainerGap())
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 1082, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(priorityCheckBox, javax.swing.GroupLayout.Alignment.TRAILING))
+                                .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 652, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                            .addComponent(jScrollPane2)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(priorityCheckBox))))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 652, Short.MAX_VALUE)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jScrollPane2)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(priorityCheckBox))))
         );
 
         pack();
@@ -489,7 +499,7 @@ public class GUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Najpierw zaznacz element, który chcesz usunąć!!!!", ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
             return;
         }
-        for (int i = 0 ; i < cells.length ; i++) {
+        for (int i = 0; i < cells.length; i++) {
             Object obj = ((mxCell) cells[i]).getValue();
             if (obj instanceof Vertex) {
                 Vertex vertex = (Vertex) obj;
@@ -509,18 +519,12 @@ public class GUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Aby dodać krawędź należy zaznaczyć dokładnie 2 wierzchołki!", ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
         Vertex sourceVertex = (Vertex) ((mxCell) cells[0]).getValue();
         Vertex destinationVertex = (Vertex) ((mxCell) cells[1]).getValue();
-        
-         // Sprawdzenie czy wierzchołki są tych samych typów
-        if ((sourceVertex instanceof Place && destinationVertex instanceof Place)
-                || (sourceVertex instanceof Transition && destinationVertex instanceof Transition)) {
-            
-            JOptionPane.showMessageDialog(this, "Krawędź może istnieć tylko między dwoma wierzchołkami różnych typów!", ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
+        // Sprawdzenie czy wierzchołki są tych samych typów
+        if (CommonOperations.canBeConnected(sourceVertex, destinationVertex)) {
             return;
         }
-        
         Edge edge = new Edge(sourceVertex.getID(), destinationVertex.getID());
         graphModel.addEdge(edge);
         displayGraph(graphModel);
@@ -776,14 +780,48 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_priorityCheckBoxActionPerformed
 
     private JScrollPane createJGraphComponent(final JGraphXAdapter<Vertex, Edge> graphAdapter) {
-        mxGraphComponent mxGraphComponent = new mxGraphComponent(graphAdapter);
-        mxGraphComponent.setConnectable(false); // disable possibility of new edges creation
+        final mxGraphComponent mxGraphComponent = new mxGraphComponent(graphAdapter);
+        mxGraphComponent.setConnectable(true); // disable possibility of new edges creation
         mxGraphComponent.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 Object[] cells = graphAdapter.getSelectionCells();
                 if (tabbedPane.getSelectedIndex() == tabbedPane.indexOfTab(GRAPH_TAB_TITLE) && cells.length > 0 && e.getKeyCode() == DEL_KEY_CODE) {
                     removeVertexButtonActionPerformed(null);
+                }
+            }
+        });
+        mxGraphComponent.getGraphControl().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                revalidateModelVertexPosition(graphAdapter);
+                int modifiersEx = e.getModifiersEx();
+                if (SwingUtilities.isLeftMouseButton(e) && (modifiersEx & PLACE_ADDING_MASK) == PLACE_ADDING_MASK) {
+                    graphModel.addVertex(new Place(graphModel.getNewID(), graphModel.getNewName(VertexType.PLACE), PointToPositionTransformer.getVertexMiddlePointPosition(e.getPoint())));
+                    displayGraph(graphModel);
+                } else if (SwingUtilities.isRightMouseButton(e) && (modifiersEx & TRANSITION_ADDING_MASK) == TRANSITION_ADDING_MASK) {
+                    graphModel.addVertex(new Transition(graphModel.getNewID(), graphModel.getNewName(VertexType.TRANSITION), PointToPositionTransformer.getVertexMiddlePointPosition(e.getPoint())));
+                    displayGraph(graphModel);
+                }
+            }
+        });
+        mxGraphComponent.getConnectionHandler().addListener(mxEvent.CONNECT, new mxEventSource.mxIEventListener() {
+            @Override
+            public void invoke(Object o, mxEventObject mxEventObject) {
+                Vertex sourceVertex = null;
+                Vertex destinationVertex = null;
+                mxCell mxCell = (mxCell) mxEventObject.getProperty("cell");
+                if (mxCell.getSource() != null) {
+                    sourceVertex = (Vertex) mxCell.getSource().getValue();
+                }
+                if (mxCell.getTarget() != null) {
+                    destinationVertex = (Vertex) mxCell.getTarget().getValue();
+                }
+                if (sourceVertex != null && destinationVertex != null && CommonOperations.canBeConnected(sourceVertex, destinationVertex)) {
+                    graphModel.addEdge(new Edge(sourceVertex.getID(), destinationVertex.getID()));
+                    displayGraph(graphModel);
+                } else {
+                    mxCell.removeFromParent(); // usuwanie krawędzi przy niepoprawnym połączeniu wierzchołków
                 }
             }
         });
@@ -800,7 +838,7 @@ public class GUI extends javax.swing.JFrame {
 
     private JPanel getJPanelWithTitle(String title) {
         JPanel panel = new JPanel();
-        panel.setBorder (BorderFactory.createTitledBorder (BorderFactory.createEtchedBorder(),
+        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
                 title,
                 TitledBorder.CENTER,
                 TitledBorder.TOP));
@@ -853,6 +891,7 @@ public class GUI extends javax.swing.JFrame {
             }
         });
     }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addEdgeButton;
     private javax.swing.JPanel addPanel1;
