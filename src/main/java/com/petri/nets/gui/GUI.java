@@ -59,6 +59,8 @@ public class GUI extends javax.swing.JFrame {
 
     private void displayGraph(CustomGraph customGraph) {
         graphAdapter = CustomGraphToJGraphXAdapterTransformer.transform(customGraph);
+        graphAdapter.setAllowDanglingEdges(false); // zablokowanie możliwości przestawiania krawędzi po dodaniu (można je tylko usunąć)
+        graphAdapter.setEdgeLabelsMovable(false); // zablokowanie możliwości przesuwania etykiet krawędzi
         refreshGraphTab();
     }
 
@@ -821,6 +823,7 @@ public class GUI extends javax.swing.JFrame {
                     graphModel.addEdge(new Edge(sourceVertex.getID(), destinationVertex.getID()));
                     displayGraph(graphModel);
                 } else {
+                    System.out.println("Disconnect");
                     mxCell.removeFromParent(); // usuwanie krawędzi przy niepoprawnym połączeniu wierzchołków
                 }
             }

@@ -24,18 +24,18 @@ public class CustomGraphToJGraphXAdapterTransformer {
 
     private static ListenableGraph<Vertex, Edge> createJGraphXFrom(CustomGraph graph) {
         ListenableGraph<Vertex, Edge> listenableGraph = new ListenableDirectedWeightedGraph<>(Edge.class);
-        addEdgesFromTo(graph, listenableGraph);
         addVerticesFromTo(graph, listenableGraph);
+        addEdgesFromTo(graph, listenableGraph);
         return listenableGraph;
     }
 
-    private static void addEdgesFromTo(CustomGraph graphFrom, ListenableGraph<Vertex, Edge> graphTo) {
+    private static void addVerticesFromTo(CustomGraph graphFrom, ListenableGraph<Vertex, Edge> graphTo) {
         for (Vertex vertex : graphFrom.getVertices().values()) {
             graphTo.addVertex(vertex);
         }
     }
 
-    private static void addVerticesFromTo(CustomGraph graphFrom, ListenableGraph<Vertex, Edge> graphTo) {
+    private static void addEdgesFromTo(CustomGraph graphFrom, ListenableGraph<Vertex, Edge> graphTo) {
         for (Edge edge : graphFrom.getEdges().values()) {
             graphTo.addEdge(graphFrom.getVertex(edge.getSourceId()), graphFrom.getVertex(edge.getDestinationId()), edge);
         }
@@ -50,7 +50,7 @@ public class CustomGraphToJGraphXAdapterTransformer {
 
     private static void setEdgesProperties(JGraphXAdapter<Vertex, Edge> graphAdapter) {
         for (mxICell currentEdgeCell : graphAdapter.getEdgeToCellMap().values()) {
-            currentEdgeCell.setStyle("editable=false");
+            currentEdgeCell.setStyle("labelBackgroundColor=#D6D9DC;editable=false");
         }
     }
 
