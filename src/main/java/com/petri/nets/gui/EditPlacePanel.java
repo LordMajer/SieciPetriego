@@ -7,9 +7,11 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 
 import com.petri.nets.model.Place;
+import javax.swing.JOptionPane;
 
 public class EditPlacePanel extends JDialog {
 
+    private static final String ERROR_MESSAGE_TITLE = "BŁĄD";
     private Map<String, Object> returnValues;
 
     /**
@@ -103,14 +105,66 @@ public class EditPlacePanel extends JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
-        returnValues.put("Status", "Ok");                                               // aktualizacja statusu 
-        Place place = new Place((Place) returnValues.get("Object"));             // stworzenie nowego miejsca
-        place.setName(nameTextField.getText());                                       // pobranie danych z pól formularza i zapisanie do nowego obiektu
-        place.setTokenCount(Integer.parseInt(tocenCountTextField.getText()));
-        place.setCapacity(Integer.parseInt(capacityTextField.getText()));
-        returnValues.put("ReturnObject", place);                                      // zapisanie nowego obiektu do wartości zwracanych
-        setVisible(false);                                                              // usunięcie okna dialogowego
-        dispose();
+        
+        // stworzenie nowego miejsca
+        Place place = new Place((Place) returnValues.get("Object"));        
+        
+        // aktualizacja statusu 
+        returnValues.remove("Status");
+        
+        // bufor na komunikaty błędów.
+        StringBuilder errorMessage = new StringBuilder();
+        
+        try {
+            
+            // Sprawdzanie nazwy
+            String name = nameTextField.getText();
+            if (name.isEmpty()) {
+                errorMessage.append("Nazwa miejsca nie może być pusta.\n");
+                returnValues.put("Status", "Errors"); 
+            } else {
+                place.setName(name);  
+            }
+            
+            // Sprawdzanie liczby tokenów
+            int tokenCount = Integer.parseInt(tocenCountTextField.getText());
+            if (tokenCount < 0) {
+                errorMessage.append("Liczba tokenów nie może być ujemna.\n");
+                returnValues.put("Status", "Errors");  
+            }
+            
+            // Sprawdzanie pojemności
+            int capacity = Integer.parseInt(capacityTextField.getText());
+            if (capacity < -1) {
+                errorMessage.append("Pojemność musi wynosić -1 (nieskończoność) lub być liczbą nieujemną.\n");
+                returnValues.put("Status", "Errors");  
+            }
+            
+            // Sprawdzanie relacji między liczbą tokenów, a pojemnością
+            if (tokenCount > capacity && capacity != -1) {
+                errorMessage.append("Liczba tokenów nie może przekraczać pojemności.\n");
+                returnValues.put("Status", "Errors"); 
+            } else {
+                place.setTokenCount(tokenCount);
+                place.setCapacity(capacity);
+            }
+                           
+        } catch(NumberFormatException e) {
+            errorMessage.append("Liczba tokenów oraz pojemność muszą być liczbami.\n");
+            returnValues.put("Status", "Errors"); 
+        }
+ 
+        // zapisanie nowego obiektu do wartości zwracanych
+        returnValues.put("ReturnObject", place);   
+        
+        
+        if (returnValues.get("Status") == null || !returnValues.get("Status").equals("Errors")) {
+            returnValues.put("Status", "Ok");
+            setVisible(false);  // usunięcie okna dialogowego     
+            dispose();
+        } else if (returnValues.get("Status").equals("Errors")) {     
+            JOptionPane.showMessageDialog(this, errorMessage.toString(), ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
+        }      
     }//GEN-LAST:event_submitButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed

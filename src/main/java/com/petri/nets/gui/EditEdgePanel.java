@@ -7,9 +7,11 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 
 import com.petri.nets.model.Edge;
+import javax.swing.JOptionPane;
 
 public class EditEdgePanel extends JDialog {
 
+    private static final String ERROR_MESSAGE_TITLE = "BŁĄD";
     private Map<String, Object> returnValues;
 
     /**
@@ -79,12 +81,42 @@ public class EditEdgePanel extends JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
-        returnValues.put("Status", "Ok");                                               // aktualizacja statusu 
-        Edge edge = new Edge((Edge) returnValues.get("Object"));                         // stworzenie nowej krawędzi
-        edge.setCapacity(Integer.parseInt(capacityTextField.getText()));                // pobranie danych z pól formularza i zapisanie do nowego obiektu
-        returnValues.put("ReturnObject", edge);                                         // zapisanie nowego obiektu do wartości zwracanych
-        setVisible(false);                                                              // usunięcie okna dialogowego
-        dispose();
+        
+        // stworzenie nowej krawędzi
+        Edge edge = new Edge((Edge) returnValues.get("Object"));        
+        
+        // aktualizacja statusu 
+        returnValues.remove("Status");
+        
+        // bufor na komunikaty błędów
+        StringBuilder errorMessage = new StringBuilder();
+        
+        try {
+            
+            // Sprawdzanie pojemności
+            int capacity = Integer.parseInt(capacityTextField.getText());
+            if (capacity < 0) {
+                errorMessage.append("Pojemność nie może być ujemna.\n");
+                returnValues.put("Status", "Errors");  
+            } else {
+                edge.setCapacity(capacity);
+            }
+                                   
+        } catch(NumberFormatException e) {
+            errorMessage.append("Pojemność musi być liczbą.\n");
+            returnValues.put("Status", "Errors"); 
+        }
+ 
+        // zapisanie nowego obiektu do wartości zwracanych
+        returnValues.put("ReturnObject", edge);  
+            
+        if (returnValues.get("Status") == null || !returnValues.get("Status").equals("Errors")) {
+            returnValues.put("Status", "Ok");
+            setVisible(false);  // usunięcie okna dialogowego     
+            dispose();
+        } else if (returnValues.get("Status").equals("Errors")) {     
+            JOptionPane.showMessageDialog(this, errorMessage.toString(), ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_submitButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed

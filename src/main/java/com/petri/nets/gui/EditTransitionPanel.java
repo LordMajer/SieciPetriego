@@ -7,9 +7,11 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 
 import com.petri.nets.model.Transition;
+import javax.swing.JOptionPane;
 
 public class EditTransitionPanel extends JDialog {
 
+    private static final String ERROR_MESSAGE_TITLE = "BŁĄD";
     private Map<String, Object> returnValues;
 
     /**
@@ -96,13 +98,51 @@ public class EditTransitionPanel extends JDialog {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
-        returnValues.put("Status", "Ok");                                               // akatualizacja statusu w zwracanych wartościach
+        
+        // aktualizacja statusu 
+        returnValues.remove("Status");  
+        // akatualizacja statusu w zwracanych wartościach
         Transition transition = new Transition((Transition) returnValues.get("Object"));     // tworzenie nowego przejścia
-        transition.setName(nameTextField.getText());                                     // pobranie danych z pól i zapisanie do nowego przejścia
-        transition.setPriority(Integer.parseInt(priorityTextField.getText()));
-        returnValues.put("ReturnObject", transition);                                    // dodanie nowego przejścia do wartości zwracanych
-        setVisible(false);                                                              // usunięcie okna dialogowego
-        dispose();
+        
+        // bufor na komunikaty błędów.
+        StringBuilder errorMessage = new StringBuilder();
+        
+        try {
+            
+            // Sprawdzanie nazwy
+            String name = nameTextField.getText();
+            if (name.isEmpty()) {
+                errorMessage.append("Nazwa miejsca nie może być pusta.\n");
+                returnValues.put("Status", "Errors"); 
+            } else {
+                transition.setName(name);  
+            }
+            
+            // Sprawdzanie priorytetu
+            int priority = Integer.parseInt(priorityTextField.getText());
+            if (priority < 0) {
+                errorMessage.append("Priorytet nie może być ujemny.\n");
+                returnValues.put("Status", "Errors");  
+            } else {
+                transition.setPriority(priority);
+            }
+
+                           
+        } catch(NumberFormatException e) {
+            errorMessage.append("Priorytet musi być liczbą.\n");
+            returnValues.put("Status", "Errors"); 
+        }
+ 
+        // zapisanie nowego obiektu do wartości zwracanych
+        returnValues.put("ReturnObject", transition);   
+      
+        if (returnValues.get("Status") == null || !returnValues.get("Status").equals("Errors")) {
+            returnValues.put("Status", "Ok");
+            setVisible(false);  // usunięcie okna dialogowego     
+            dispose();
+        } else if (returnValues.get("Status").equals("Errors")) {     
+            JOptionPane.showMessageDialog(this, errorMessage.toString(), ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
+        }      
     }//GEN-LAST:event_submitButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
