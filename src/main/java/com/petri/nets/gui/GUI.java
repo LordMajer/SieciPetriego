@@ -45,10 +45,10 @@ public class GUI extends javax.swing.JFrame {
     private static int PLACE_ADDING_MASK = MouseEvent.SHIFT_DOWN_MASK;
     private static int TRANSITION_ADDING_MASK = MouseEvent.SHIFT_DOWN_MASK;
 
-    CustomGraph graphModel;
-    Simulator simulator;
-    JGraphXAdapter<Vertex, Edge> graphAdapter;
-    JScrollPane scrollPane;
+    private CustomGraph graphModel;
+    private Simulator simulator;
+    private JGraphXAdapter<Vertex, Edge> graphAdapter;
+    private JScrollPane scrollPane;
 
     public GUI() {
         initComponents();                                                // inicjalizacja komponentów GUI
@@ -75,7 +75,7 @@ public class GUI extends javax.swing.JFrame {
         if (tabbedPane.indexOfTab(GRAPH_TAB_TITLE) != -1) {
             tabbedPane.remove(GRAPH_TAB_INDEX);
         }
-        scrollPane = new JScrollPane(createJGraphComponent(graphAdapter));
+        scrollPane = createMainJGraphComponent(graphAdapter);
         tabbedPane.addTab(GRAPH_TAB_TITLE, scrollPane);        
         tabbedPane.revalidate();
         tabbedPane.repaint();
@@ -466,7 +466,7 @@ public class GUI extends javax.swing.JFrame {
         jScrollPane2.setViewportView(jPanel5);
 
         resultsPanel.setLayout(new java.awt.BorderLayout());
-        tabbedPane.addTab("Wyniki", resultsPanel);
+        tabbedPane.addTab(RESULT_TAB_TITLE, resultsPanel);
 
         priorityCheckBox.setText("Sieć priorytetowa");
         priorityCheckBox.addActionListener(new java.awt.event.ActionListener() {
@@ -694,7 +694,7 @@ public class GUI extends javax.swing.JFrame {
         }
         ReachabilityGraph reachabilityGraph = new ReachabilityGraph(graphModel);
         JPanel panel = getJPanelWithBorderLayoutAndTitle("Graf osiągalności");
-        panel.add(createJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(reachabilityGraph.build())));
+        panel.add(createInactiveJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(reachabilityGraph.build())));
         resultsPanel.add(getJScrollPane(panel));
         tabbedPane.setSelectedIndex(RESULT_TAB_INDEX);
     }//GEN-LAST:event_option1ButtonActionPerformed
@@ -707,7 +707,7 @@ public class GUI extends javax.swing.JFrame {
         }
         CoverageTree coverageTree = new CoverageTree(graphModel);
         JPanel panel = getJPanelWithBorderLayoutAndTitle("Drzewo pokrycia");
-        panel.add(createJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(coverageTree.build())));
+        panel.add(createInactiveJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(coverageTree.build())));
         resultsPanel.add(getJScrollPane(panel));
         tabbedPane.setSelectedIndex(RESULT_TAB_INDEX);
     }//GEN-LAST:event_option2ButtonActionPerformed
@@ -720,7 +720,7 @@ public class GUI extends javax.swing.JFrame {
         }
         CoverageGraph coverageGraph = new CoverageGraph(graphModel);
         JPanel panel = getJPanelWithBorderLayoutAndTitle("Graf pokrycia");
-        panel.add(createJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(coverageGraph.build())));
+        panel.add(createInactiveJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(coverageGraph.build())));
         resultsPanel.add(getJScrollPane(panel));
         tabbedPane.setSelectedIndex(RESULT_TAB_INDEX);
     }//GEN-LAST:event_option3ButtonActionPerformed
@@ -731,7 +731,7 @@ public class GUI extends javax.swing.JFrame {
         ModelValidator.validate(graphModel);
         if (isGraphValid(graphModel)) {
             simulator = new Simulator(ObjectDeepCopier.getCopyOf(graphModel));
-            resultsPanel.add(createJGraphComponent(CustomGraphToJGraphXAdapterTransformer.transform(simulator.getGraph())));
+            resultsPanel.add(createActiveJGraphComponentWithoutLayout(CustomGraphToJGraphXAdapterTransformer.transform(simulator.getGraph())));
             tabbedPane.setSelectedIndex(RESULT_TAB_INDEX);
         }
     }//GEN-LAST:event_startSimulationButtonActionPerformed
@@ -762,7 +762,7 @@ public class GUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Wykonano przejście : " + transition.getName(), INFORMATION_MESSAGE_TITLE, JOptionPane.INFORMATION_MESSAGE);
             resultsPanel.removeAll();
             resultsPanel.revalidate();
-            resultsPanel.add(createJGraphComponent(CustomGraphToJGraphXAdapterTransformer.transform(simulator.getGraph())));
+            resultsPanel.add(createMainJGraphComponent(CustomGraphToJGraphXAdapterTransformer.transform(simulator.getGraph())));
         } else {
             String optionChosen = JOptionPane.showInputDialog("Wybierz jedno z możliwych przejść: " + possibleSteps.toString()); // TODO Display options as buttons to chose
             Transition transition = graphModel.getTransitionByName(possibleSteps, optionChosen);
@@ -771,7 +771,7 @@ public class GUI extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Wykonano przejście : " + transition.getName(), INFORMATION_MESSAGE_TITLE, JOptionPane.INFORMATION_MESSAGE);
                 resultsPanel.removeAll();
                 resultsPanel.revalidate();
-                resultsPanel.add(createJGraphComponent(CustomGraphToJGraphXAdapterTransformer.transform(simulator.getGraph())));
+                resultsPanel.add(createMainJGraphComponent(CustomGraphToJGraphXAdapterTransformer.transform(simulator.getGraph())));
             } else {
                 if (optionChosen != null) {
                     JOptionPane.showMessageDialog(this, "Wskazane przejście (" + optionChosen + ") nie jest w tej chwili możliwe", ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
@@ -806,7 +806,7 @@ public class GUI extends javax.swing.JFrame {
         clearGraphTab();
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private JScrollPane createJGraphComponent(final JGraphXAdapter<Vertex, Edge> graphAdapter) {
+    private JScrollPane createMainJGraphComponent(final JGraphXAdapter<Vertex, Edge> graphAdapter) {
         final mxGraphComponent mxGraphComponent = new mxGraphComponent(graphAdapter);
         mxGraphComponent.setConnectable(true); // disable possibility of new edges creation
         mxGraphComponent.addKeyListener(new KeyAdapter() {
@@ -857,8 +857,19 @@ public class GUI extends javax.swing.JFrame {
         return mxGraphComponent;
     }
 
-    private JScrollPane createJGraphComponentWithLayout(JGraphXAdapter<Vertex, Edge> graphAdapter) {
-        JScrollPane mxGraphComponent = createJGraphComponent(graphAdapter);
+    private JScrollPane createActiveJGraphComponentWithoutLayout(JGraphXAdapter<Vertex, Edge> graphAdapter) {
+        graphAdapter.setAllowDanglingEdges(false);
+        mxGraphComponent mxGraphComponent = new mxGraphComponent(graphAdapter);
+        mxGraphComponent.setConnectable(false); // disable possibility of new edges creation
+        mxGraphComponent.refresh();
+        return mxGraphComponent;
+    }
+
+    private JScrollPane createInactiveJGraphComponentWithLayout(JGraphXAdapter<Vertex, Edge> graphAdapter) {
+        graphAdapter.setAllowDanglingEdges(false);
+        mxGraphComponent mxGraphComponent = new mxGraphComponent(graphAdapter);
+        mxGraphComponent.setEnabled(false);
+        mxGraphComponent.refresh();
         mxIGraphLayout layout = new mxHierarchicalLayout(graphAdapter);
         layout.execute(graphAdapter.getDefaultParent());
         return mxGraphComponent;
