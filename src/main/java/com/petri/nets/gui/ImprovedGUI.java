@@ -536,15 +536,15 @@ public class ImprovedGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_modelMenuMenuSelected
 
     private void reachabilityGraphItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reachabilityGraphItemActionPerformed
-        createJDialog("Graf osiągalności", createInactiveJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(new ReachabilityGraph(graphModel).build())));
+        createJDialog("Graf osiągalności", createActiveJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(new ReachabilityGraph(graphModel).build())));
     }//GEN-LAST:event_reachabilityGraphItemActionPerformed
 
     private void coverageGraphItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_coverageGraphItemActionPerformed
-        createJDialog("Graf pokrycia", createInactiveJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(new CoverageGraph(graphModel).build())));
+        createJDialog("Graf pokrycia", createActiveJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(new CoverageGraph(graphModel).build())));
     }//GEN-LAST:event_coverageGraphItemActionPerformed
 
     private void coverageTreeItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_coverageTreeItemActionPerformed
-        createJDialog("Drzewo pokrycia", createInactiveJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(new CoverageTree(graphModel).build())));
+        createJDialog("Drzewo pokrycia", createActiveJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(new CoverageTree(graphModel).build())));
     }//GEN-LAST:event_coverageTreeItemActionPerformed
 
     private void inputMatrixItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputMatrixItemActionPerformed
@@ -592,10 +592,14 @@ public class ImprovedGUI extends javax.swing.JFrame {
         return new JScrollPane(panel);
     }
 
-    private JScrollPane createInactiveJGraphComponentWithLayout(JGraphXAdapter<Vertex, Edge> graphAdapter) {
+    private JScrollPane createActiveJGraphComponentWithLayout(JGraphXAdapter<Vertex, Edge> graphAdapter) {
+        graphAdapter.setAllowDanglingEdges(false);
+        graphAdapter.setCellsMovable(false);
+        graphAdapter.setEdgeLabelsMovable(false);
         graphAdapter.setAllowDanglingEdges(false);
         mxGraphComponent mxGraphComponent = new mxGraphComponent(graphAdapter);
-        mxGraphComponent.setEnabled(false);
+        mxGraphComponent.setEnabled(true);
+        mxGraphComponent.setConnectable(false);
         mxGraphComponent.refresh();
         mxIGraphLayout layout = new mxHierarchicalLayout(graphAdapter);
         layout.execute(graphAdapter.getDefaultParent());
