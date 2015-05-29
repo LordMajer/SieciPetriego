@@ -12,6 +12,9 @@ import com.mxgraph.util.mxEventSource;
 import com.petri.nets.algorithms.CoverageGraph;
 import com.petri.nets.algorithms.CoverageTree;
 import com.petri.nets.algorithms.ReachabilityGraph;
+import com.petri.nets.algorithms.properties.Boundedness;
+import com.petri.nets.algorithms.properties.Conservation;
+import com.petri.nets.algorithms.properties.Safeness;
 import com.petri.nets.archive.GraphReader;
 import com.petri.nets.archive.GraphWriter;
 import com.petri.nets.helpers.VertexType;
@@ -371,6 +374,11 @@ public class ImprovedGUI extends javax.swing.JFrame {
         netPropertiesMenu.setText("Właściwości");
 
         safenessItem.setText("Bezpieczeństwo sieci");
+        safenessItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                safenessItemActionPerformed(evt);
+            }
+        });
         netPropertiesMenu.add(safenessItem);
 
         boudednessItem.setText("K-ograniczoność miejsc");
@@ -441,11 +449,11 @@ public class ImprovedGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_loadModelItemActionPerformed
 
     private void boudednessItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boudednessItemActionPerformed
-        // TODO add your handling code here:
+        JOptionPane.showMessageDialog(null, new Boundedness(new CoverageGraph(graphModel).build()).calculate());
     }//GEN-LAST:event_boudednessItemActionPerformed
 
     private void conservationItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_conservationItemActionPerformed
-        // TODO add your handling code here:
+        JOptionPane.showMessageDialog(null, new Conservation(new CoverageGraph(graphModel).build()).calculate());
     }//GEN-LAST:event_conservationItemActionPerformed
 
     private void saveModelItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveModelItemActionPerformed
@@ -567,6 +575,10 @@ public class ImprovedGUI extends javax.swing.JFrame {
         //SimulationDialog SimulationDialog = new SimulationDialog(this, true, graphModel);
         SimulationProcessor SimulationDialog = new SimulationProcessor(graphModel);
     }//GEN-LAST:event_startSimulationItemActionPerformed
+
+    private void safenessItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_safenessItemActionPerformed
+        JOptionPane.showMessageDialog(null, new Safeness(new CoverageGraph(graphModel).build()).calculate());
+    }//GEN-LAST:event_safenessItemActionPerformed
 
     private JDialog createJDialog(String title, JScrollPane pane) {
         JDialog jDialog = new JDialog();

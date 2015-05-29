@@ -180,6 +180,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Bezpiecze&#x144;stwo sieci"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="safenessItemActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="boudednessItem">
               <Properties>
