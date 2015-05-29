@@ -76,6 +76,14 @@ public class ImprovedGUI extends javax.swing.JFrame {
         mxGraphComponent.getGraphControl().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    EditElementItemActionPerformed(null);
+                }
+            }
+        });
+        mxGraphComponent.getGraphControl().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
                 revalidateModelVertexPosition(graphAdapter);
                 int modifiersEx = e.getModifiersEx();
                 if (SwingUtilities.isLeftMouseButton(e) && (modifiersEx & PLACE_ADDING_MASK) == PLACE_ADDING_MASK) {
@@ -438,7 +446,7 @@ public class ImprovedGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_addEdgeItemActionPerformed
 
-    private void EditElementItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditElementItemActionPerformed
+    protected void EditElementItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditElementItemActionPerformed
         revalidateModelVertexPosition(graphAdapter);
         Object[] selectedElements = graphAdapter.getSelectionCells();
         if (selectedElements.length == 1) {
