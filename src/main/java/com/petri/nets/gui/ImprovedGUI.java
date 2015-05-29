@@ -1,5 +1,7 @@
 package com.petri.nets.gui;
 
+import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
+import com.mxgraph.layout.mxIGraphLayout;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
 import com.mxgraph.model.mxICell;
@@ -7,6 +9,9 @@ import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxEvent;
 import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource;
+import com.petri.nets.algorithms.CoverageGraph;
+import com.petri.nets.algorithms.CoverageTree;
+import com.petri.nets.algorithms.ReachabilityGraph;
 import com.petri.nets.archive.GraphReader;
 import com.petri.nets.archive.GraphWriter;
 import com.petri.nets.helpers.VertexType;
@@ -17,6 +22,7 @@ import com.petri.nets.model.*;
 import org.jgrapht.ext.JGraphXAdapter;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -98,6 +104,7 @@ public class ImprovedGUI extends javax.swing.JFrame {
         mxGraphComponent.getConnectionHandler().addListener(mxEvent.CONNECT, new mxEventSource.mxIEventListener() {
             @Override
             public void invoke(Object o, mxEventObject mxEventObject) {
+                revalidateModelVertexPosition(graphAdapter);
                 Vertex sourceVertex = null;
                 Vertex destinationVertex = null;
                 mxCell mxCell = (mxCell) mxEventObject.getProperty("cell");
@@ -178,8 +185,8 @@ public class ImprovedGUI extends javax.swing.JFrame {
         deleteElementItem = new javax.swing.JMenuItem();
         netRepresentationMenu = new javax.swing.JMenu();
         reachabilityGraphItem = new javax.swing.JMenuItem();
-        coverabilityGraphItem = new javax.swing.JMenuItem();
-        coverabilityTreeItem = new javax.swing.JMenuItem();
+        coverageGraphItem = new javax.swing.JMenuItem();
+        coverageTreeItem = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         inputMatrixItem = new javax.swing.JMenuItem();
         outputMatrixItem = new javax.swing.JMenuItem();
@@ -199,6 +206,9 @@ public class ImprovedGUI extends javax.swing.JFrame {
         shortcutsItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Sieci Petriego");
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setMinimumSize(new java.awt.Dimension(500, 500));
 
         modelMenu.setText("Sieć");
         modelMenu.addMenuListener(new javax.swing.event.MenuListener() {
@@ -295,22 +305,52 @@ public class ImprovedGUI extends javax.swing.JFrame {
         netRepresentationMenu.setText("Reprezentacja");
 
         reachabilityGraphItem.setText("Graf osiągalności");
+        reachabilityGraphItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reachabilityGraphItemActionPerformed(evt);
+            }
+        });
         netRepresentationMenu.add(reachabilityGraphItem);
 
-        coverabilityGraphItem.setText("Graf pokrycia");
-        netRepresentationMenu.add(coverabilityGraphItem);
+        coverageGraphItem.setText("Graf pokrycia");
+        coverageGraphItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                coverageGraphItemActionPerformed(evt);
+            }
+        });
+        netRepresentationMenu.add(coverageGraphItem);
 
-        coverabilityTreeItem.setText("Drzewo pokrycia");
-        netRepresentationMenu.add(coverabilityTreeItem);
+        coverageTreeItem.setText("Drzewo pokrycia");
+        coverageTreeItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                coverageTreeItemActionPerformed(evt);
+            }
+        });
+        netRepresentationMenu.add(coverageTreeItem);
         netRepresentationMenu.add(jSeparator2);
 
         inputMatrixItem.setText("Macierz wejść");
+        inputMatrixItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inputMatrixItemActionPerformed(evt);
+            }
+        });
         netRepresentationMenu.add(inputMatrixItem);
 
         outputMatrixItem.setText("Macierz wyjść");
+        outputMatrixItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                outputMatrixItemActionPerformed(evt);
+            }
+        });
         netRepresentationMenu.add(outputMatrixItem);
 
         incidenceMatrixItem.setText("Macierz incydencji");
+        incidenceMatrixItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                incidenceMatrixItemActionPerformed(evt);
+            }
+        });
         netRepresentationMenu.add(incidenceMatrixItem);
 
         jMenuBar1.add(netRepresentationMenu);
@@ -428,7 +468,6 @@ public class ImprovedGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_addTransitionItemActionPerformed
 
     private void addEdgeItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addEdgeItemActionPerformed
-        System.out.println("aaa");
         revalidateModelVertexPosition(graphAdapter);
         Object[] cells = graphAdapter.getSelectionCells();
         if (cells.length != 2) {
@@ -490,6 +529,68 @@ public class ImprovedGUI extends javax.swing.JFrame {
     private void modelMenuMenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_modelMenuMenuSelected
         isPriorityNetItem.setState(graphModel.isPriority());
     }//GEN-LAST:event_modelMenuMenuSelected
+
+    private void reachabilityGraphItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reachabilityGraphItemActionPerformed
+        createJDialog("Graf osiągalności", createInactiveJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(new ReachabilityGraph(graphModel).build())));
+    }//GEN-LAST:event_reachabilityGraphItemActionPerformed
+
+    private void coverageGraphItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_coverageGraphItemActionPerformed
+        createJDialog("Graf pokrycia", createInactiveJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(new CoverageGraph(graphModel).build())));
+    }//GEN-LAST:event_coverageGraphItemActionPerformed
+
+    private void coverageTreeItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_coverageTreeItemActionPerformed
+        createJDialog("Drzewo pokrycia", createInactiveJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(new CoverageTree(graphModel).build())));
+    }//GEN-LAST:event_coverageTreeItemActionPerformed
+
+    private void inputMatrixItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputMatrixItemActionPerformed
+        MatrixCreator matrixCreator = new MatrixCreator(graphModel);
+        createJDialog("Macierz wejść", createJScrollPane(matrixCreator.generateOutputMatrix()));
+    }//GEN-LAST:event_inputMatrixItemActionPerformed
+
+    private void outputMatrixItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_outputMatrixItemActionPerformed
+        MatrixCreator matrixCreator = new MatrixCreator(graphModel);
+        createJDialog("Macierz wyjść", createJScrollPane(matrixCreator.generateInputMatrix()));
+    }//GEN-LAST:event_outputMatrixItemActionPerformed
+
+    private void incidenceMatrixItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_incidenceMatrixItemActionPerformed
+        MatrixCreator matrixCreator = new MatrixCreator(graphModel);
+        createJDialog("Macierz incydencji", createJScrollPane(matrixCreator.generateIncidenceMatrix()));
+    }//GEN-LAST:event_incidenceMatrixItemActionPerformed
+
+    private JDialog createJDialog(String title, JScrollPane pane) {
+        JDialog jdialog = new JDialog();
+        jdialog.setTitle(title);
+        jdialog.add(pane);
+        jdialog.setModal(true);
+        jdialog.setAlwaysOnTop(true);
+        jdialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+        jdialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        jdialog.setLocationByPlatform(true);
+        jdialog.setMinimumSize(new Dimension(500, 500));
+        jdialog.pack();
+        jdialog.setVisible(true);
+        return jdialog;
+    }
+
+    private JScrollPane createJScrollPane(Component component) {
+        JPanel panel = new JPanel();
+        panel.add(component);
+        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+                "",
+                TitledBorder.CENTER,
+                TitledBorder.TOP));
+        return new JScrollPane(panel);
+    }
+
+    private JScrollPane createInactiveJGraphComponentWithLayout(JGraphXAdapter<Vertex, Edge> graphAdapter) {
+        graphAdapter.setAllowDanglingEdges(false);
+        mxGraphComponent mxGraphComponent = new mxGraphComponent(graphAdapter);
+        mxGraphComponent.setEnabled(false);
+        mxGraphComponent.refresh();
+        mxIGraphLayout layout = new mxHierarchicalLayout(graphAdapter);
+        layout.execute(graphAdapter.getDefaultParent());
+        return mxGraphComponent;
+    }
 
     private void editPlace(Object selectedPlace) {
         Map<String, Object> values = new HashMap<>();
@@ -595,8 +696,8 @@ public class ImprovedGUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem boudednessItem;
     private javax.swing.JMenuItem conservationByVectorItem;
     private javax.swing.JMenuItem conservationItem;
-    private javax.swing.JMenuItem coverabilityGraphItem;
-    private javax.swing.JMenuItem coverabilityTreeItem;
+    private javax.swing.JMenuItem coverageGraphItem;
+    private javax.swing.JMenuItem coverageTreeItem;
     private javax.swing.JMenuItem deleteElementItem;
     private javax.swing.JMenu editMenu;
     private javax.swing.JMenuItem incidenceMatrixItem;
