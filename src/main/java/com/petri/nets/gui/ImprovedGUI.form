@@ -231,11 +231,17 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Autorzy"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="aboutAuthorsItemActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="shortcutsItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Skr&#xf3;ty klawiszowe"/>
+                <Property name="text" type="java.lang.String" value="Udogodnienia"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="shortcutsItemActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>

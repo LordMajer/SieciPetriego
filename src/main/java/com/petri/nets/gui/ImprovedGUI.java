@@ -36,12 +36,7 @@ import java.util.Map;
 
 public class ImprovedGUI extends javax.swing.JFrame {
 
-    private static final String GRAPH_TAB_TITLE = "Graf";
-    private static final String RESULT_TAB_TITLE = "Wyniki";
-    private static final int GRAPH_TAB_INDEX = 1;
-    private static final int RESULT_TAB_INDEX = 0;
     private static final int DEL_KEY_CODE = 127;
-    private static final String INFORMATION_MESSAGE_TITLE = "INFORMACJA";
     public static final String ERROR_MESSAGE_TITLE = "BŁĄD";
     private static int PLACE_ADDING_MASK = MouseEvent.SHIFT_DOWN_MASK;
     private static int TRANSITION_ADDING_MASK = MouseEvent.SHIFT_DOWN_MASK;
@@ -414,9 +409,19 @@ public class ImprovedGUI extends javax.swing.JFrame {
         aboutProgramMenu.setText("O programie");
 
         aboutAuthorsItem.setText("Autorzy");
+        aboutAuthorsItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aboutAuthorsItemActionPerformed(evt);
+            }
+        });
         aboutProgramMenu.add(aboutAuthorsItem);
 
-        shortcutsItem.setText("Skróty klawiszowe");
+        shortcutsItem.setText("Udogodnienia");
+        shortcutsItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                shortcutsItemActionPerformed(evt);
+            }
+        });
         aboutProgramMenu.add(shortcutsItem);
 
         jMenuBar1.add(aboutProgramMenu);
@@ -579,6 +584,18 @@ public class ImprovedGUI extends javax.swing.JFrame {
     private void safenessItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_safenessItemActionPerformed
         JOptionPane.showMessageDialog(null, new Safeness(new CoverageGraph(graphModel).build()).calculate());
     }//GEN-LAST:event_safenessItemActionPerformed
+
+    private void aboutAuthorsItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutAuthorsItemActionPerformed
+        JOptionPane.showMessageDialog(null, "Autorzy programu:\nMaciej Bruno-Kamiński\nMateusz Juraszek\nMateusz Maj ");
+    }//GEN-LAST:event_aboutAuthorsItemActionPerformed
+
+    private void shortcutsItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_shortcutsItemActionPerformed
+        JOptionPane.showMessageDialog(null, "SHIFT + lewy przycisk myszy : stworzenie miejsca\n"
+                + "SHIFT + prawy przycisk myszy : stworzenie przejścia\n"
+                + "DEL : usunięcie aktywnych elementów\n"
+                + "Dwukrotne naciśnięcie lewego przycisku myszy : edycja aktywnego elementu\n"
+                + "Dodawanie krawędzi poprzez przeciągnięcie jej z jednego wierzchołka do drugiego");
+    }//GEN-LAST:event_shortcutsItemActionPerformed
 
     private JDialog createJDialog(String title, JScrollPane pane) {
         JDialog jDialog = new JDialog();
