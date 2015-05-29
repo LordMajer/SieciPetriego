@@ -1,5 +1,7 @@
 package com.petri.nets.gui;
 
+import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
+import com.mxgraph.layout.mxIGraphLayout;
 import com.mxgraph.swing.mxGraphComponent;
 import com.petri.nets.helpers.common.ObjectDeepCopier;
 import com.petri.nets.helpers.transformation.CustomGraphToJGraphXAdapterTransformer;
@@ -40,15 +42,16 @@ public class SimulationProcessor {
         jDialog.setAlwaysOnTop(true);
         jDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         jDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        jDialog.setLocationByPlatform(true);
         jDialog.setMinimumSize(new Dimension(500, 500));
-        jDialog.pack();
+        jDialog.setSize(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getSize());
+        jDialog.setMaximumSize(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getSize());
         jDialog.setVisible(true);
     }
 
     private JScrollPane createActiveJGraphComponentWithoutLayout(JGraphXAdapter<Vertex, Edge> graphAdapter) {
         graphAdapter.setAllowDanglingEdges(false);
         graphAdapter.setCellsMovable(false);
+        graphAdapter.refresh();
         mxGraphComponent mxGraphComponent = new mxGraphComponent(graphAdapter);
         mxGraphComponent.setConnectable(false); // disable possibility of new edges creation
         mxGraphComponent.refresh();

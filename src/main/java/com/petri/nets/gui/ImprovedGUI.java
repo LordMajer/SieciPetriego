@@ -62,6 +62,7 @@ public class ImprovedGUI extends javax.swing.JFrame {
         graphAdapter = CustomGraphToJGraphXAdapterTransformer.transform(customGraph);
         graphAdapter.setAllowDanglingEdges(false); // Zablokowanie możliwości przestawiania krawędzi po dodaniu (można je tylko usunąć)
         graphAdapter.setEdgeLabelsMovable(false); // Zablokowanie możliwości przesuwania etykiet krawędzi
+        graphAdapter.refresh(); // Żeby scrollbar zadziałał
         mainGraphScrollPane = createMainJGraphComponent(graphAdapter);
         this.add(mainGraphScrollPane);
         this.revalidate();
@@ -568,18 +569,18 @@ public class ImprovedGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_startSimulationItemActionPerformed
 
     private JDialog createJDialog(String title, JScrollPane pane) {
-        JDialog jdialog = new JDialog();
-        jdialog.setTitle(title);
-        jdialog.add(pane);
-        jdialog.setModal(true);
-        jdialog.setAlwaysOnTop(true);
-        jdialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-        jdialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        jdialog.setLocationByPlatform(true);
-        jdialog.setMinimumSize(new Dimension(500, 500));
-        jdialog.pack();
-        jdialog.setVisible(true);
-        return jdialog;
+        JDialog jDialog = new JDialog();
+        jDialog.setTitle(title);
+        jDialog.add(pane);
+        jDialog.setModal(true);
+        jDialog.setAlwaysOnTop(true);
+        jDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+        jDialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        jDialog.setLocationByPlatform(true);
+        jDialog.setMinimumSize(new Dimension(500, 500));
+        jDialog.setMaximumSize(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getSize());
+        jDialog.setVisible(true);
+        return jDialog;
     }
 
     private JScrollPane createJScrollPane(Component component) {
