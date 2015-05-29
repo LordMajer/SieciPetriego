@@ -1,10 +1,148 @@
 package com.petri.nets.gui;
 
+import com.mxgraph.model.mxCell;
+import com.mxgraph.model.mxGeometry;
+import com.mxgraph.model.mxICell;
+import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.util.mxEvent;
+import com.mxgraph.util.mxEventObject;
+import com.mxgraph.util.mxEventSource;
+import com.petri.nets.archive.GraphReader;
+import com.petri.nets.archive.GraphWriter;
+import com.petri.nets.helpers.VertexType;
+import com.petri.nets.helpers.common.CommonOperations;
+import com.petri.nets.helpers.common.PointToPositionTransformer;
+import com.petri.nets.helpers.transformation.CustomGraphToJGraphXAdapterTransformer;
+import com.petri.nets.model.*;
+import org.jgrapht.ext.JGraphXAdapter;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.HashMap;
+import java.util.Map;
+
 public class ImprovedGUI extends javax.swing.JFrame {
+
+    private static final String GRAPH_TAB_TITLE = "Graf";
+    private static final String RESULT_TAB_TITLE = "Wyniki";
+    private static final int GRAPH_TAB_INDEX = 1;
+    private static final int RESULT_TAB_INDEX = 0;
+    private static final int DEL_KEY_CODE = 127;
+    private static final String INFORMATION_MESSAGE_TITLE = "INFORMACJA";
+    public static final String ERROR_MESSAGE_TITLE = "BŁĄD";
+    private static int PLACE_ADDING_MASK = MouseEvent.SHIFT_DOWN_MASK;
+    private static int TRANSITION_ADDING_MASK = MouseEvent.SHIFT_DOWN_MASK;
+
+    private CustomGraph graphModel;
+    private JGraphXAdapter<Vertex, Edge> graphAdapter;
+    private JScrollPane mainGraphScrollPane = new JScrollPane();
 
     public ImprovedGUI() {
         initComponents();
+        setLayout(new BorderLayout()); // Żeby się poprawnie wyświetlało menu i panel!!!!!!!!!!!
+        graphModel = new CustomGraph();
+        CustomGraphInitializer.initialize(graphModel);
+        displayGraph(graphModel);
+        this.add(mainGraphScrollPane);
     }
+
+    // Sztuczka z usunięciem i ponownym dodaniem panelu, inaczej nie wyświetla go ponownie po modyfikacji i zostaje stary widok
+    private void displayGraph(CustomGraph customGraph) {
+        this.remove(mainGraphScrollPane);
+        graphAdapter = CustomGraphToJGraphXAdapterTransformer.transform(customGraph);
+        graphAdapter.setAllowDanglingEdges(false); // Zablokowanie możliwości przestawiania krawędzi po dodaniu (można je tylko usunąć)
+        graphAdapter.setEdgeLabelsMovable(false); // Zablokowanie możliwości przesuwania etykiet krawędzi
+        mainGraphScrollPane = createMainJGraphComponent(graphAdapter);
+        this.add(mainGraphScrollPane);
+        this.revalidate();
+    }
+
+    private JScrollPane createMainJGraphComponent(final JGraphXAdapter<Vertex, Edge> graphAdapter) {
+        final mxGraphComponent mxGraphComponent = new mxGraphComponent(graphAdapter);
+        mxGraphComponent.setConnectable(true); // disable possibility of new edges creation
+        mxGraphComponent.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                Object[] cells = graphAdapter.getSelectionCells();
+                if (cells.length > 0 && e.getKeyCode() == DEL_KEY_CODE) {
+                    removeVertexButtonActionPerformed(null);
+                }
+            }
+        });
+        mxGraphComponent.getGraphControl().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                revalidateModelVertexPosition(graphAdapter);
+                int modifiersEx = e.getModifiersEx();
+                if (SwingUtilities.isLeftMouseButton(e) && (modifiersEx & PLACE_ADDING_MASK) == PLACE_ADDING_MASK) {
+                    graphModel.addVertex(new Place(graphModel.getNewID(), graphModel.getNewName(VertexType.PLACE), PointToPositionTransformer.getVertexMiddlePointPosition(e.getPoint())));
+                    displayGraph(graphModel);
+                } else if (SwingUtilities.isRightMouseButton(e) && (modifiersEx & TRANSITION_ADDING_MASK) == TRANSITION_ADDING_MASK) {
+                    graphModel.addVertex(new Transition(graphModel.getNewID(), graphModel.getNewName(VertexType.TRANSITION), PointToPositionTransformer.getVertexMiddlePointPosition(e.getPoint())));
+                    displayGraph(graphModel);
+                }
+            }
+        });
+        mxGraphComponent.getConnectionHandler().addListener(mxEvent.CONNECT, new mxEventSource.mxIEventListener() {
+            @Override
+            public void invoke(Object o, mxEventObject mxEventObject) {
+                Vertex sourceVertex = null;
+                Vertex destinationVertex = null;
+                mxCell mxCell = (mxCell) mxEventObject.getProperty("cell");
+                if (mxCell.getSource() != null) {
+                    sourceVertex = (Vertex) mxCell.getSource().getValue();
+                }
+                if (mxCell.getTarget() != null) {
+                    destinationVertex = (Vertex) mxCell.getTarget().getValue();
+                }
+                if (sourceVertex != null && destinationVertex != null && CommonOperations.canBeConnected(sourceVertex, destinationVertex)) {
+                    graphModel.addEdge(new Edge(sourceVertex.getID(), destinationVertex.getID()));
+                    displayGraph(graphModel);
+                } else {
+                    System.out.println("Disconnect");
+                    mxCell.removeFromParent(); // usuwanie krawędzi przy niepoprawnym połączeniu wierzchołków
+                }
+            }
+        });
+        mxGraphComponent.refresh(); // to do the changes visible
+        return mxGraphComponent;
+    }
+
+    private void revalidateModelVertexPosition(JGraphXAdapter<Vertex, Edge> graphAdapter) {
+        for (Map.Entry<Vertex, mxICell> vertex : graphAdapter.getVertexToCellMap().entrySet()) {
+            Vertex currentVertex = vertex.getKey();
+            mxICell currentVertexCell = vertex.getValue();
+            mxGeometry currentVertexCellGeometry = currentVertexCell.getGeometry();
+            currentVertex.setHeight(currentVertexCellGeometry.getHeight());
+            currentVertex.setWidth(currentVertexCellGeometry.getWidth());
+            currentVertex.setX(currentVertexCellGeometry.getX());
+            currentVertex.setY(currentVertexCellGeometry.getY());
+        }
+    }
+
+    private void removeVertexButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeVertexButtonActionPerformed
+        revalidateModelVertexPosition(graphAdapter);
+        Object[] cells = graphAdapter.getSelectionCells();
+        if (cells.length < 1) {
+            JOptionPane.showMessageDialog(this, "Najpierw zaznacz element, który chcesz usunąć!!!!", ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        for (int i = 0; i < cells.length; i++) {
+            Object obj = ((mxCell) cells[i]).getValue();
+            if (obj instanceof Vertex) {
+                Vertex vertex = (Vertex) obj;
+                graphModel.removeVertex(vertex);
+            } else if (obj instanceof Edge) {
+                Edge edge = (Edge) obj;
+                graphModel.removeEdge(edge);
+            }
+            displayGraph(graphModel);
+        }
+    }//GEN-LAST:event_removeVertexButtonActionPerformed
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -55,6 +193,15 @@ public class ImprovedGUI extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         modelMenu.setText("Sieć");
+        modelMenu.addMenuListener(new javax.swing.event.MenuListener() {
+            public void menuCanceled(javax.swing.event.MenuEvent evt) {
+            }
+            public void menuDeselected(javax.swing.event.MenuEvent evt) {
+            }
+            public void menuSelected(javax.swing.event.MenuEvent evt) {
+                modelMenuMenuSelected(evt);
+            }
+        });
 
         newModelItem.setText("Nowa");
         newModelItem.addActionListener(new java.awt.event.ActionListener() {
@@ -73,10 +220,20 @@ public class ImprovedGUI extends javax.swing.JFrame {
         modelMenu.add(loadModelItem);
 
         saveModelItem.setText("Zapisz");
+        saveModelItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveModelItemActionPerformed(evt);
+            }
+        });
         modelMenu.add(saveModelItem);
         modelMenu.add(jSeparator4);
 
         isPriorityNetItem.setText("Sieć priorytetowa");
+        isPriorityNetItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                isPriorityNetItemActionPerformed(evt);
+            }
+        });
         modelMenu.add(isPriorityNetItem);
 
         jMenuBar1.add(modelMenu);
@@ -84,20 +241,45 @@ public class ImprovedGUI extends javax.swing.JFrame {
         editMenu.setText("Edytuj");
 
         addPlaceMenu.setText("Dodaj miejsce");
+        addPlaceMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addPlaceMenuActionPerformed(evt);
+            }
+        });
         editMenu.add(addPlaceMenu);
 
         addTransitionItem.setText("Dodaj przejście");
+        addTransitionItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addTransitionItemActionPerformed(evt);
+            }
+        });
         editMenu.add(addTransitionItem);
 
         addEdgeItem.setText("Dodaj krawędź");
+        addEdgeItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addEdgeItemActionPerformed(evt);
+            }
+        });
         editMenu.add(addEdgeItem);
         editMenu.add(jSeparator1);
 
         EditElementItem.setText("Edytuj");
+        EditElementItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EditElementItemActionPerformed(evt);
+            }
+        });
         editMenu.add(EditElementItem);
         editMenu.add(jSeparator3);
 
         deleteElementItem.setText("Usuń");
+        deleteElementItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteElementItemActionPerformed(evt);
+            }
+        });
         editMenu.add(deleteElementItem);
 
         jMenuBar1.add(editMenu);
@@ -192,13 +374,16 @@ public class ImprovedGUI extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
-    private void newModelItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newModelItemActionPerformed
 
+    private void newModelItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newModelItemActionPerformed
+        graphModel = new CustomGraph();
+        displayGraph(graphModel);
     }//GEN-LAST:event_newModelItemActionPerformed
 
     private void loadModelItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadModelItemActionPerformed
-        // TODO add your handling code here:
+        revalidateModelVertexPosition(graphAdapter);
+        graphModel = GraphReader.loadGraph(graphModel);
+        displayGraph(graphModel);
     }//GEN-LAST:event_loadModelItemActionPerformed
 
     private void boudednessItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boudednessItemActionPerformed
@@ -209,6 +394,154 @@ public class ImprovedGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_conservationItemActionPerformed
 
+    private void saveModelItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveModelItemActionPerformed
+        revalidateModelVertexPosition(graphAdapter);
+        GraphWriter.saveGraph(graphModel);
+    }//GEN-LAST:event_saveModelItemActionPerformed
+
+    private void isPriorityNetItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_isPriorityNetItemActionPerformed
+        revalidateModelVertexPosition(graphAdapter);
+        graphModel.setPriority(isPriorityNetItem.isSelected());
+        displayGraph(graphModel);
+    }//GEN-LAST:event_isPriorityNetItemActionPerformed
+
+    private void addPlaceMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPlaceMenuActionPerformed
+        revalidateModelVertexPosition(graphAdapter);
+        Place place = new Place(graphModel.getNewID(), graphModel.getNewName(Place.getVertexType()));
+        graphModel.addVertex(place);
+        displayGraph(graphModel);
+    }//GEN-LAST:event_addPlaceMenuActionPerformed
+
+    private void addTransitionItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addTransitionItemActionPerformed
+        revalidateModelVertexPosition(graphAdapter);
+        Transition przejscie = new Transition(graphModel.getNewID(), graphModel.getNewName(Transition.getVertexType()));
+        graphModel.addVertex(przejscie);
+        displayGraph(graphModel);
+    }//GEN-LAST:event_addTransitionItemActionPerformed
+
+    private void addEdgeItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addEdgeItemActionPerformed
+        System.out.println("aaa");
+        revalidateModelVertexPosition(graphAdapter);
+        Object[] cells = graphAdapter.getSelectionCells();
+        if (cells.length != 2) {
+            JOptionPane.showMessageDialog(this, "Aby dodać krawędź należy zaznaczyć dokładnie 2 wierzchołki!", ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        Vertex sourceVertex = (Vertex) ((mxCell) cells[0]).getValue();
+        Vertex destinationVertex = (Vertex) ((mxCell) cells[1]).getValue();
+        
+        // Sprawdzenie czy wierzchołki są tych samych typów
+        if (CommonOperations.canBeConnected(sourceVertex, destinationVertex)) {
+            Edge edge = new Edge(sourceVertex.getID(), destinationVertex.getID());
+            graphModel.addEdge(edge);
+            displayGraph(graphModel);
+        }
+    }//GEN-LAST:event_addEdgeItemActionPerformed
+
+    private void EditElementItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditElementItemActionPerformed
+        revalidateModelVertexPosition(graphAdapter);
+        Object[] selectedElements = graphAdapter.getSelectionCells();
+        if (selectedElements.length == 1) {
+            Object selectedElement = ((mxCell) selectedElements[0]).getValue();
+            if (selectedElement instanceof Place) {
+                editPlace(selectedElement);
+            } else if (selectedElement instanceof Transition) {
+                editTransition(selectedElement);
+            } else if (selectedElement instanceof Edge) {
+                editEdge(selectedElement);
+            } else {
+                JOptionPane.showMessageDialog(this, "Wystąpił błąd podczas zaznaczania!", ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
+            }
+        } else if (selectedElements.length == 2 && selectedElements[0] instanceof Vertex && selectedElements[1] instanceof Vertex) {
+            editEdge(selectedElements);
+        } else {
+            JOptionPane.showMessageDialog(this, "Aby edytować elementy grafu należy zaznaczyć pojedynczy element lub dwa wierzchołki w celu edycji krawędzi pomiędzy nimi!", ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_EditElementItemActionPerformed
+
+    private void deleteElementItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteElementItemActionPerformed
+        revalidateModelVertexPosition(graphAdapter);
+        Object[] cells = graphAdapter.getSelectionCells();
+        if (cells.length < 1) {
+            JOptionPane.showMessageDialog(this, "Najpierw zaznacz element, który chcesz usunąć!!!!", ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        for (int i = 0; i < cells.length; i++) {
+            Object obj = ((mxCell) cells[i]).getValue();
+            if (obj instanceof Vertex) {
+                Vertex vertex = (Vertex) obj;
+                graphModel.removeVertex(vertex);
+            } else if (obj instanceof Edge) {
+                Edge edge = (Edge) obj;
+                graphModel.removeEdge(edge);
+            }
+            displayGraph(graphModel);
+        }
+    }//GEN-LAST:event_deleteElementItemActionPerformed
+
+    private void modelMenuMenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_modelMenuMenuSelected
+        isPriorityNetItem.setState(graphModel.isPriority());
+    }//GEN-LAST:event_modelMenuMenuSelected
+
+    private void editPlace(Object selectedPlace) {
+        Map<String, Object> values = new HashMap<>();
+        values.put("Object", selectedPlace);
+        EditPlacePanel editPlacePanel = new EditPlacePanel(this, "Edycja miejsca", true, values);
+        if (values.get("Status") != null && values.get("Status").equals("Ok")) {
+            Place modelVertex = (Place) graphModel.getVertex(((Place) values.get("Object")).getID());
+            Place changedVertex = (Place) values.get("ReturnObject");
+            modelVertex.setName(changedVertex.getName());
+            modelVertex.setTokenCount(changedVertex.getTokenCount());
+            modelVertex.setCapacity(changedVertex.getCapacity());
+        }
+        displayGraph(graphModel);
+    }
+
+    private void editTransition(Object selectedTransition) {
+        Map<String, Object> values = new HashMap<>();
+        values.put("Object", selectedTransition);
+        EditTransitionPanel editTransitionPanel = new EditTransitionPanel(this, "Edycja przejścia", true, values);
+        if (values.get("Status") != null && values.get("Status").equals("Ok")) {
+            Transition modelVertex = (Transition) graphModel.getVertex(((Transition) values.get("Object")).getID());
+            Transition changedVertex = (Transition) values.get("ReturnObject");
+            modelVertex.setName(changedVertex.getName());
+            modelVertex.setPriority(changedVertex.getPriority());
+        }
+        displayGraph(graphModel);
+    }
+
+    private void editEdge(Object selectedEdge) {
+        Map<String, Object> values = new HashMap<>();
+        values.put("Object", selectedEdge);
+        EditEdgePanel editEdgePanel = new EditEdgePanel(this, "Edycja krawędzi", true, values);
+        if (values.get("Status") != null && values.get("Status").equals("Ok")) {
+            Edge modelEdge = (Edge) graphModel.getEdge(((Edge) values.get("Object")).getKey());
+            Edge changedEdge = (Edge) values.get("ReturnObject");
+            modelEdge.setCapacity(changedEdge.getCapacity());
+        }
+        displayGraph(graphModel);
+    }
+
+    private void editEdge(Object[] selectedVertices) {
+        Map<String, Object> values = new HashMap<>();
+        Vertex sourceObject = (Vertex) ((mxCell) selectedVertices[0]).getValue();
+        Vertex destinationObject = (Vertex) ((mxCell) selectedVertices[1]).getValue();
+        Edge chosenEdge = new Edge(sourceObject.getID(), destinationObject.getID());
+        Edge foundEdge = graphModel.getEdge(chosenEdge.getKey());
+        if (foundEdge != null) {
+            values.put("Object", foundEdge);
+            EditEdgePanel editEdgePanel = new EditEdgePanel(this, "Edycja krawędzi", true, values);
+            if (values.get("Status") != null && values.get("Status").equals("Ok")) {
+                Edge modelEdge = graphModel.getEdge(((Edge) values.get("Object")).getKey());
+                Edge changedVertex = (Edge) values.get("ReturnObject");
+                modelEdge.setCapacity(changedVertex.getCapacity());
+            }
+            displayGraph(graphModel);
+        } else {
+            JOptionPane.showMessageDialog(this, "Brak krawedzi pomiędzy zaznaczonymi wierzchołkami!", ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -216,7 +549,7 @@ public class ImprovedGUI extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
