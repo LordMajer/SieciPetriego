@@ -728,7 +728,6 @@ public class GUI extends javax.swing.JFrame {
     private void startSimulationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startSimulationButtonActionPerformed
         resultsPanel.removeAll();
         resultsPanel.revalidate();
-        ModelValidator.validate(graphModel);
         if (isGraphValid(graphModel)) {
             simulator = new Simulator(ObjectDeepCopier.getCopyOf(graphModel));
             resultsPanel.add(createActiveJGraphComponentWithoutLayout(CustomGraphToJGraphXAdapterTransformer.transform(simulator.getGraph())));

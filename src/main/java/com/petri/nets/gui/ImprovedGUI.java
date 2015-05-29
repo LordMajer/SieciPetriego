@@ -358,6 +358,11 @@ public class ImprovedGUI extends javax.swing.JFrame {
         simulationMenu.setText("Symulacja");
 
         startSimulationItem.setText("Rozpocznij");
+        startSimulationItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                startSimulationItemActionPerformed(evt);
+            }
+        });
         simulationMenu.add(startSimulationItem);
 
         jMenuBar1.add(simulationMenu);
@@ -556,6 +561,11 @@ public class ImprovedGUI extends javax.swing.JFrame {
         MatrixCreator matrixCreator = new MatrixCreator(graphModel);
         createJDialog("Macierz incydencji", createJScrollPane(matrixCreator.generateIncidenceMatrix()));
     }//GEN-LAST:event_incidenceMatrixItemActionPerformed
+
+    private void startSimulationItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startSimulationItemActionPerformed
+        //SimulationDialog SimulationDialog = new SimulationDialog(this, true, graphModel);
+        SimulationProcessor SimulationDialog = new SimulationProcessor(graphModel);
+    }//GEN-LAST:event_startSimulationItemActionPerformed
 
     private JDialog createJDialog(String title, JScrollPane pane) {
         JDialog jdialog = new JDialog();
