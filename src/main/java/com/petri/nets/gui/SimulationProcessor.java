@@ -99,10 +99,10 @@ public class SimulationProcessor {
     }
 
     private void startButtonActionPerformed(ActionEvent e) {
-        stepButtonActionPerformed(null);
         startButton.setEnabled(false);
         stepButton.setEnabled(true);
         stopButton.setEnabled(true);
+        stepButtonActionPerformed(null);
     }
 
     private void stepButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stepButtonActionPerformed

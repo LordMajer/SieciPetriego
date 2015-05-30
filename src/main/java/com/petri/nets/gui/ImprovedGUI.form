@@ -214,11 +214,17 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="&#x17b;ywotno&#x15b;&#x107; przej&#x15b;&#x107;"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="transitionLivenessItemActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="netLivenessItem">
               <Properties>
                 <Property name="text" type="java.lang.String" value="&#x17b;ywotno&#x15b;&#x107; sieci"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="netLivenessItemActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>

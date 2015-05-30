@@ -14,6 +14,7 @@ import com.petri.nets.algorithms.CoverageTree;
 import com.petri.nets.algorithms.ReachabilityGraph;
 import com.petri.nets.algorithms.properties.Boundedness;
 import com.petri.nets.algorithms.properties.Conservation;
+import com.petri.nets.algorithms.properties.TransitionLiveness;
 import com.petri.nets.algorithms.properties.Safeness;
 import com.petri.nets.archive.GraphReader;
 import com.petri.nets.archive.GraphWriter;
@@ -31,8 +32,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 
 public class ImprovedGUI extends javax.swing.JFrame {
 
@@ -400,9 +401,19 @@ public class ImprovedGUI extends javax.swing.JFrame {
         netPropertiesMenu.add(conservationByVectorItem);
 
         transitionLivenessItem.setText("Żywotność przejść");
+        transitionLivenessItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                transitionLivenessItemActionPerformed(evt);
+            }
+        });
         netPropertiesMenu.add(transitionLivenessItem);
 
         netLivenessItem.setText("Żywotność sieci");
+        netLivenessItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                netLivenessItemActionPerformed(evt);
+            }
+        });
         netPropertiesMenu.add(netLivenessItem);
 
         jMenuBar1.add(netPropertiesMenu);
@@ -597,6 +608,27 @@ public class ImprovedGUI extends javax.swing.JFrame {
                 + "Dwukrotne naciśnięcie lewego przycisku myszy : edycja aktywnego elementu\n"
                 + "Dodawanie krawędzi poprzez przeciągnięcie jej z jednego wierzchołka do drugiego", INFORMATION_MESSAGE_TITLE, JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_shortcutsItemActionPerformed
+
+    private void netLivenessItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_netLivenessItemActionPerformed
+
+    }//GEN-LAST:event_netLivenessItemActionPerformed
+
+    private void transitionLivenessItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transitionLivenessItemActionPerformed
+        List<Transition> transitions = new ArrayList<>(graphModel.getTransitions().values());
+        String[] transitionButtons = getTransitionButtons(transitions);
+        int chosenOption = JOptionPane.showOptionDialog(this, "Wybierz jedno z możliwych przejść", "Wybór przejścia", JOptionPane.INFORMATION_MESSAGE, JOptionPane.INFORMATION_MESSAGE, null, transitionButtons, transitionButtons[0]);
+        if (chosenOption != JOptionPane.CLOSED_OPTION) {
+            JOptionPane.showMessageDialog(null, new TransitionLiveness(new CoverageGraph(graphModel).build(), transitions.get(chosenOption)).calculate());
+        }
+    }//GEN-LAST:event_transitionLivenessItemActionPerformed
+
+    private String[] getTransitionButtons(java.util.List<Transition> transitions) {
+        String[] transitionsName = new String[transitions.size()];
+        for (int i = 0; i < transitions.size(); i++) {
+            transitionsName[i] = transitions.get(i).getName();
+        }
+        return transitionsName;
+    }
 
     private JDialog createJDialog(String title, JScrollPane pane) {
         JDialog jDialog = new JDialog();
