@@ -8,7 +8,6 @@ Parametry z konsultacji:
 - odwracalnoć sieci
 - żywotnoć sieci- żywotnoć przejć.
 - 
-- 
 - Co do algorytmu do analizy odwracalnoci... W odwracalnoci chodzi chyba o to że jeli jestemy w miejscu M1 i dotrzemy do miejsca M2 to czy możemy wrócić z miejsca M2 do M1. Sposobem może być przejscie petla po każdym miejscu. Dla tego miejsca tworzymy liste miejsc osigalnych a potem dla każdego z tych miejsc z listy również tworzymy taka liste osiagalnoci i sprawdzamy czy znajduje sie na niej miejsce źródowe. Jeli tak to ok a jak nie to znaczy że nie jest odwracalny?
 - 
 Przykad: sprawdzamy miejsce M1
