@@ -38,6 +38,7 @@ public class ImprovedGUI extends javax.swing.JFrame {
 
     private static final int DEL_KEY_CODE = 127;
     public static final String ERROR_MESSAGE_TITLE = "BŁĄD";
+    public static final String INFORMATION_MESSAGE_TITLE = "INFORMACJA";
     private static int PLACE_ADDING_MASK = MouseEvent.SHIFT_DOWN_MASK;
     private static int TRANSITION_ADDING_MASK = MouseEvent.SHIFT_DOWN_MASK;
 
@@ -586,7 +587,7 @@ public class ImprovedGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_safenessItemActionPerformed
 
     private void aboutAuthorsItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutAuthorsItemActionPerformed
-        JOptionPane.showMessageDialog(null, "Autorzy programu:\nMaciej Bruno-Kamiński\nMateusz Juraszek\nMateusz Maj ");
+        JOptionPane.showMessageDialog(null, "Autorzy programu:\nMaciej Bruno-Kamiński\nMateusz Juraszek\nMateusz Maj", INFORMATION_MESSAGE_TITLE, JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_aboutAuthorsItemActionPerformed
 
     private void shortcutsItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_shortcutsItemActionPerformed
@@ -594,7 +595,7 @@ public class ImprovedGUI extends javax.swing.JFrame {
                 + "SHIFT + prawy przycisk myszy : stworzenie przejścia\n"
                 + "DEL : usunięcie aktywnych elementów\n"
                 + "Dwukrotne naciśnięcie lewego przycisku myszy : edycja aktywnego elementu\n"
-                + "Dodawanie krawędzi poprzez przeciągnięcie jej z jednego wierzchołka do drugiego");
+                + "Dodawanie krawędzi poprzez przeciągnięcie jej z jednego wierzchołka do drugiego", INFORMATION_MESSAGE_TITLE, JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_shortcutsItemActionPerformed
 
     private JDialog createJDialog(String title, JScrollPane pane) {

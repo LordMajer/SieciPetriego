@@ -1,7 +1,5 @@
 package com.petri.nets.gui;
 
-import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
-import com.mxgraph.layout.mxIGraphLayout;
 import com.mxgraph.swing.mxGraphComponent;
 import com.petri.nets.helpers.common.ObjectDeepCopier;
 import com.petri.nets.helpers.transformation.CustomGraphToJGraphXAdapterTransformer;
@@ -20,7 +18,6 @@ import java.awt.event.ActionListener;
 public class SimulationProcessor {
 
     private static final String INFORMATION_MESSAGE_TITLE = "INFORMACJA";
-    private static final String ERROR_MESSAGE_TITLE = "BŁĄD";
 
     private CustomGraph baseGraph;
     private JDialog jDialog;
@@ -123,21 +120,26 @@ public class SimulationProcessor {
             jDialog.add(simulationPanel);
             jDialog.revalidate();
         } else {
-            String optionChosen = JOptionPane.showInputDialog("Wybierz jedno z możliwych przejść: " + possibleSteps.toString()); // TODO Display options as buttons to chose
-            Transition transition = baseGraph.getTransitionByName(possibleSteps, optionChosen);
-            if (transition != null) {
+            String[] transitionButtons = getTransitionButtons(possibleSteps);
+            int chosenOption = JOptionPane.showOptionDialog(jDialog, "Wybierz jedno z możliwych przejść", "Wybór przejścia", JOptionPane.INFORMATION_MESSAGE, JOptionPane.INFORMATION_MESSAGE, null, transitionButtons, transitionButtons[0]);
+            if (chosenOption != JOptionPane.CLOSED_OPTION) {
+                Transition transition = possibleSteps.get(chosenOption);
                 simulator.takeStep(transition);
                 JOptionPane.showMessageDialog(jDialog, "Wykonano przejście : " + transition.getName(), INFORMATION_MESSAGE_TITLE, JOptionPane.INFORMATION_MESSAGE);
                 jDialog.remove(simulationPanel);
                 simulationPanel = createActiveJGraphComponentWithoutLayout(CustomGraphToJGraphXAdapterTransformer.transform(simulator.getGraph()));
                 jDialog.add(simulationPanel);
                 jDialog.revalidate();
-            } else {
-                if (optionChosen != null) {
-                    JOptionPane.showMessageDialog(jDialog, "Wskazane przejście (" + optionChosen + ") nie jest w tej chwili możliwe", ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
-                }
             }
         }
+    }
+
+    private String[] getTransitionButtons(java.util.List<Transition> transitions) {
+        String[] transitionsName = new String[transitions.size()];
+        for (int i = 0; i < transitions.size(); i++) {
+            transitionsName[i] = transitions.get(i).getName();
+        }
+        return transitionsName;
     }
 }
 
