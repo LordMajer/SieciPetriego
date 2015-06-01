@@ -194,9 +194,8 @@ public class ImprovedGUI extends javax.swing.JFrame {
         netPropertiesMenu = new javax.swing.JMenu();
         safenessItem = new javax.swing.JMenuItem();
         boudednessItem = new javax.swing.JMenuItem();
-        reversabilityItem = new javax.swing.JMenuItem();
+        reversibilityItem = new javax.swing.JMenuItem();
         conservationItem = new javax.swing.JMenuItem();
-        conservationByVectorItem = new javax.swing.JMenuItem();
         transitionLivenessItem = new javax.swing.JMenuItem();
         netLivenessItem = new javax.swing.JMenuItem();
         aboutProgramMenu = new javax.swing.JMenu();
@@ -383,13 +382,13 @@ public class ImprovedGUI extends javax.swing.JFrame {
         });
         netPropertiesMenu.add(boudednessItem);
 
-        reversabilityItem.setText("Odwracalność sieci");
-        reversabilityItem.addActionListener(new java.awt.event.ActionListener() {
+        reversibilityItem.setText("Odwracalność sieci");
+        reversibilityItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                reversabilityItemActionPerformed(evt);
+                reversibilityItemActionPerformed(evt);
             }
         });
-        netPropertiesMenu.add(reversabilityItem);
+        netPropertiesMenu.add(reversibilityItem);
 
         conservationItem.setText("Zachowawczość");
         conservationItem.addActionListener(new java.awt.event.ActionListener() {
@@ -398,9 +397,6 @@ public class ImprovedGUI extends javax.swing.JFrame {
             }
         });
         netPropertiesMenu.add(conservationItem);
-
-        conservationByVectorItem.setText("Zachowawczość względem wektora wag");
-        netPropertiesMenu.add(conservationByVectorItem);
 
         transitionLivenessItem.setText("Żywotność przejść");
         transitionLivenessItem.addActionListener(new java.awt.event.ActionListener() {
@@ -624,9 +620,9 @@ public class ImprovedGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_transitionLivenessItemActionPerformed
 
-    private void reversabilityItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reversabilityItemActionPerformed
+    private void reversibilityItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reversibilityItemActionPerformed
         JOptionPane.showMessageDialog(null, new Reversibility(new CoverageGraph(graphModel).build()).calculate());
-    }//GEN-LAST:event_reversabilityItemActionPerformed
+    }//GEN-LAST:event_reversibilityItemActionPerformed
 
     private String[] getTransitionButtons(java.util.List<Transition> transitions) {
         String[] transitionsName = new String[transitions.size()];
@@ -777,7 +773,6 @@ public class ImprovedGUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem addPlaceMenu;
     private javax.swing.JMenuItem addTransitionItem;
     private javax.swing.JMenuItem boudednessItem;
-    private javax.swing.JMenuItem conservationByVectorItem;
     private javax.swing.JMenuItem conservationItem;
     private javax.swing.JMenuItem coverageGraphItem;
     private javax.swing.JMenuItem coverageTreeItem;
@@ -799,7 +794,7 @@ public class ImprovedGUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem newModelItem;
     private javax.swing.JMenuItem outputMatrixItem;
     private javax.swing.JMenuItem reachabilityGraphItem;
-    private javax.swing.JMenuItem reversabilityItem;
+    private javax.swing.JMenuItem reversibilityItem;
     private javax.swing.JMenuItem safenessItem;
     private javax.swing.JMenuItem saveModelItem;
     private javax.swing.JMenuItem shortcutsItem;

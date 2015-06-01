@@ -192,12 +192,12 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="boudednessItemActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="reversabilityItem">
+            <MenuItem class="javax.swing.JMenuItem" name="reversibilityItem">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Odwracalno&#x15b;&#x107; sieci"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="reversabilityItemActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="reversibilityItemActionPerformed"/>
               </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="conservationItem">
@@ -207,11 +207,6 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="conservationItemActionPerformed"/>
               </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="conservationByVectorItem">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Zachowawczo&#x15b;&#x107; wzgl&#x119;dem wektora wag"/>
-              </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="transitionLivenessItem">
               <Properties>
