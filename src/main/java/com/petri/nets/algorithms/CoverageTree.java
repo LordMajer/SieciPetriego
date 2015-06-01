@@ -15,6 +15,11 @@ public class CoverageTree extends GraphAlgorithmResolver {
     }
 
     @Override
+    protected boolean shouldContinueProcessing(int statesSize) {
+        return true;
+    }
+
+    @Override
     protected boolean shouldUpdateTokenNumber(int value) {
         return value != Integer.MAX_VALUE;
     }
@@ -41,13 +46,13 @@ public class CoverageTree extends GraphAlgorithmResolver {
             graph.addVertex(newStateVertex);
             graph.addEdge(new Edge(previousStateVertex.getID(), newStateVertex.getID(), transition.getName()));
             states.put(stateWithInfinityTextValue, newStateVertex);
-            resolveTransitions(stateWithInfinity);
+            toResolve.addLast(stateWithInfinity);
             return;
         }
         newStateVertex = new Transition(graph.getNewID(), getTextValueWithInfinitySign(newState));
         graph.addVertex(newStateVertex);
         graph.addEdge(new Edge(previousStateVertex.getID(), newStateVertex.getID(), transition.getName()));
         states.put(getTextValue(newState), newStateVertex);
-        resolveTransitions(newState);
+        toResolve.addLast(newState);
     }
 }

@@ -3,19 +3,17 @@ package com.petri.nets.algorithms;
 import com.petri.nets.helpers.common.CommonOperations;
 import com.petri.nets.model.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public abstract class GraphAlgorithmResolver {
 
-    protected static final int VERTICES_LIMIT = 50;
+    protected static final int VERTICES_LIMIT = 100;
     protected CustomGraph graph;
     protected Map<String, Vertex> states;
     protected Map<String, Edge> edges;
     protected Map<Integer, Transition> transitions;
     protected Map<Integer, Place> places;
+    protected LinkedList<Map<Integer, Integer>> toResolve = new LinkedList<>();
     private boolean priority;
 
     public GraphAlgorithmResolver(CustomGraph baseGraph) {
@@ -32,7 +30,10 @@ public abstract class GraphAlgorithmResolver {
         Vertex initialVertex = new Transition(graph.getNewID(), getTextValue(initialState));
         graph.addVertex(initialVertex);
         states.put(getTextValue(initialState), initialVertex);
-        resolveTransitions(initialState);
+        toResolve.addLast(initialState);
+        while (!toResolve.isEmpty() && shouldContinueProcessing(states.size())) {
+            resolveTransitions(toResolve.getFirst());
+        }
         return graph;
     }
 
@@ -53,6 +54,8 @@ public abstract class GraphAlgorithmResolver {
         stateBuilder.deleteCharAt(stateBuilder.length() - 1);
         return stateBuilder.toString();
     }
+
+    abstract protected boolean shouldContinueProcessing(int statesSize);
 
     protected String getTextValueWithInfinitySign(Map<Integer, Integer> idToTokenMap) {
         StringBuilder stateBuilder = new StringBuilder();
@@ -75,10 +78,8 @@ public abstract class GraphAlgorithmResolver {
         }
         for (Transition transition : possibleSteps) { // Wykonanie możliwych kroków
             resolveTransition(new TreeMap<>(state), transition);
-            if (states.size() > VERTICES_LIMIT) { // Aby uniknąć pętli nieskończonej
-                return;
-            }
         }
+        toResolve.removeFirst();
     }
 
     private List<Transition> getPossibleSteps(Map<Integer, Integer> state) {

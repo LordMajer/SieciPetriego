@@ -15,6 +15,11 @@ public class ReachabilityGraph extends GraphAlgorithmResolver{
     }
 
     @Override
+    protected boolean shouldContinueProcessing(int statesSize) {
+        return states.size() < VERTICES_LIMIT;
+    }
+
+    @Override
     protected boolean shouldUpdateTokenNumber(int value) {
         return true;
     }
@@ -35,6 +40,6 @@ public class ReachabilityGraph extends GraphAlgorithmResolver{
         graph.addVertex(newStateVertex);
         graph.addEdge(new Edge(previousStateVertex.getID(), newStateVertex.getID(), transition.getName()));
         states.put(getTextValue(newState), newStateVertex);
-        resolveTransitions(newState);
+        toResolve.addLast(newState);
     }
 }
