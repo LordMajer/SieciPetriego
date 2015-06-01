@@ -8,7 +8,26 @@ import java.io.*;
 public class GraphWriter {
 
     public static void saveGraph(CustomGraph graph) {
-        JFileChooser fileChooser = new JFileChooser();
+        JFileChooser fileChooser = new JFileChooser();      
+        try {
+            
+            StringBuilder initialDirectory = new StringBuilder();
+            initialDirectory.append(new File(".").getCanonicalPath());
+            initialDirectory.append(File.separator);
+            initialDirectory.append("src");
+            initialDirectory.append(File.separator);
+            initialDirectory.append("main");
+            initialDirectory.append(File.separator);
+            initialDirectory.append("resources");
+            initialDirectory.append(File.separator);
+            initialDirectory.append("models");
+
+            fileChooser.setCurrentDirectory(new File(initialDirectory.toString()));
+            
+        } catch (Exception e) {
+            
+        }
+        
         int returnVal = fileChooser.showSaveDialog(fileChooser);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();

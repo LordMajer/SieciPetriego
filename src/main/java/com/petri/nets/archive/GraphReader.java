@@ -7,8 +7,27 @@ import java.io.*;
 
 public class GraphReader {
 
-    public static CustomGraph loadGraph(CustomGraph currentGraph) {
-        JFileChooser fileChooser = new JFileChooser();
+    public static CustomGraph loadGraph(CustomGraph currentGraph) {       
+        JFileChooser fileChooser = new JFileChooser();        
+        try {
+            
+            StringBuilder initialDirectory = new StringBuilder();
+            initialDirectory.append(new File(".").getCanonicalPath());
+            initialDirectory.append(File.separator);
+            initialDirectory.append("src");
+            initialDirectory.append(File.separator);
+            initialDirectory.append("main");
+            initialDirectory.append(File.separator);
+            initialDirectory.append("resources");
+            initialDirectory.append(File.separator);
+            initialDirectory.append("models");
+
+            fileChooser.setCurrentDirectory(new File(initialDirectory.toString()));
+            
+        } catch (Exception e) {
+            
+        }
+             
         int returnVal = fileChooser.showOpenDialog(fileChooser);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
