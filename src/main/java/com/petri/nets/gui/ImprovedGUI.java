@@ -12,10 +12,7 @@ import com.mxgraph.util.mxEventSource;
 import com.petri.nets.algorithms.CoverageGraph;
 import com.petri.nets.algorithms.CoverageTree;
 import com.petri.nets.algorithms.ReachabilityGraph;
-import com.petri.nets.algorithms.properties.Boundedness;
-import com.petri.nets.algorithms.properties.Conservation;
-import com.petri.nets.algorithms.properties.TransitionLiveness;
-import com.petri.nets.algorithms.properties.Safeness;
+import com.petri.nets.algorithms.properties.*;
 import com.petri.nets.archive.GraphReader;
 import com.petri.nets.archive.GraphWriter;
 import com.petri.nets.helpers.VertexType;
@@ -387,6 +384,11 @@ public class ImprovedGUI extends javax.swing.JFrame {
         netPropertiesMenu.add(boudednessItem);
 
         reversabilityItem.setText("Odwracalność sieci");
+        reversabilityItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reversabilityItemActionPerformed(evt);
+            }
+        });
         netPropertiesMenu.add(reversabilityItem);
 
         conservationItem.setText("Zachowawczość");
@@ -610,7 +612,7 @@ public class ImprovedGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_shortcutsItemActionPerformed
 
     private void netLivenessItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_netLivenessItemActionPerformed
-
+        JOptionPane.showMessageDialog(null, new NetLiveness(new CoverageGraph(graphModel).build()).calculate());
     }//GEN-LAST:event_netLivenessItemActionPerformed
 
     private void transitionLivenessItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transitionLivenessItemActionPerformed
@@ -621,6 +623,10 @@ public class ImprovedGUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, new TransitionLiveness(new CoverageGraph(graphModel).build(), transitions.get(chosenOption)).calculate());
         }
     }//GEN-LAST:event_transitionLivenessItemActionPerformed
+
+    private void reversabilityItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reversabilityItemActionPerformed
+        JOptionPane.showMessageDialog(null, new Reversibility(new CoverageGraph(graphModel).build()).calculate());
+    }//GEN-LAST:event_reversabilityItemActionPerformed
 
     private String[] getTransitionButtons(java.util.List<Transition> transitions) {
         String[] transitionsName = new String[transitions.size()];
