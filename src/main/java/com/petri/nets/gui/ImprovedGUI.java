@@ -199,6 +199,8 @@ public class ImprovedGUI extends javax.swing.JFrame {
         placeLiveness = new javax.swing.JMenuItem();
         transitionLivenessItem = new javax.swing.JMenuItem();
         netLivenessItem = new javax.swing.JMenuItem();
+        jSeparator5 = new javax.swing.JPopupMenu.Separator();
+        generalRaportItem = new javax.swing.JMenuItem();
         aboutProgramMenu = new javax.swing.JMenu();
         aboutAuthorsItem = new javax.swing.JMenuItem();
         shortcutsItem = new javax.swing.JMenuItem();
@@ -212,10 +214,8 @@ public class ImprovedGUI extends javax.swing.JFrame {
         modelMenu.addMenuListener(new javax.swing.event.MenuListener() {
             public void menuCanceled(javax.swing.event.MenuEvent evt) {
             }
-
             public void menuDeselected(javax.swing.event.MenuEvent evt) {
             }
-
             public void menuSelected(javax.swing.event.MenuEvent evt) {
                 modelMenuMenuSelected(evt);
             }
@@ -424,6 +424,15 @@ public class ImprovedGUI extends javax.swing.JFrame {
             }
         });
         netPropertiesMenu.add(netLivenessItem);
+        netPropertiesMenu.add(jSeparator5);
+
+        generalRaportItem.setText("Raport");
+        generalRaportItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                generalRaportItemActionPerformed(evt);
+            }
+        });
+        netPropertiesMenu.add(generalRaportItem);
 
         jMenuBar1.add(netPropertiesMenu);
 
@@ -644,6 +653,52 @@ public class ImprovedGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_placeLivenessActionPerformed
 
+    private void generalRaportItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generalRaportItemActionPerformed
+        HashMap<String, Object> properties = new HashMap<String,Object>();      // przechowywanie zbadanych własności sieci
+        
+        // bezpieczeństwo:
+        String safenessString = new Safeness(new CoverageGraph(graphModel).build()).calculate();
+        properties.put("Sefeness", safenessString);
+        // ograniczoność:
+        String boundednessString = new Boundedness(new CoverageGraph(graphModel).build()).calculate();
+        properties.put("Boundedness", boundednessString);
+        // Odwracalność:
+        String reversibilityString = new Reversibility(new CoverageGraph(graphModel).build()).calculate();
+        properties.put("Reversibility", reversibilityString);
+        // Zachowawczość:
+        String conservatismString = new Conservation(new CoverageGraph(graphModel).build()).calculate();
+        properties.put("Conservatism", conservatismString);
+        // Żywotność sieci:
+        String netLivenessString = new NetLiveness(graphModel).calculate();
+        properties.put("NetLiveness", netLivenessString);
+        
+        // grafy i drzewa:
+        // graf pokrycia
+        Component coverageGraphComponent = createActiveJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(new CoverageGraph(graphModel).build()));
+        properties.put("CoverageGraph",coverageGraphComponent);
+        // drzewo pokrycia:
+        Component coverageTreeComponent = createActiveJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(new CoverageTree(graphModel).build()));
+        properties.put("CoverageTree", coverageTreeComponent);
+        //graf osiągalności:
+        Component reachabilityGraph = createActiveJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(new ReachabilityGraph(graphModel).build()));
+        properties.put("ReachablilityGraph", reachabilityGraph);
+        
+        // Macierze:
+        // macierz wejść:
+        MatrixCreator matrixCreator = new MatrixCreator(graphModel);
+        JScrollPane outputMatrixPane = createJScrollPane(matrixCreator.generateOutputMatrix());
+        properties.put("OutputMatrix",outputMatrixPane);
+        // macierz wyjść
+        JScrollPane inputMatrixPane = createJScrollPane(matrixCreator.generateInputMatrix());
+        properties.put("InputMatrix",inputMatrixPane);
+        // macierz incydencji
+        JScrollPane incidenceMatrixPane = createJScrollPane(matrixCreator.generateIncidenceMatrix());
+        properties.put("IncidenceMatrix", incidenceMatrixPane);
+        
+        // Stworzenie nowego okna dialogowego i wyświetlenie wyników:
+        GeneralRaportDialog dialog = new GeneralRaportDialog(this, true, properties);
+    }//GEN-LAST:event_generalRaportItemActionPerformed
+
     private String[] getTransitionButtons(java.util.List<Transition> transitions) {
         String[] transitionsName = new String[transitions.size()];
         for (int i = 0; i < transitions.size(); i++) {
@@ -806,6 +861,7 @@ public class ImprovedGUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem coverageTreeItem;
     private javax.swing.JMenuItem deleteElementItem;
     private javax.swing.JMenu editMenu;
+    private javax.swing.JMenuItem generalRaportItem;
     private javax.swing.JMenuItem incidenceMatrixItem;
     private javax.swing.JMenuItem inputMatrixItem;
     private javax.swing.JCheckBoxMenuItem isPriorityNetItem;
@@ -814,6 +870,7 @@ public class ImprovedGUI extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
+    private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JMenuItem loadModelItem;
     private javax.swing.JMenu modelMenu;
     private javax.swing.JMenuItem netLivenessItem;
