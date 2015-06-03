@@ -196,6 +196,7 @@ public class ImprovedGUI extends javax.swing.JFrame {
         boudednessItem = new javax.swing.JMenuItem();
         reversibilityItem = new javax.swing.JMenuItem();
         conservationItem = new javax.swing.JMenuItem();
+        placeLiveness = new javax.swing.JMenuItem();
         transitionLivenessItem = new javax.swing.JMenuItem();
         netLivenessItem = new javax.swing.JMenuItem();
         aboutProgramMenu = new javax.swing.JMenu();
@@ -211,8 +212,10 @@ public class ImprovedGUI extends javax.swing.JFrame {
         modelMenu.addMenuListener(new javax.swing.event.MenuListener() {
             public void menuCanceled(javax.swing.event.MenuEvent evt) {
             }
+
             public void menuDeselected(javax.swing.event.MenuEvent evt) {
             }
+
             public void menuSelected(javax.swing.event.MenuEvent evt) {
                 modelMenuMenuSelected(evt);
             }
@@ -397,6 +400,14 @@ public class ImprovedGUI extends javax.swing.JFrame {
             }
         });
         netPropertiesMenu.add(conservationItem);
+
+        placeLiveness.setText("Żywotność miejsc");
+        placeLiveness.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                placeLivenessActionPerformed(evt);
+            }
+        });
+        netPropertiesMenu.add(placeLiveness);
 
         transitionLivenessItem.setText("Żywotność przejść");
         transitionLivenessItem.addActionListener(new java.awt.event.ActionListener() {
@@ -616,7 +627,7 @@ public class ImprovedGUI extends javax.swing.JFrame {
         String[] transitionButtons = getTransitionButtons(transitions);
         int chosenOption = JOptionPane.showOptionDialog(this, "Wybierz jedno z możliwych przejść", "Wybór przejścia", JOptionPane.INFORMATION_MESSAGE, JOptionPane.INFORMATION_MESSAGE, null, transitionButtons, transitionButtons[0]);
         if (chosenOption != JOptionPane.CLOSED_OPTION) {
-            JOptionPane.showMessageDialog(null, new TransitionLiveness(new CoverageGraph(graphModel).build(), transitions.get(chosenOption)).calculate());
+            JOptionPane.showMessageDialog(null, new TransitionLiveness(graphModel).calculate(transitions.get(chosenOption)));
         }
     }//GEN-LAST:event_transitionLivenessItemActionPerformed
 
@@ -624,12 +635,29 @@ public class ImprovedGUI extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, new Reversibility(new CoverageGraph(graphModel).build()).calculate());
     }//GEN-LAST:event_reversibilityItemActionPerformed
 
+    private void placeLivenessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_placeLivenessActionPerformed
+        List<Place> places = new ArrayList<>(graphModel.getPlaces().values());
+        String[] placeButtons = getPlaceButtons(places);
+        int chosenOption = JOptionPane.showOptionDialog(this, "Wybierz jedno z możliwych miejsc", "Wybór miejsca", JOptionPane.INFORMATION_MESSAGE, JOptionPane.INFORMATION_MESSAGE, null, placeButtons, placeButtons[0]);
+        if (chosenOption != JOptionPane.CLOSED_OPTION) {
+            JOptionPane.showMessageDialog(null, new PlaceLiveness(graphModel).calculate(places.get(chosenOption)));
+        }
+    }//GEN-LAST:event_placeLivenessActionPerformed
+
     private String[] getTransitionButtons(java.util.List<Transition> transitions) {
         String[] transitionsName = new String[transitions.size()];
         for (int i = 0; i < transitions.size(); i++) {
             transitionsName[i] = transitions.get(i).getName();
         }
         return transitionsName;
+    }
+
+    private String[] getPlaceButtons(java.util.List<Place> places) {
+        String[] placeNames = new String[places.size()];
+        for (int i = 0; i < places.size(); i++) {
+            placeNames[i] = places.get(i).getName();
+        }
+        return placeNames;
     }
 
     private JDialog createJDialog(String title, JScrollPane pane) {
@@ -793,6 +821,7 @@ public class ImprovedGUI extends javax.swing.JFrame {
     private javax.swing.JMenu netRepresentationMenu;
     private javax.swing.JMenuItem newModelItem;
     private javax.swing.JMenuItem outputMatrixItem;
+    private javax.swing.JMenuItem placeLiveness;
     private javax.swing.JMenuItem reachabilityGraphItem;
     private javax.swing.JMenuItem reversibilityItem;
     private javax.swing.JMenuItem safenessItem;

@@ -208,6 +208,14 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="conservationItemActionPerformed"/>
               </Events>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="placeLiveness">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="&#x17b;ywotno&#x15b;&#x107; miejsc"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="placeLivenessActionPerformed"/>
+              </Events>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="transitionLivenessItem">
               <Properties>
                 <Property name="text" type="java.lang.String" value="&#x17b;ywotno&#x15b;&#x107; przej&#x15b;&#x107;"/>
