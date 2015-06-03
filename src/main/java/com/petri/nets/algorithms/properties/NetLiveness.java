@@ -1,26 +1,47 @@
 package com.petri.nets.algorithms.properties;
 
+import com.petri.nets.algorithms.CoverageGraph;
 import com.petri.nets.model.CustomGraph;
 import com.petri.nets.model.Edge;
 import com.petri.nets.model.Transition;
+import com.petri.nets.model.Vertex;
 
 public class NetLiveness {
-    CustomGraph coverageGraph;
+    private static final String NET_LIVE_MESSAGE = "Sieć jest żywotna";
+    private static final String NET_NOT_LIVE_MESSAGE = "Sieć nie jest żywotna";
+    private CustomGraph baseGraph;
 
-    public NetLiveness(CustomGraph coverageGraph) {
-        this.coverageGraph = coverageGraph;
+    public NetLiveness(CustomGraph baseGraph) {
+        this.baseGraph = baseGraph;
     }
 
     public String calculate() {
-        for (Transition transition: coverageGraph.getTransitions().values()) {
-            if (!checkLiveness(transition)) {
-                return "Sieć nie jest żywotna";
-            }
+        CustomGraph coverageGraph = new CoverageGraph(baseGraph).build();
+        if (hasDeadStates(baseGraph) || hasNotLivedTransitions(coverageGraph)) {
+            return NET_NOT_LIVE_MESSAGE;
         }
-        return "Sieć jest żywotna";
+        return NET_LIVE_MESSAGE;
     }
 
-    private boolean checkLiveness(Transition transition) {
+    private boolean hasDeadStates(CustomGraph graph) {
+        for (Vertex vertex: graph.getVertices().values()) {
+            if (vertex.getSuccessors().isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasNotLivedTransitions(CustomGraph graph) {
+        for (Transition transition: baseGraph.getTransitions().values()) {
+            if (!isLived(graph, transition)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isLived(CustomGraph coverageGraph, Transition transition) {
         for (Edge edge : coverageGraph.getEdges().values()) {
             if (edge.getName().equals(transition.getName())) {
                 return true;

@@ -608,7 +608,7 @@ public class ImprovedGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_shortcutsItemActionPerformed
 
     private void netLivenessItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_netLivenessItemActionPerformed
-        JOptionPane.showMessageDialog(null, new NetLiveness(new CoverageGraph(graphModel).build()).calculate());
+        JOptionPane.showMessageDialog(null, new NetLiveness(graphModel).calculate());
     }//GEN-LAST:event_netLivenessItemActionPerformed
 
     private void transitionLivenessItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transitionLivenessItemActionPerformed
