@@ -197,8 +197,8 @@ public class GeneralRaportDialog extends JDialog {
     public void updateGeneral(){
         
         // Bezpieczeństwo:
-        String safenessString = (String)properties.get("Sefeness");
-        if(safenessString.equals("Sieć jest żywotna")){
+        String safenessString = (String)properties.get("Safeness");
+        if(safenessString.equals("Sieć jest bezpieczna")){
             safenessText.setText("TAK");
         }else{
             safenessText.setText("NIE");

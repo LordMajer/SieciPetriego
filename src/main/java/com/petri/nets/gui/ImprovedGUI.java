@@ -593,12 +593,12 @@ public class ImprovedGUI extends javax.swing.JFrame {
 
     private void inputMatrixItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputMatrixItemActionPerformed
         MatrixCreator matrixCreator = new MatrixCreator(graphModel);
-        createJDialog("Macierz wejść", createJScrollPane(matrixCreator.generateOutputMatrix()));
+        createJDialog("Macierz wejść", createJScrollPane(matrixCreator.generateInputMatrix()));
     }//GEN-LAST:event_inputMatrixItemActionPerformed
 
     private void outputMatrixItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_outputMatrixItemActionPerformed
         MatrixCreator matrixCreator = new MatrixCreator(graphModel);
-        createJDialog("Macierz wyjść", createJScrollPane(matrixCreator.generateInputMatrix()));
+        createJDialog("Macierz wyjść", createJScrollPane(matrixCreator.generateOutputMatrix()));
     }//GEN-LAST:event_outputMatrixItemActionPerformed
 
     private void incidenceMatrixItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_incidenceMatrixItemActionPerformed
@@ -658,7 +658,7 @@ public class ImprovedGUI extends javax.swing.JFrame {
         
         // bezpieczeństwo:
         String safenessString = new Safeness(new CoverageGraph(graphModel).build()).calculate();
-        properties.put("Sefeness", safenessString);
+        properties.put("Safeness", safenessString);
         // ograniczoność:
         String boundednessString = new Boundedness(new CoverageGraph(graphModel).build()).calculate();
         properties.put("Boundedness", boundednessString);
@@ -686,10 +686,10 @@ public class ImprovedGUI extends javax.swing.JFrame {
         // Macierze:
         // macierz wejść:
         MatrixCreator matrixCreator = new MatrixCreator(graphModel);
-        JScrollPane outputMatrixPane = createJScrollPane(matrixCreator.generateOutputMatrix());
+        JScrollPane outputMatrixPane = createJScrollPane(matrixCreator.generateInputMatrix());
         properties.put("OutputMatrix",outputMatrixPane);
         // macierz wyjść
-        JScrollPane inputMatrixPane = createJScrollPane(matrixCreator.generateInputMatrix());
+        JScrollPane inputMatrixPane = createJScrollPane(matrixCreator.generateOutputMatrix());
         properties.put("InputMatrix",inputMatrixPane);
         // macierz incydencji
         JScrollPane incidenceMatrixPane = createJScrollPane(matrixCreator.generateIncidenceMatrix());
