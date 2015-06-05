@@ -5,6 +5,7 @@
  */
 package com.petri.nets.gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Label;
 import java.util.HashMap;
@@ -46,55 +47,65 @@ public class GeneralRaportDialog extends JDialog {
         tabbedPane = new javax.swing.JTabbedPane();
         generalPanel = new javax.swing.JPanel();
         propertiesPanel = new javax.swing.JPanel();
-        jLabel11 = new javax.swing.JLabel();
-        safenessText = new javax.swing.JTextField();
-        jLabel12 = new javax.swing.JLabel();
-        boundednessText = new javax.swing.JTextField();
-        jLabel13 = new javax.swing.JLabel();
-        reversibilityText = new javax.swing.JTextField();
-        jLabel14 = new javax.swing.JLabel();
-        conservatismText = new javax.swing.JTextField();
-        jLabel15 = new javax.swing.JLabel();
-        netLivenessText = new javax.swing.JTextField();
+        safenessLabel = new javax.swing.JLabel();
+        boundednessLabel = new javax.swing.JLabel();
+        reversibilityLabel = new javax.swing.JLabel();
+        conservatismLabel = new javax.swing.JLabel();
+        netLivenessLabel = new javax.swing.JLabel();
+        safenessText = new javax.swing.JLabel();
+        boundednessText = new javax.swing.JLabel();
+        reversibilityText = new javax.swing.JLabel();
+        conservatismText = new javax.swing.JLabel();
+        netLivenessText = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         propertiesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Właściwości"));
 
-        jLabel11.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel11.setText("Bezpieczeństwo:");
+        safenessLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        safenessLabel.setText("Bezpieczeństwo:");
 
+        boundednessLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        boundednessLabel.setText("K-Ograniczoność:");
+
+        reversibilityLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        reversibilityLabel.setText("Odwracalność:");
+
+        conservatismLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        conservatismLabel.setText("Zachowawczość:");
+
+        netLivenessLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        netLivenessLabel.setText("Zywotność sieci:");
+
+        safenessText.setBackground(new java.awt.Color(0, 204, 0));
         safenessText.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         safenessText.setText("TAK");
-        safenessText.setEnabled(false);
+        safenessText.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        safenessText.setOpaque(true);
 
-        jLabel12.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel12.setText("K-Ograniczoność:");
-
+        boundednessText.setBackground(new java.awt.Color(51, 204, 0));
         boundednessText.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        boundednessText.setText("1-ograniczona");
-        boundednessText.setEnabled(false);
+        boundednessText.setText("TAK");
+        boundednessText.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        boundednessText.setOpaque(true);
 
-        jLabel13.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel13.setText("Odwracalność:");
-
+        reversibilityText.setBackground(new java.awt.Color(51, 204, 0));
         reversibilityText.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         reversibilityText.setText("TAK");
-        reversibilityText.setEnabled(false);
+        reversibilityText.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        reversibilityText.setOpaque(true);
 
-        jLabel14.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel14.setText("Zachowawczość:");
-
+        conservatismText.setBackground(new java.awt.Color(51, 204, 0));
         conservatismText.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         conservatismText.setText("TAK");
-        conservatismText.setEnabled(false);
+        conservatismText.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        conservatismText.setOpaque(true);
 
-        jLabel15.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel15.setText("Zywotność sieci:");
-
+        netLivenessText.setBackground(new java.awt.Color(51, 204, 0));
         netLivenessText.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         netLivenessText.setText("TAK");
-        netLivenessText.setEnabled(false);
+        netLivenessText.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        netLivenessText.setOpaque(true);
 
         javax.swing.GroupLayout propertiesPanelLayout = new javax.swing.GroupLayout(propertiesPanel);
         propertiesPanel.setLayout(propertiesPanelLayout);
@@ -103,18 +114,18 @@ public class GeneralRaportDialog extends JDialog {
             .addGroup(propertiesPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(propertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
-                    .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(netLivenessLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(conservatismLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(reversibilityLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(boundednessLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
+                    .addComponent(safenessLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(propertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(safenessText)
-                    .addComponent(boundednessText, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                    .addComponent(reversibilityText)
-                    .addComponent(conservatismText)
-                    .addComponent(netLivenessText))
+                    .addComponent(safenessText, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                    .addComponent(boundednessText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(reversibilityText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(conservatismText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(netLivenessText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
         propertiesPanelLayout.setVerticalGroup(
@@ -122,24 +133,24 @@ public class GeneralRaportDialog extends JDialog {
             .addGroup(propertiesPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(propertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel11)
-                    .addComponent(safenessText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(propertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel12)
-                    .addComponent(boundednessText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(propertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel13)
-                    .addComponent(reversibilityText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(propertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel14)
-                    .addComponent(conservatismText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(propertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel15)
-                    .addComponent(netLivenessText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(safenessLabel)
+                    .addComponent(safenessText, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(6, 6, 6)
+                .addGroup(propertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(boundednessLabel)
+                    .addComponent(boundednessText, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(6, 6, 6)
+                .addGroup(propertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(reversibilityLabel)
+                    .addComponent(reversibilityText, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(9, 9, 9)
+                .addGroup(propertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(conservatismLabel)
+                    .addComponent(conservatismText, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(9, 9, 9)
+                .addGroup(propertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(netLivenessLabel)
+                    .addComponent(netLivenessText, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         javax.swing.GroupLayout generalPanelLayout = new javax.swing.GroupLayout(generalPanel);
@@ -149,13 +160,13 @@ public class GeneralRaportDialog extends JDialog {
             .addGroup(generalPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(propertiesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         generalPanelLayout.setVerticalGroup(
             generalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(generalPanelLayout.createSequentialGroup()
                 .addComponent(propertiesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 178, Short.MAX_VALUE))
+                .addGap(0, 202, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Ogólne", generalPanel);
@@ -200,48 +211,57 @@ public class GeneralRaportDialog extends JDialog {
         String safenessString = (String)properties.get("Safeness");
         if(safenessString.equals("Sieć jest bezpieczna")){
             safenessText.setText("TAK");
+            safenessText.setBackground(Color.green);
         }else{
             safenessText.setText("NIE");
+            safenessText.setBackground(Color.red);
         };
         
         // Ograniczoność:
         boundednessText.setText((String)properties.get("Boundedness"));
+        boundednessText.setBackground(Color.green);
         
         // Odwracalność:
         if(((String)properties.get("Reversibility")).equals("Sieć jest odwracalna")){
             reversibilityText.setText("TAK");
+            reversibilityText.setBackground(Color.green);
         }else{
             reversibilityText.setText("NIE");
+            reversibilityText.setBackground(Color.red);
         }
         
         // Zachowawczość:
         if(((String)properties.get("Conservatism")).equals("Sieć jest zachowawcza")){
             conservatismText.setText("TAK");
+            conservatismText.setBackground(Color.green);
         }else{
             conservatismText.setText("NIE");
+            conservatismText.setBackground(Color.red);
         }
         
         // Żywotność sieci:
         if(((String)properties.get("NetLiveness")).equals("Sieć jest żywotna")){
-            reversibilityText.setText("TAK");
+            netLivenessText.setText("TAK");
+            netLivenessText.setBackground(Color.green);
         }else{
-            reversibilityText.setText("NIE");
+            netLivenessText.setText("NIE");
+            netLivenessText.setBackground(Color.red);
         }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField boundednessText;
-    private javax.swing.JTextField conservatismText;
+    private javax.swing.JLabel boundednessLabel;
+    private javax.swing.JLabel boundednessText;
+    private javax.swing.JLabel conservatismLabel;
+    private javax.swing.JLabel conservatismText;
     private javax.swing.JPanel generalPanel;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JTextField netLivenessText;
+    private javax.swing.JLabel netLivenessLabel;
+    private javax.swing.JLabel netLivenessText;
     private javax.swing.JPanel propertiesPanel;
-    private javax.swing.JTextField reversibilityText;
-    private javax.swing.JTextField safenessText;
+    private javax.swing.JLabel reversibilityLabel;
+    private javax.swing.JLabel reversibilityText;
+    private javax.swing.JLabel safenessLabel;
+    private javax.swing.JLabel safenessText;
     private javax.swing.JTabbedPane tabbedPane;
     // End of variables declaration//GEN-END:variables
 }
