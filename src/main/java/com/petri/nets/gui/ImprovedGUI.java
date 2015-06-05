@@ -672,6 +672,24 @@ public class ImprovedGUI extends javax.swing.JFrame {
         String netLivenessString = new NetLiveness(graphModel).calculate();
         properties.put("NetLiveness", netLivenessString);
         
+        // Żywotność przejść:
+        TreeMap<String,String> transitionLivenessMap = new TreeMap<String, String>();
+        List<Transition> transitions = new ArrayList<>(graphModel.getTransitions().values());
+        for(int i = 0; i< transitions.size(); i++){
+            String transitionString = new TransitionLiveness(graphModel).calculate(transitions.get(i));
+            transitionLivenessMap.put(transitions.get(i).getName(), transitionString);
+        }
+        properties.put("TransitionLiveness", new LivenessPanel(transitionLivenessMap));
+        
+        // Żywotność miejsc:
+        TreeMap<String,String> placeLivenessMap = new TreeMap<String, String>();
+        List<Place> places = new ArrayList<>(graphModel.getPlaces().values());
+        for(int i = 0; i< places.size(); i++){
+            String placeString = new PlaceLiveness(graphModel).calculate(places.get(i));
+            placeLivenessMap.put(places.get(i).getName(), placeString);
+        }
+        properties.put("PlaceLiveness", new LivenessPanel(placeLivenessMap));
+        
         // grafy i drzewa:
         // graf pokrycia
         Component coverageGraphComponent = createActiveJGraphComponentWithLayout(CustomGraphToJGraphXAdapterTransformer.transform(new CoverageGraph(graphModel).build()));

@@ -202,6 +202,9 @@ public class GeneralRaportDialog extends JDialog {
         tabbedPane.addTab("Graf osiągalności", (JScrollPane)properties.get("ReachablilityGraph"));
         tabbedPane.addTab("Graf pokrycia", (JScrollPane)properties.get("CoverageGraph"));
         tabbedPane.addTab("Drzewo pokrycia", (JScrollPane)properties.get("CoverageTree"));
+        
+        tabbedPane.addTab("Żywotność przejść", (LivenessPanel)properties.get("TransitionLiveness"));
+        tabbedPane.addTab("Żywotność miejsc", (LivenessPanel)properties.get("PlaceLiveness"));
     }
     
     
