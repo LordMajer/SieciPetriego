@@ -208,6 +208,14 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="conservationItemActionPerformed"/>
               </Events>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="conservationItemVector">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Zachowawczo&#x15b;&#x107; (Wektor)"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="conservationItemVectorActionPerformed"/>
+              </Events>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="placeLiveness">
               <Properties>
                 <Property name="text" type="java.lang.String" value="&#x17b;ywotno&#x15b;&#x107; miejsc"/>

@@ -196,6 +196,7 @@ public class ImprovedGUI extends javax.swing.JFrame {
         boudednessItem = new javax.swing.JMenuItem();
         reversibilityItem = new javax.swing.JMenuItem();
         conservationItem = new javax.swing.JMenuItem();
+        conservationItemVector = new javax.swing.JMenuItem();
         placeLiveness = new javax.swing.JMenuItem();
         transitionLivenessItem = new javax.swing.JMenuItem();
         netLivenessItem = new javax.swing.JMenuItem();
@@ -400,6 +401,14 @@ public class ImprovedGUI extends javax.swing.JFrame {
             }
         });
         netPropertiesMenu.add(conservationItem);
+
+        conservationItemVector.setText("Zachowawczość (Wektor)");
+        conservationItemVector.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                conservationItemVectorActionPerformed(evt);
+            }
+        });
+        netPropertiesMenu.add(conservationItemVector);
 
         placeLiveness.setText("Żywotność miejsc");
         placeLiveness.addActionListener(new java.awt.event.ActionListener() {
@@ -717,6 +726,29 @@ public class ImprovedGUI extends javax.swing.JFrame {
         GeneralRaportDialog dialog = new GeneralRaportDialog(this, true, properties);
     }//GEN-LAST:event_generalRaportItemActionPerformed
 
+    private void conservationItemVectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_conservationItemVectorActionPerformed
+        HashMap<String, String> resultMap = new HashMap<String, String>();
+        VectorPanel vectorPanel = new VectorPanel(this, true, resultMap);
+        
+        String result = resultMap.get("Result");
+        if(result != null){
+            CustomGraph coverageGraph = new CoverageGraph(graphModel).build();
+            int[] vect = new int[coverageGraph.getTransitions().size()];
+            
+            String[] stringVect = result.split(",");
+            System.out.println(result);
+            int i =0;
+            for(String item : stringVect){              // zamiana na wektor liczbowy.
+                vect[i] = Integer.valueOf(item);
+                i++;
+            }
+            
+            JOptionPane.showMessageDialog(null, new ConservationVectorMin(new CoverageGraph(graphModel).build(), vect).calculate());
+        }else{
+            JOptionPane.showMessageDialog(this, "Brak wektora!", ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_conservationItemVectorActionPerformed
+
     private String[] getTransitionButtons(java.util.List<Transition> transitions) {
         String[] transitionsName = new String[transitions.size()];
         for (int i = 0; i < transitions.size(); i++) {
@@ -875,6 +907,7 @@ public class ImprovedGUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem addTransitionItem;
     private javax.swing.JMenuItem boudednessItem;
     private javax.swing.JMenuItem conservationItem;
+    private javax.swing.JMenuItem conservationItemVector;
     private javax.swing.JMenuItem coverageGraphItem;
     private javax.swing.JMenuItem coverageTreeItem;
     private javax.swing.JMenuItem deleteElementItem;

@@ -13,8 +13,13 @@ public class Conservation {
     public String calculate() {
         int sum = 0;
         int i = 0;
+            
+        
         for (Vertex vertex : coverageGraph.getTransitions().values()) {
             String[] states = vertex.getName().split(",");
+            
+            
+            
             int currentSum = 0;
             for (String state : states) {
                 if (state.equals("\u221E")) {
