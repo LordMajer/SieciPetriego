@@ -727,25 +727,27 @@ public class ImprovedGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_generalRaportItemActionPerformed
 
     private void conservationItemVectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_conservationItemVectorActionPerformed
-        HashMap<String, String> resultMap = new HashMap<String, String>();
-        VectorPanel vectorPanel = new VectorPanel(this, true, resultMap);
-        
-        String result = resultMap.get("Result");
-        if(result != null){
-            CustomGraph coverageGraph = new CoverageGraph(graphModel).build();
-            int[] vect = new int[coverageGraph.getTransitions().size()];
-            
-            String[] stringVect = result.split(",");
-            System.out.println(result);
-            int i =0;
-            for(String item : stringVect){              // zamiana na wektor liczbowy.
-                vect[i] = Integer.valueOf(item);
-                i++;
+        try {
+            HashMap<String, String> resultMap = new HashMap<String, String>();
+            VectorPanel vectorPanel = new VectorPanel(this, true, resultMap);
+
+            String result = resultMap.get("Result");
+            if (result != null) {
+                CustomGraph coverageGraph = new CoverageGraph(graphModel).build();
+                int[] vect = new int[graphModel.getTransitions().size()];
+
+                String[] stringVect = result.split(",");
+                System.out.println(result);
+                int i = 0;
+                for (String item : stringVect) {              // zamiana na wektor liczbowy.
+                    vect[i] = Integer.valueOf(item.trim());
+                    i++;
+                }
+
+                JOptionPane.showMessageDialog(null, new ConservationVectorMin(new CoverageGraph(graphModel).build(), vect).calculate());
             }
-            
-            JOptionPane.showMessageDialog(null, new ConservationVectorMin(new CoverageGraph(graphModel).build(), vect).calculate());
-        }else{
-            JOptionPane.showMessageDialog(this, "Brak wektora!", ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Podano błędny wektor! Wektor musi być w poprawnym formacie i o długości ilości miejsc grafu(" + graphModel.getTransitions().size() +  ")!", ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_conservationItemVectorActionPerformed
 
