@@ -734,7 +734,7 @@ public class ImprovedGUI extends javax.swing.JFrame {
             String result = resultMap.get("Result");
             if (result != null) {
                 CustomGraph coverageGraph = new CoverageGraph(graphModel).build();
-                int[] vect = new int[graphModel.getTransitions().size()];
+                int[] vect = new int[graphModel.getPlaces().size()];
 
                 String[] stringVect = result.split(",");
                 System.out.println(result);
