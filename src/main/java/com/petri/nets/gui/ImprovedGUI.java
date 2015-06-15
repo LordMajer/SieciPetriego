@@ -713,10 +713,10 @@ public class ImprovedGUI extends javax.swing.JFrame {
         // Macierze:
         // macierz wejść:
         MatrixCreator matrixCreator = new MatrixCreator(graphModel);
-        JScrollPane outputMatrixPane = createJScrollPane(matrixCreator.generateInputMatrix());
+        JScrollPane outputMatrixPane = createJScrollPane(matrixCreator.generateOutputMatrix());
         properties.put("OutputMatrix",outputMatrixPane);
         // macierz wyjść
-        JScrollPane inputMatrixPane = createJScrollPane(matrixCreator.generateOutputMatrix());
+        JScrollPane inputMatrixPane = createJScrollPane(matrixCreator.generateInputMatrix());
         properties.put("InputMatrix",inputMatrixPane);
         // macierz incydencji
         JScrollPane incidenceMatrixPane = createJScrollPane(matrixCreator.generateIncidenceMatrix());
