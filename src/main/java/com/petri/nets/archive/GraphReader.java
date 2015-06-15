@@ -14,12 +14,6 @@ public class GraphReader {
             StringBuilder initialDirectory = new StringBuilder();
             initialDirectory.append(new File(".").getCanonicalPath());
             initialDirectory.append(File.separator);
-            initialDirectory.append("src");
-            initialDirectory.append(File.separator);
-            initialDirectory.append("main");
-            initialDirectory.append(File.separator);
-            initialDirectory.append("resources");
-            initialDirectory.append(File.separator);
             initialDirectory.append("models");
 
             fileChooser.setCurrentDirectory(new File(initialDirectory.toString()));

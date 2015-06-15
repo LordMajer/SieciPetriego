@@ -1,6 +1,6 @@
 package com.petri.nets.helpers.common;
 
-import com.petri.nets.gui.GUI;
+import com.petri.nets.gui.ImprovedGUI;
 import com.petri.nets.model.Edge;
 import com.petri.nets.model.Transition;
 import com.petri.nets.model.Vertex;
@@ -69,7 +69,7 @@ public class CommonOperations {
 
     public static boolean canBeConnected(Vertex a, Vertex b) {
         if (a == null && b == null || a.getClass().equals(b.getClass())) {
-            JOptionPane.showMessageDialog(null, "Krawędź może istnieć tylko między dwoma wierzchołkami różnych typów!", GUI.ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Krawędź może istnieć tylko między dwoma wierzchołkami różnych typów!", ImprovedGUI.ERROR_MESSAGE_TITLE, JOptionPane.ERROR_MESSAGE);
             return false;
         }
         return true;
